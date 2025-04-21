@@ -50,6 +50,13 @@ namespace textRPG
         // 인벤토리탭 관리
         public void GoInventory(Player player, List<Item> items, List<Item> inventory)
         {
+            // inventory가 null인 경우 초기화
+            if (inventory == null)
+            {
+                inventory = new List<Item>(); // 인벤토리 초기화
+                Console.WriteLine("인벤토리가 초기화되었습니다.");
+            }
+
             while (true)
             {
                 Console.Clear();
