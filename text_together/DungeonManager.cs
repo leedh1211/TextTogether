@@ -6,6 +6,8 @@ namespace textRPG
 {
     class DungeonManager
     {
+        public int stage=0;
+        public MonsterManager enemy = new MonsterManager();
         // 싱글톤
         private static DungeonManager instance;
 
@@ -47,7 +49,8 @@ namespace textRPG
                 }
                 if (input == 1)
                 {
-                    ResultDungeon(player, items, inventory, BattleDungeon(player, dungeons[0].requiredDefense, dungeons[0].rewardGold, rand), dungeons[0].dungeonLevel, orgGold, orgHealth);
+                    DungeonRaid();
+                    //ResultDungeon(player, items, inventory, BattleDungeon(player, dungeons[0].requiredDefense, dungeons[0].rewardGold, rand), dungeons[0].dungeonLevel, orgGold, orgHealth);
 
                 }
                 else if (input == 2)
@@ -64,6 +67,42 @@ namespace textRPG
 
 
         }
+
+        // 던전 몬스터 조우
+        public void DungeonRaid()
+        {
+            stage +=1;
+            var monster = enemy.RandomMonster(stage);
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("현재 스테이지 : {0} \n", stage);
+
+                Console.WriteLine("{0} 출현!", monster.name);
+                Console.WriteLine("HP : {0} ", monster.health);
+                Console.WriteLine("Level : {0}", monster.level);
+                Console.WriteLine("Pow : {0} ", monster.attack);
+                Console.WriteLine("Def : {0} ", monster.shield);
+                Console.WriteLine("Gold : {0} \n", monster.gold);
+
+
+                Console.WriteLine("0. 나가기 \n");
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+                Console.Write(">>");
+                
+                int input = int.Parse(Console.ReadLine());
+                if (input == 0)
+                    return;
+                else
+                {
+                    Console.WriteLine("다시 입력해주세요");
+                    continue;
+                }
+            }
+        }
+
         // 던전 결과 여부 확인
         public bool BattleDungeon(Player player, int shieldLevel, int successGold, Random rand)
         {
