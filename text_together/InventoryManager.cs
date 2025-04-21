@@ -9,6 +9,8 @@ namespace textRPG
         // 싱글톤
         private static InventoryManager instance;
 
+        public List<Item> inventory = new List<Item>();
+
         public static InventoryManager Instance
         {
             get

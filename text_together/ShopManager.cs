@@ -9,7 +9,6 @@ namespace textRPG
     {
         private Player player;
         private List<Item> items;
-        private List<Item> inventory;
 
         // 싱글톤
         private static ShopManager instance;
@@ -26,10 +25,9 @@ namespace textRPG
             }
         }
 
-        public void InitializeStore(Player player, List<Item> inventory)
+        public void InitializeStore(Player player)
         {
             this.player = player;
-            this.inventory = inventory ?? new List<Item>();
             this.items = new List<Item>();
 
             // 초기 판매 아이템

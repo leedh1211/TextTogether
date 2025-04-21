@@ -70,7 +70,7 @@ class Solution
             dungeons = new List<Dungeon>();
 
             // 상점 초기화
-            ShopManager.Instance.InitializeStore(player, inventory);
+            ShopManager.Instance.InitializeStore(player);
 
             // 던전 추가
             dungeons.Add(new Dungeon("쉬운", 5, 1000));
