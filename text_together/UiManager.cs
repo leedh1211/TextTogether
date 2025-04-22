@@ -248,6 +248,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
 
                 Thread.Sleep(typingDelay);
@@ -264,6 +279,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
                 Thread.Sleep(typingDelay);
             }
@@ -279,6 +309,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
                 Thread.Sleep(typingDelay);
             }
@@ -307,6 +352,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
                 Thread.Sleep(typingDelay);
             }
@@ -325,6 +385,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
                 Thread.Sleep(typingDelay);
             }
@@ -343,6 +418,21 @@ public class UIManager
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
                 }
                 Thread.Sleep(typingDelay);
             }
@@ -357,8 +447,37 @@ public class UIManager
         cursors[index][1] = Console.CursorTop;  //y축
 
     }
-    
 
+    //타이핑 효과
+    static public void TypingText(string text)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            Console.Write(text[i]);
+
+            //해당 문자 표현시 소리재생 X
+            if (text[i] == ' ' || text[i] == '.')
+            {
+
+            }
+
+            else
+            {
+                if (filePath != null)
+                {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                    Thread thread = new Thread(SoundManager.sound);
+                    thread.Start();
+                }
+            }
+
+            //타이핑 후 대기시간
+            Thread.Sleep(60);
+        }
+
+    }
+
+
+    
 
     static public void test()
     {
