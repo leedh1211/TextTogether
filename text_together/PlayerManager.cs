@@ -20,6 +20,7 @@ namespace textRPG
                 return instance;
             }
         }
+
         // 이름 입력 
         public string WriteName()
         {
@@ -30,6 +31,7 @@ namespace textRPG
             Console.WriteLine("입력하신 이름은 : " + s + " 입니다.\n");
             return s;
         }
+
         // 이름 저장
         public string CheckName()
         {
@@ -82,7 +84,7 @@ namespace textRPG
             }
         }
         // 플레이어 상태탭 관리
-        public void PlayerInfo(Player player, List<Item> items, List<Item> inventory)
+        public void PlayerInfo(Player player)
         {
             Console.Clear();
             Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
