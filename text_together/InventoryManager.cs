@@ -105,6 +105,20 @@ namespace textRPG
                 }
                 else if (inventory[input - 1].isHave)
                 {
+                    // 장착중인 아이템일 경우 장착해제
+                    if (inventory[input - 1].isEquipped)
+                    {
+                        Console.WriteLine($"{inventory[input - 1].name}을 장착 해제했습니다.");
+                        inventory[input - 1].isEquipped = false;
+
+                        if (inventory[input - 1].effect.type == "방어력")
+                            player.shield -= inventory[input - 1].effect.value;
+                        else
+                            player.attack -= inventory[input - 1].effect.value;
+
+                        continue;
+                    }
+
                     if (IsSameEffectEquipped(inventory, inventory[input - 1].effect.type, out index))
                     {
                         inventory[index].isEquipped = false;
