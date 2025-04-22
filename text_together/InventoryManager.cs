@@ -28,9 +28,9 @@ namespace textRPG
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
             }
             Console.WriteLine();
         }
@@ -42,9 +42,9 @@ namespace textRPG
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 idx++;
             }
         }
@@ -105,6 +105,20 @@ namespace textRPG
                 }
                 else if (inventory[input - 1].isHave)
                 {
+                    // 장착중인 아이템일 경우 장착해제
+                    if (inventory[input - 1].isEquipped)
+                    {
+                        Console.WriteLine($"{inventory[input - 1].name}을 장착 해제했습니다.");
+                        inventory[input - 1].isEquipped = false;
+
+                        if (inventory[input - 1].effect.type == "방어력")
+                            player.shield -= inventory[input - 1].effect.value;
+                        else
+                            player.attack -= inventory[input - 1].effect.value;
+
+                        continue;
+                    }
+
                     if (IsSameEffectEquipped(inventory, inventory[input - 1].effect.type, out index))
                     {
                         inventory[index].isEquipped = false;

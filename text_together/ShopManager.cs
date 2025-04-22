@@ -8,7 +8,7 @@ namespace textRPG
     class ShopManager
     {
         private Player player;
-        private List<Item> items;
+        private List<Item> storeItems;
 
         // 싱글톤
         private static ShopManager instance;
@@ -28,17 +28,17 @@ namespace textRPG
         public List<Item> InitializeStore(Player player)
         {
             this.player = player;
-            this.items = new List<Item>();
+            this.storeItems = new List<Item>();
 
             // 초기 판매 아이템
-            items.Add(new Item("수련자 갑옷", new Effect("방어력", 5), "수련에 도움을 주는 갑옷입니다.", 1000, false, false));
-            items.Add(new Item("무쇠 갑옷", new Effect("방어력", 9), "무쇠로 만들어져 튼튼한 갑옷입니다.", 1500, false, false));
-            items.Add(new Item("스파르타 갑옷", new Effect("방어력", 15), "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 3500, false, false));
-            items.Add(new Item("낡은 검 ", new Effect("공격력", 2), "쉽게 볼 수 있는 낡은 검 입니다.", 600, false, false));
-            items.Add(new Item("청동 도끼", new Effect("공격력", 5), "어디선가 사용됐던거 같은 도끼입니다.", 1500, false, false));
-            items.Add(new Item("스파르타의 창", new Effect("공격력", 7), "스파르타의 전사들이 사용했다는 전설의 창입니다.", 4000, false, false));
+            storeItems.Add(new Item("수련자 갑옷", new Effect("방어력", 5), "수련에 도움을 주는 갑옷입니다.", 1000, false, false));
+            storeItems.Add(new Item("무쇠 갑옷", new Effect("방어력", 9), "무쇠로 만들어져 튼튼한 갑옷입니다.", 1500, false, false));
+            storeItems.Add(new Item("스파르타 갑옷", new Effect("방어력", 15), "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 3500, false, false));
+            storeItems.Add(new Item("낡은 검 ", new Effect("공격력", 2), "쉽게 볼 수 있는 낡은 검 입니다.", 500, false, false));
+            storeItems.Add(new Item("청동 도끼", new Effect("공격력", 5), "어디선가 사용됐던거 같은 도끼입니다.", 1500, false, false));
+            storeItems.Add(new Item("스파르타의 창", new Effect("공격력", 7), "스파르타의 전사들이 사용했다는 전설의 창입니다.", 4000, false, false));
 
-            return items;
+            return storeItems;
         }
 
         // 상점탭 관리
@@ -58,7 +58,7 @@ namespace textRPG
                 ShopInfo(items, inventory);
                 Console.WriteLine();
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n0. 나가기");
+                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n0. 나가기");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
@@ -73,12 +73,52 @@ namespace textRPG
                 {
                     ItemSell(player, items, inventory);
                 }
+                else if (input == 3)
+                {
+                    ItemGatcha(player, inventory);
+                }
                 else
                 {
                     Console.WriteLine("다시 입력해주세요.");
                 }
             }
         }
+        void ItemGatcha(Player player, List<Item> inventory)
+        {
+            if(player.gold >= 150)
+            {
+                player.gold -= 150;
+
+                Random random = new Random();
+                int index = random.Next(ItemData.ItemPool.Count);
+                Item randomItem = ItemData.ItemPool[index];
+
+                Console.Clear();
+                Console.WriteLine($"{randomItem.name}을(를) 뽑았습니다!");
+                Console.WriteLine($"{randomItem.effect.type} +{randomItem.effect.value} | {randomItem.info}");
+                Console.WriteLine();
+
+                AddItem(randomItem, inventory, 150);
+            }
+            else
+            {
+                Console.WriteLine("저축해서 다시 와 주세요...");
+            }
+
+            Console.WriteLine("0. 나가기");
+            int input = int.Parse(Console.ReadLine());
+            if (input == 0)
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("다시 입력해주세요.");
+            }
+
+        }
+
+
         // 아이템들 상점에서 정보
         void ShopInfo(List<Item> items, List<Item> inventory)
         {
@@ -89,7 +129,7 @@ namespace textRPG
                 bool isHaved = inventory.Any(x => x.name == item.name);
                 if (isHaved)
                 {
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | 구매완료");
+                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | 보유 중");
                 }
                 else
                     Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} G");
@@ -189,12 +229,6 @@ namespace textRPG
                     continue;
                 }
 
-                bool isHaved = inventory.Any(x => x.name == items[input - 1].name);
-                if (isHaved)
-                {
-                    Console.WriteLine("이미 구매한 아이템입니다.");
-                    continue;
-                }
                 else
                 {
 
@@ -205,14 +239,40 @@ namespace textRPG
                     }
                     else
                     {
-                        player.gold -= items[input - 1].price;
-                        inventory.Add(items[input - 1]);
+                        AddItem(items[input-1], inventory, items[input - 1].price);
                         UpdateBuyUI(player, items, inventory);
                     }
                 }
 
             }
 
+        }
+
+        void AddItem(Item item, List<Item> inventory, int price)
+        {
+            // 인벤토리에 같은 아이템이 있는지 탐색
+            var haveItem = inventory.FirstOrDefault(x => x.name == item.name);
+
+            // 이미 가지고 있을 때
+            if(haveItem != null)
+            {
+                if(haveItem.quantity < haveItem.maxQuantity)
+                {
+                    player.gold -= price;
+                    haveItem.quantity++;
+                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity}째 얻었습니다!");
+                }
+                else
+                {
+                    Console.WriteLine($"{haveItem.name}은 최대 수량입니다. 더 이상 획득할 수 없습니다...");
+                }
+            }
+            else
+            {
+                player.gold -= price;
+                inventory.Add(new Item(item.name, item.effect, item.info, item.price, true, false, item.maxQuantity));
+                Console.WriteLine($"{item.name}을(를) 획득했습니다!");
+            }
         }
     }
 }
