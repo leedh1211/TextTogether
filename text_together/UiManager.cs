@@ -512,8 +512,8 @@ public class UIManager
             ////////////////
             //View클래스 변경
             ////////////////
-            View.width = Console.WindowWidth;
-            View.height = Console.WindowHeight;
+            View.width = Console.WindowWidth -1;
+            View.height = Console.WindowHeight -1;
             View.downY = (int)Math.Round(Console.WindowHeight * 0.4);
             View.highX = (int)Math.Round(Console.WindowWidth * 0.5);
 
