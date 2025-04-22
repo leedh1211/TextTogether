@@ -42,17 +42,18 @@ namespace textRPG
         }
 
         // 플레이어의 공격
-        public void PlayerAttack(Monster monster, Player player)
+        public void PlayerAttack(Monster monster, Player player, Skill skill)
         {
             Random rand = new Random();
 
             // 0.5 오차 반올림
-            int round = (int)Math.Round(player.attack * 0.1, MidpointRounding.AwayFromZero);
+            int round = (int)Math.Round((player.attack + skill.Attack) * 0.1, MidpointRounding.AwayFromZero);
 
             // 공격력의 10% 오차 적용
-            int damage = (int)(rand.Next((int)player.attack - round, (int)player.attack + round)) - (int)(monster.shield * 0.7f );
+            int damage = (int)(rand.Next((int)player.attack + skill.Attack - round, (int)player.attack + skill.Attack + round)) - (int)(monster.shield * 0.7f );
             if(damage <= 0) damage=1; 
             monster.health -= damage;
+            player.mana -= skill.Cost;
         }
 
     }

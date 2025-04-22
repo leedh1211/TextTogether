@@ -7,8 +7,6 @@ namespace textRPG
     class SkillManager
     {
         public List<Skill> skills { get; private set; } = new List<Skill>();
-        private Random random = new Random();
-
        
          public SkillManager()
         {

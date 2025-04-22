@@ -10,6 +10,7 @@ namespace textRPG
 
         public string message ="";
         public MonsterManager enemy = new MonsterManager();
+        public SkillManager skill = new SkillManager();
         Random rand = new Random();
 
         public int deadCount = 0;
@@ -85,7 +86,7 @@ namespace textRPG
                 Console.WriteLine("2. 휴식하기");
                 Console.WriteLine("3. 저장");
                 Console.WriteLine("4. 상태보기");   
-                Console.WriteLine("0.나가기\n");
+                Console.WriteLine("0. 나가기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
                 int input = int.Parse(Console.ReadLine());
@@ -179,7 +180,8 @@ namespace textRPG
                 }
                 else if (input == 1 || skip)
                 {
-                    MonsterSelect(player, dungeon, monster,skip);
+                    Skills(monster, player, dungeon);
+
                     if(deadCount >= monster.Count) 
                     {
                         ResultDungeon(monster, player, dungeon);
@@ -187,7 +189,6 @@ namespace textRPG
                         skip = false;
                         return;
                     }
-
                 }
                 else
                 {
@@ -205,25 +206,40 @@ namespace textRPG
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
-                for (int i = 0; i < monster.Count; i++)
-                {
-                    Console.Write("{0} 출현!", monster[i].name);
-                    Console.WriteLine(monster[i].health <= 0 ? "Dead" : $"HP : {monster[i].health} ");
-                    Console.WriteLine("Level : {0} \n", monster[i].level);
-                    //Console.WriteLine("Pow : {0} ", monster[i].attack);
-                    //Console.WriteLine("Def : {0} ", monster[i].shield);
-                    //Console.WriteLine("Gold : {0} \n", monster[i].gold);
+                int i=0;
+                foreach(var skill in skill.skills)
+                {   
+                    i++;
+                    Console.Write($"{i}. {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n");
                 }
 
 
-                Console.WriteLine("[플레이어] 체력 : {0}", player.health);
+                Console.WriteLine("[플레이어]");
                 Console.WriteLine("체력 : {0}", player.health);
                 Console.WriteLine("마나 : {0}", player.mana);
                 Console.WriteLine("레벨 : {0} \n", player.level);
+
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+                Console.Write(">>");
+
+                int input = int.Parse(Console.ReadLine());
+                if (input == 0)
+                    return;
+                else if (input >= 1 && input <= skill.skills.Count)
+                {
+                    MonsterSelect(player, dungeon, monster, skill.skills[input-1]);
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("다시 입력해주세요");
+                    continue;
+                }
             }
         }
 
-        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, bool skip)
+        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, Skill skill)
         {
             while (true)
             {
@@ -263,7 +279,9 @@ namespace textRPG
                         Console.WriteLine("이미 죽어있습니다.");
                         continue;
                     }
-                    player.PlayerAttack(monster[input - 1], player);
+
+                    // 해당 몬스터 공격
+                    player.PlayerAttack(monster[input - 1], player, skill);
 
                     // 죽였을 때 경험치 보상
                     if(monster[input - 1].health <= 0)
