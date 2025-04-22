@@ -35,6 +35,12 @@ namespace textRPG
             new Item("닌자 두건", new Effect("방어력", 6), "은신 +10, 간지 +50. 정작 방어력도 있다.", 2000, false, false),
             new Item("버섯 갑옷", new Effect("방어력", 7), "푹신푹신. 스파르타인에게는 모욕적인 방어구.", 2500, false, false),
             new Item("하트망치", new Effect("공격력", 5), "사랑을 담아 내려치는 무기. 정신적인 데미지는 추가.", 1800, false, false),
+            new Item("삐약부츠", new Effect("방어력", 3), "걸을 때마다 삐약삐약. 은신엔 치명적이지만 귀여움은 +100.", 1300, false, false),
+            new Item("분노의 마라탕", new Effect("공격력", 7), "입에서 불이 나올 만큼 맵다. 적도 같이 울게 만든다.", 2200, false, false),
+            new Item("전설의 냄비뚜껑", new Effect("방어력", 8), "어머니의 사랑이 담긴 무적의 방패. 단점: 무겁다.", 2700, false, false),
+            new Item("감성 기타", new Effect("공격력", 4), "잔잔한 멜로디로 적의 심장을 후벼판다.", 1600, false, false),
+            new Item("고대의 슬리퍼", new Effect("공격력", 6), "집안에서 가장 강력한 무기. 맞으면 정신적 데미지 +999.", 2000, false, false),
+            new Item("치즈 방패", new Effect("방어력", 5), "말랑하지만 단단한 수수께끼의 방어구. 고양이들이 좋아한다.", 1900, false, false)
         };
     }
 }
