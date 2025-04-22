@@ -502,9 +502,10 @@ public class UIManager
     
     static public int inputController(List<Option> option)
     {
-        int index = option.Count-1;
+        int index = 0;
         int count = option.Count;
-        MakeOptionString(option, index);
+        int page = 0;
+        MakeOptionString(option, index, page);
 
 
         while (true)
@@ -518,26 +519,55 @@ public class UIManager
                 continue;  
 
             // 순환(ring) 방식으로 인덱스 보정
-            Clear(3);
-            index = (index + delta + count) % count;
-            MakeOptionString(option, index);
+            int unitMax = (int)Math.Ceiling((double)count / 6) * 6;
+            index = (index + delta + unitMax) % unitMax;
+            if (count % 6 != 0 && count-1 < index && index < unitMax )
+            {
+                if (delta != 1)
+                {
+                    index = count - 1;    
+                }
+                else
+                {
+                    index = 0;    
+                }
+            }
+            page = index / 6;
+            MakeOptionString(option, index, page);
         }
     }
     
-    static void MakeOptionString(List<Option> option, int index)
+    static void MakeOptionString(List<Option> option, int index, int page)
     {
         string text = "";
-        for (int i = 0; i < option.Count; i++)
+        int optionCount;
+        if (option.Count > 6)
         {
-            if (i == index)
+            optionCount = 6;
+        }
+        else
+        {
+            optionCount = option.Count;
+        }
+        Clear(3);
+        for (int i = 0; i < optionCount; i++)
+        {
+            if (i + page * 6 < option.Count)
             {
-                text = "\u25b7"+option[i].text;
+                if (i+page*6 == index)
+                {
+                    text = "\u25b7"+option[i+page*6].text;
+                }
+                else
+                {
+                    text = "  "+option[i+page*6].text;
+                }
+                WriteLine(3,text);;
             }
             else
             {
-                text = option[i].text;
+                return;
             }
-            UIManager.WriteLine(3,text);
         }
     }
     
@@ -545,6 +575,8 @@ public class UIManager
     {
         ConsoleKey.W or ConsoleKey.UpArrow   => -1,
         ConsoleKey.S or ConsoleKey.DownArrow => +1,
+        ConsoleKey.A or ConsoleKey.LeftArrow   => -6,
+        ConsoleKey.D or ConsoleKey.RightArrow => +6,
         _                                    => 0
     };
 }
