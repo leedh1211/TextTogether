@@ -58,7 +58,7 @@ namespace textRPG
                 ShopInfo(items, inventory);
                 Console.WriteLine();
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n0. 나가기");
+                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n0. 나가기");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
@@ -73,12 +73,53 @@ namespace textRPG
                 {
                     ItemSell(player, items, inventory);
                 }
+                else if (input == 3)
+                {
+                    ItemGatcha(player, inventory);
+                }
                 else
                 {
                     Console.WriteLine("다시 입력해주세요.");
                 }
             }
         }
+        void ItemGatcha(Player player, List<Item> inventory)
+        {
+            if(player.gold >= 100)
+            {
+                player.gold -= 100;
+
+                Random random = new Random();
+                int index = random.Next(ItemData.ItemPool.Count);
+                Item randomItem = ItemData.ItemPool[index];
+
+                Console.Clear();
+                Console.WriteLine($"{randomItem.name}을(를) 뽑았습니다!");
+                Console.WriteLine($"{randomItem.effect.type} +{randomItem.effect.value} | {randomItem.info}");
+                Console.WriteLine();
+
+                inventory.Add(randomItem);
+                randomItem.isHave = true;
+            }
+            else
+            {
+                Console.WriteLine("저축해서 다시 와 주세요...");
+            }
+
+            Console.WriteLine("0. 나가기");
+            int input = int.Parse(Console.ReadLine());
+            if (input == 0)
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("다시 입력해주세요.");
+            }
+
+        }
+
+
         // 아이템들 상점에서 정보
         void ShopInfo(List<Item> items, List<Item> inventory)
         {
