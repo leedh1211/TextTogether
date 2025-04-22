@@ -15,17 +15,17 @@ public class UIManager
     static int OptionSpace_y = 20;
 
 
-    //UI ¸Å°³º¯¼ö¸¦ ¾î¶»°Ô ¹ÞÀ»±î
-    //ÀÌ³ÑÀ¸·Î º¯È¯ÇØ¼­¹Þ±â
-    //½ºÆ®¸µÀ¸·Î ¹Þ±â
-    //Á¤¼ö·Î ¹Þ±â
+    //UI ë§¤ê°œë³€ìˆ˜ë¥¼ ì–´ë–»ê²Œ ë°›ì„ê¹Œ
+    //ì´ë„˜ìœ¼ë¡œ ë³€í™˜í•´ì„œë°›ê¸°
+    //ìŠ¤íŠ¸ë§ìœ¼ë¡œ ë°›ê¸°
+    //ì •ìˆ˜ë¡œ ë°›ê¸°
     static public void Clear(int index)
     {
 
-        //»ó´Ü UI
+        //ìƒë‹¨ UI
         if (index == 1)
         {
-            // Å¬¸®¾î x,y°ªÀº º¯°æµÉ °¡´É¼º ³ôÀ½
+            // í´ë¦¬ì–´ x,yê°’ì€ ë³€ê²½ë  ê°€ëŠ¥ì„± ë†’ìŒ
             for (int y = 0; y < MainSpace_y; y++)
             {
                 Console.SetCursorPosition(1, 1 + y);
@@ -38,10 +38,10 @@ public class UIManager
             }
         }
 
-        //ÇÏ´Ü ÁÂÃø UI
+        //í•˜ë‹¨ ì¢Œì¸¡ UI
         else if (index == 2)
         {
-            //Å¬¸®¾î x,y°ªÀº º¯°æµÉ °¡´É¼º ³ôÀ½
+            //í´ë¦¬ì–´ x,yê°’ì€ ë³€ê²½ë  ê°€ëŠ¥ì„± ë†’ìŒ
             for (int y = 0; y < ContentSpace_y; y++)
             {
                 Console.SetCursorPosition(1, 21 + y);
@@ -54,10 +54,10 @@ public class UIManager
             }
         }
 
-        //ÇÏ´Ü ¿ìÃø UI
+        //í•˜ë‹¨ ìš°ì¸¡ UI
         else if(index == 3)
         {
-            //Å¬¸®¾î x,y°ªÀº º¯°æµÉ °¡´É¼º ³ôÀ½
+            //í´ë¦¬ì–´ x,yê°’ì€ ë³€ê²½ë  ê°€ëŠ¥ì„± ë†’ìŒ
             for (int y = 0; y < OptionSpace_y; y++)
             {
                 Console.SetCursorPosition(61, 21 + y);
