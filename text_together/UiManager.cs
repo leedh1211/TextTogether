@@ -6,6 +6,10 @@ namespace textRPG;
 
 public class UIManager
 {
+
+    static int prevWidth = Console.WindowWidth;
+    static int prevHeight = Console.WindowHeight;
+
     static int mainSpace_x = 118;
     static int mainSpace_y = 28;
     static int mainStartPos_x = 1;
@@ -478,7 +482,51 @@ public class UIManager
 
 
     
+    static public void CheckWindow()
+    {
+        // 변경 없으면 아무것도 안 함
+        if (prevWidth == Console.WindowWidth && prevHeight == Console.WindowHeight)
+        {
+            return;
+        }
 
+        else
+        {
+            // 만약 기존크기에셔 변경 될 경우 아래 수행
+            mainSpace_x = Console.WindowWidth - 2;
+            mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.6);
+            mainStartPos_x = 1;
+            mainStartPos_y = 1;
+
+            contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
+            contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
+            contentStartPos_x = 1;
+            contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+
+            optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
+            optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
+            optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.5) + 1;
+            optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+
+
+            ////////////////
+            //View클래스 변경
+            ////////////////
+            View.width = Console.WindowWidth;
+            View.height = Console.WindowHeight;
+            View.downY = (int)Math.Round(Console.WindowHeight * 0.4);
+            View.highX = (int)Math.Round(Console.WindowWidth * 0.5);
+
+            //이전 크기 저장
+            prevWidth = Console.WindowWidth;
+            prevHeight = Console.WindowHeight;
+
+            //UI 뿌리기
+            View.DrawAsciiFrame();
+        }
+
+        //변경된 크기를 기준으로 UI 뿌려주기
+    }
     static public void test()
     {
         Console.Title = " ";

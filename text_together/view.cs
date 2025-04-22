@@ -5,7 +5,14 @@ namespace text_together
 {
     public class View
     {
-        static void View1(string[] args)
+
+        static public int width = 119;   // 전체 가로 길이 (콘솔 너비)
+        static public int height = 50;   // 전체 세로 길이 (콘솔 높이)
+        static public int downY = 20;        // 상단/하단을 나누는 줄 위치
+        static public int highX = 50;        // 하단에서 좌/우 나누는 위치
+
+
+        static public void View1()
         {
             // 콘솔크기            
             Console.SetWindowSize(120, 50); // 콘솔창 사이즈
@@ -13,9 +20,9 @@ namespace text_together
             Console.CursorVisible = false;// 입력 숨겨주는거 
 
             //프레임 만들기
-            DrawAsciiFrame();
+            //DrawAsciiFrame();
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         // 프레임 그리는 그거
@@ -23,10 +30,7 @@ namespace text_together
         {
             Console.Clear();
 
-            int width = 100;   // 전체 가로 길이 (콘솔 너비)
-            int height = 40;   // 전체 세로 길이 (콘솔 높이)
-            int downY = 20;        // 상단/하단을 나누는 줄 위치
-            int highX = 50;        // 하단에서 좌/우 나누는 위치
+            
 
             for (int y = 0; y < height; y++)
             {
