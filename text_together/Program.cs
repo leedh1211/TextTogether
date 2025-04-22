@@ -9,6 +9,7 @@ using NAudio.Wave;
 using text_together;
 
 
+
 class Solution
 {
     
@@ -54,40 +55,6 @@ class Solution
     }
     static void Main()
     {
-        UIManager.test();
-        UIManager.Clear(1);
-        UIManager.Clear(2);
-        UIManager.Clear(3);
-
-        List<Option> options = new List<Option>();
-        Option option = new Option();
-        Option option1 = new Option();
-        Option option2 = new Option();
-        Option option3 = new Option();
-
-        option.text = "상태보기";
-        option1.text = "던전입장";
-        option2.text = "휴식하기";
-        option3.text = "나가기";
-
-        option.value = 1;
-        option1.value = 2;
-        option2.value = 3;
-        option3.value = 4;
-        options.Add(option);
-        options.Add(option1);
-        options.Add(option2);
-        options.Add(option3);
-
-        UIManager.inputController(options);
-
-        Console.ReadKey();
-
-
-
-
-
-
         Player player;
         // 빈 인벤토리 만들기
         List<Item> inventory;
