@@ -26,6 +26,8 @@ namespace text_together
             }
         }
         private List<Quest> quests = new List<Quest>();
+
+        // 퀘스트 생성
         public void QuestInit()
         {
             var quest = new Quest(
@@ -35,14 +37,14 @@ namespace text_together
             {  new QuestGoal("미니언", 5, 0) },
             questRewards: new List<QuestReward>
             {
-                new QuestReward("쓸만한 방패", 1, "방어구"),
-                new QuestReward("골드", 5, "G")
+                new QuestReward("쓸만한 방패", 1000,"튼튼한 방패", "방어구",5),
+                new QuestReward("골드", 50," ","G",0)
             });
 
             quests.Add(quest);
         }
 
-        public void GoQuest()
+        public void GoQuest(Player player)
         {
             while (true)
             {
@@ -69,7 +71,7 @@ namespace text_together
                 }
                 if (input > 0 && input <= quests.Count)
                 {
-                    QuestUI(quests[input - 1]);
+                    QuestUI(quests[input - 1], player);
                 }
                 else
                 {
@@ -79,7 +81,7 @@ namespace text_together
         }
 
         // 퀘스트 수락 여부 체크
-        void QuestUI(Quest quest)
+        void QuestUI(Quest quest, Player player)
         {
             Console.Clear();
             Console.WriteLine("Quest!!\n");
@@ -99,7 +101,7 @@ namespace text_together
             Console.WriteLine("\n보상");
             foreach(var reward in quest.questRewards)
             {
-                Console.WriteLine($"{reward.rewardName} x {reward.rewardQuantity}");
+                Console.WriteLine($"{reward.rewardName}");
             }
 
             if (!quest.isAccepted)
@@ -127,7 +129,7 @@ namespace text_together
                     int choice = HandleInput(reward: true);
                     if (choice == 1)
                     {
-                        quest.GiveReward(quest);
+                        quest.GiveReward(quest,player);
                         quest.isRewarded = true;
                     }
                     else if (choice == 2)
