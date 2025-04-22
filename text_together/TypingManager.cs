@@ -11,16 +11,16 @@ namespace text_together
     {
 
         //음원 경로
-        static string filePath = "../../../../Resources/voice_sans.wav";
+        static string filePath = "voice_sans.wav";
 
 
 
         //타이핑 효과
-        static public void TypingText(string text)
+        public void TypingText(string text)
         {
             for (int i = 0; i < text.Length; i++)
             {
-                Console.Write(text[i]);
+                Console.WriteLine(text[i]);
 
                 //해당 문자 표현시 소리재생 X
                 if (text[i] == ' ' || text[i] == '.')
@@ -30,7 +30,7 @@ namespace text_together
 
                 else
                 {   
-                    if (filePath != null) 
+                    if (filePath != null)
                     {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                         Thread thread = new Thread(sound);
                         thread.Start();
@@ -38,7 +38,7 @@ namespace text_together
                 }
 
                 //타이핑 후 대기시간
-                Thread.Sleep(60);
+                Thread.Sleep(75);
             }
 
         }
@@ -50,7 +50,7 @@ namespace text_together
             using (var audioFile = new AudioFileReader(filePath))
             {
                 // 볼륨 설정: 0.0f(무음) ~ 1.0f(최대)
-                audioFile.Volume = 0.2f; //나중에 변수로 빼야할듯
+                audioFile.Volume = 0.5f; //나중에 변수로 빼야할듯
 
                 using (var outputDevice = new WaveOutEvent())
                 {

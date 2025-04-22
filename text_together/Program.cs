@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using NAudio.Wave;
-using text_together;
 
 
 class Solution
@@ -18,11 +17,8 @@ class Solution
         while (true)
         {
             Console.Clear();
-            TypingManager.TypingText("스파르타 마을에 오신 여러분 환영합니다.\n");
-            TypingManager.TypingText("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.\n");
-
-            //Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
-            //Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.\n");
+            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
+            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.\n");
 
             Console.WriteLine("1. 상태보기 \n2. 인벤토리 \n3. 상점\n4. 던전 입장\n5. 휴식하기\n6. 종료하기\n");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
