@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace textRPG
+namespace text_together
 {
     // 플레이어 정보 클래스
     class Player

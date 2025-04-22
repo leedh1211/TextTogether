@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace textRPG
+namespace text_together
 {
     class Dungeon
     {

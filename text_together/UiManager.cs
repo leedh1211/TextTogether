@@ -1,8 +1,7 @@
 using System.Net.Mime;
-using text_together;
-using textRPG;
 
-namespace textRPG;
+
+namespace text_together;
 
 public class UIManager
 {

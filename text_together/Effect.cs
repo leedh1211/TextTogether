@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace textRPG
+namespace text_together
 {
     // 방어구 타입과 스텟 정보
     class Effect

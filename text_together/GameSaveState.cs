@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace textRPG
+namespace text_together
 {
     // 데이터 저장
     class GameSaveState
