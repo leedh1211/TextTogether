@@ -12,25 +12,25 @@ namespace textRPG
         public Player player { get; set; }
         public List<Item> inventory { get; set; }
         public List<Item> items { get; set; }
-        public List<Dungeon> dungeons { get; set; }
+        public Dungeon dungeon { get; set; }
         public GameSaveState() { }
 
-        public GameSaveState(Player player, List<Item> inventory, List<Item> items, List<Dungeon> dungeons = null)
+        public GameSaveState(Player player, List<Item> inventory, List<Item> items, Dungeon dungeon = null)
         {
             this.player = player;
             this.inventory = inventory;
             this.items = items;
-            this.dungeons = dungeons ?? new List<Dungeon>();
+            this.dungeon = dungeon;
         }
 
         private const string DefaultSaveFile = "player.json";
 
         // 저장 기능
-        public static void Save(Player player, List<Item> inventory, List<Item> items, List<Dungeon> dungeons = null, string fileName = null)
+        public static void Save(Player player, List<Item> inventory, List<Item> items, Dungeon dungeon = null, string fileName = null)
         {
             try
             {
-                var saveState = new GameSaveState(player, inventory, items, dungeons);
+                var saveState = new GameSaveState(player, inventory, items, dungeon);
                 string json = JsonSerializer.Serialize(saveState, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(fileName ?? DefaultSaveFile, json, Encoding.UTF8);
                 Console.WriteLine($"[저장 완료] {fileName ?? DefaultSaveFile}");
@@ -42,12 +42,12 @@ namespace textRPG
         }
 
         // 불러오기 기능
-        public static bool TryLoad(out Player player, out List<Item> inventory, out List<Item> items, out List<Dungeon> dungeons, string fileName = null)
+        public static bool TryLoad(out Player player, out List<Item> inventory, out List<Item> items, out Dungeon dungeon, string fileName = null)
         {
             player = null;
             inventory = null;
             items = null;
-            dungeons = null;
+            dungeon = null;
 
             string path = fileName ?? DefaultSaveFile;
 
@@ -64,7 +64,7 @@ namespace textRPG
                 player = saveState.player;
                 inventory = saveState.inventory ?? new List<Item>();
                 items = saveState.items ?? new List<Item>();
-                dungeons = saveState.dungeons ?? new List<Dungeon>();
+                dungeon = saveState.dungeon;
 
                 Console.WriteLine("[불러오기 성공]");
                 return true;

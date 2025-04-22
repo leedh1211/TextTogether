@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+
+namespace textRPG
+{
+    class MonsterManager
+    {
+        public List<Monster> monsters { get; private set; } = new List<Monster>();
+        private Random random = new Random();
+
+        public MonsterManager()
+        {
+            // 몬스터 생성 ( 이름, 레벨, 공격력, 방어력, 체력, 골드)
+            monsters.Add(new Monster("까부냥", 1, 5f, 5f, 12, 100));
+            monsters.Add(new Monster("도로롱", 1, 3f, 7f, 20, 150));
+            monsters.Add(new Monster("치킨", 1, 6f, 4f, 10, 200));
+            monsters.Add(new Monster("보스", 7, 10f, 10f, 30, 3000));
+        }
+
+        public List<Monster> RandomMonster(int stage)
+        {
+
+            List<Monster> newMonster = new List<Monster>();
+            int count = random.Next(1, 4);
+
+            for (int i = 0; i < random.Next(1, 4); i++)
+            {
+                // 몬스터 레벨과 스테이지 값을 통한 몬스터 추출 범위 선정
+                var tempMonster = monsters.Where(m => m.level <= stage + 2 && m.level >= stage - 5).ToList();
+
+                //
+                // 선정된 몬스터를 랜덤 입력
+                int index = random.Next(tempMonster.Count);
+                var selectMonster = tempMonster[index];
+
+                // 기존 리스트를 건드리지 않기 위해 복사본 생성
+                Monster enemy = new Monster(
+                    selectMonster.name,
+                    selectMonster.level,
+                    selectMonster.attack,
+                    selectMonster.shield,
+                    selectMonster.health,
+                    selectMonster.gold
+                );
+
+                newMonster.Add(enemy);
+
+                // 몬스터 레벨 수정 (몬스터 기본 레벨 ~ 몬스터 기본 레벨 + 스테이지) 
+                newMonster[i].level = random.Next(newMonster[i].level, newMonster[i].level + stage);
+
+
+                // 몬스터 스탯 수정 (몬스터 기본 스탯 + (몬스터 레벨 * (몬스터 기본 스탯 * 증가 치 )))
+                newMonster[i].attack += (int)(enemy.level * (enemy.attack * 0.15f));
+                enemy.shield += (int)(enemy.level * (enemy.shield * 0.15f));
+                enemy.health += (int)(enemy.level * (enemy.health * 0.12f));
+                enemy.gold += random.Next(enemy.gold, enemy.gold + (enemy.gold * enemy.level / stage));
+            }
+
+            return newMonster;
+        }
+    }
+
+}
