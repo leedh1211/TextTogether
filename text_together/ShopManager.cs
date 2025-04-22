@@ -25,7 +25,7 @@ namespace textRPG
             }
         }
 
-        public void InitializeStore(Player player)
+        public List<Item> InitializeStore(Player player)
         {
             this.player = player;
             this.items = new List<Item>();
@@ -37,6 +37,8 @@ namespace textRPG
             items.Add(new Item("낡은 검 ", new Effect("공격력", 2), "쉽게 볼 수 있는 낡은 검 입니다.", 600, false, false));
             items.Add(new Item("청동 도끼", new Effect("공격력", 5), "어디선가 사용됐던거 같은 도끼입니다.", 1500, false, false));
             items.Add(new Item("스파르타의 창", new Effect("공격력", 7), "스파르타의 전사들이 사용했다는 전설의 창입니다.", 4000, false, false));
+
+            return items;
         }
 
         // 상점탭 관리
