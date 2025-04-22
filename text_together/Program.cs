@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using NAudio.Wave;
+using text_together;
 
 
 class Solution
@@ -53,6 +54,40 @@ class Solution
     }
     static void Main()
     {
+        UIManager.test();
+        UIManager.Clear(1);
+        UIManager.Clear(2);
+        UIManager.Clear(3);
+
+        List<Option> options = new List<Option>();
+        Option option = new Option();
+        Option option1 = new Option();
+        Option option2 = new Option();
+        Option option3 = new Option();
+
+        option.text = "상태보기";
+        option1.text = "던전입장";
+        option2.text = "휴식하기";
+        option3.text = "나가기";
+
+        option.value = 1;
+        option1.value = 2;
+        option2.value = 3;
+        option3.value = 4;
+        options.Add(option);
+        options.Add(option1);
+        options.Add(option2);
+        options.Add(option3);
+
+        UIManager.inputController(options);
+
+        Console.ReadKey();
+
+
+
+
+
+
         Player player;
         // 빈 인벤토리 만들기
         List<Item> inventory;
@@ -68,13 +103,13 @@ class Solution
             player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 1500);
             items = new List<Item>();
             dungeons = new List<Dungeon>();
-
-            // 인벤토리 초기화
-            inventory = InventoryManager.Instance.inventory;
-
-            // 상점 초기화
-            items = ShopManager.Instance.InitializeStore(player);
-
+            // 아이템 추가
+            items.Add(new Item("수련자 갑옷", new Effect("방어력", 5), "수련에 도움을 주는 갑옷입니다.", 1000, false, false));
+            items.Add(new Item("무쇠 갑옷", new Effect("방어력", 9), "무쇠로 만들어져 튼튼한 갑옷입니다.", 1500, false, false));
+            items.Add(new Item("스파르타 갑옷", new Effect("방어력", 15), "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 3500, false, false));
+            items.Add(new Item("낡은 검 ", new Effect("공격력", 2), "쉽게 볼 수 있는 낡은 검 입니다.", 600, false, false));
+            items.Add(new Item("청동 도끼", new Effect("공격력", 5), "어디선가 사용됐던거 같은 도끼입니다.", 1500, false, false));
+            items.Add(new Item("스파르타의 창", new Effect("공격력", 7), "스파르타의 전사들이 사용했다는 전설의 창입니다.", 4000, false, false));
             // 던전 추가
             dungeons.Add(new Dungeon("쉬운", 5, 1000));
             dungeons.Add(new Dungeon("일반", 11, 1700));
