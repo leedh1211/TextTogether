@@ -1,50 +1,19 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NAudio.Wave;
 
 namespace text_together
 {
-    class TypingManager
-    {
 
-        //음원 경로
+    
+    internal class SoundManager
+    {
         static string filePath = "../../../../Resources/voice_sans.wav";
 
-
-
-        //타이핑 효과
-        static public void TypingText(string text)
-        {
-            for (int i = 0; i < text.Length; i++)
-            {
-                Console.Write(text[i]);
-
-                //해당 문자 표현시 소리재생 X
-                if (text[i] == ' ' || text[i] == '.')
-                {
-
-                }
-
-                else
-                {   
-                    if (filePath != null) 
-                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
-                        Thread thread = new Thread(sound);
-                        thread.Start();
-                    }
-                }
-
-                //타이핑 후 대기시간
-                Thread.Sleep(60);
-            }
-
-        }
-
-
-        static void sound()
+        static public void sound()
         {
             // AudioFileReader를 사용하여 파일 읽기
             using (var audioFile = new AudioFileReader(filePath))
@@ -65,5 +34,8 @@ namespace text_together
                 }
             }
         }
+
+
+
     }
 }

@@ -21,6 +21,11 @@ public class UIManager
     static int optionStartPos_x = 61;
     static int optionStartPos_y = 30;
 
+    static int typingDelay = 60;
+
+    //음원 경로
+    static string filePath = "../../../../Resources/voice_sans.wav";
+
 
     static int[] newLineCnt = new int[] { 0, 0, 0 };
 
@@ -43,7 +48,7 @@ public class UIManager
         //줄넘김 초기화
         newLineCnt[index] = 0;
 
-        
+
         //상단 UI
         if (index + 1 == 1)
         {
@@ -55,7 +60,7 @@ public class UIManager
             // 클리어 x,y값은 변경될 가능성 높음
             for (int y = 0; y < mainSpace_y; y++)
             {
-                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + y);
+                Console.SetCursorPosition(1, 1 + y);
 
                 for (int x = 0; x < mainSpace_x; x++)
                 {
@@ -119,7 +124,7 @@ public class UIManager
             for (int i = 0; i < text.Length; i++)
             {
                 Console.Write(text[i]);
-                if(i % mainSpace_x == 0 && i != 0)
+                if (i % mainSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
@@ -220,18 +225,265 @@ public class UIManager
         }
 
 
+        //커서위치 반환 (마지막 위치 기억용)
+        cursors[index][0] = Console.CursorLeft; //x축
+        cursors[index][1] = Console.CursorTop;  //y축
+
+    }
+
+
+    static public void Typing(int index, string text)
+    {
+        index -= 1;
+        //해당 UI의 마지막 커서위치 설정
+        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+        //상단 UI
+        if (index + 1 == 1)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i % mainSpace_x == 0 && i != 0)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+
+                Thread.Sleep(typingDelay);
+            }
+        }
+
+        //하단 좌측 UI
+        else if (index + 1 == 2)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i > contentSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+                Thread.Sleep(typingDelay);
+            }
+        }
+
+        //하단 우측 UI
+        else if (index + 1 == 3)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i > optionSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+                Thread.Sleep(typingDelay);
+            }
+        }
+
 
         //커서위치 반환 (마지막 위치 기억용)
         cursors[index][0] = Console.CursorLeft; //x축
         cursors[index][1] = Console.CursorTop;  //y축
 
-        
     }
+
+    static public void TypingLine(int index, string text)
+    {
+        index -= 1;
+        //해당 UI의 마지막 커서위치 설정
+        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+        //상단 UI
+        if (index + 1 == 1)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i > mainSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+                Thread.Sleep(typingDelay);
+            }
+
+            newLineCnt[index]++;
+            Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+        }
+
+        //하단 좌측 UI
+        else if (index + 1 == 2)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i > contentSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+                Thread.Sleep(typingDelay);
+            }
+
+            newLineCnt[index]++;
+            Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+        }
+
+        //하단 우측 UI
+        else if (index + 1 == 3)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+                if (i > optionSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //해당 문자 표현시 소리재생 X
+                    if (text[i] == ' ' || text[i] == '.')
+                    {
+
+                    }
+
+                    else
+                    {
+                        if (filePath != null)
+                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                            Thread thread = new Thread(SoundManager.sound);
+                            thread.Start();
+                        }
+                    }
+                }
+                Thread.Sleep(typingDelay);
+            }
+
+            newLineCnt[index]++;
+            Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+        }
+
+
+        //커서위치 반환 (마지막 위치 기억용)
+        cursors[index][0] = Console.CursorLeft; //x축
+        cursors[index][1] = Console.CursorTop;  //y축
+
+    }
+
+    //타이핑 효과
+    static public void TypingText(string text)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            Console.Write(text[i]);
+
+            //해당 문자 표현시 소리재생 X
+            if (text[i] == ' ' || text[i] == '.')
+            {
+
+            }
+
+            else
+            {
+                if (filePath != null)
+                {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                    Thread thread = new Thread(SoundManager.sound);
+                    thread.Start();
+                }
+            }
+
+            //타이핑 후 대기시간
+            Thread.Sleep(60);
+        }
+
+    }
+
+
+    
 
     static public void test()
     {
         Console.Title = " ";
         Console.CursorVisible = false;
+        Console.SetBufferSize(120, 50);
         Console.SetWindowSize(120, 50);
 
         for (int i = 0; i < 120 * 50; i++)
@@ -244,44 +496,55 @@ public class UIManager
         Console.ReadKey();
 
 
-        
+
     }
+
+    
+    static public int inputController(List<Option> option)
+    {
+        int index = option.Count-1;
+        int count = option.Count;
+        MakeOptionString(option, index);
+
+
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Enter)
+                return option[index].value;
+
+            int delta = GetDelta(key);
+            if (delta == 0)
+                continue;  
+
+            // 순환(ring) 방식으로 인덱스 보정
+            Clear(3);
+            index = (index + delta + count) % count;
+            MakeOptionString(option, index);
+        }
+    }
+    
+    static void MakeOptionString(List<Option> option, int index)
+    {
+        string text = "";
+        for (int i = 0; i < option.Count; i++)
+        {
+            if (i == index)
+            {
+                text = "\u25b7"+option[i].text;
+            }
+            else
+            {
+                text = option[i].text;
+            }
+            UIManager.WriteLine(3,text);
+        }
+    }
+    
+    static int GetDelta(ConsoleKey key) => key switch
+    {
+        ConsoleKey.W or ConsoleKey.UpArrow   => -1,
+        ConsoleKey.S or ConsoleKey.DownArrow => +1,
+        _                                    => 0
+    };
 }
-
-
-
-
-
-//-------------------------------------------------------------------------------------\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//=====================================================================================\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|====================================================================================\\
