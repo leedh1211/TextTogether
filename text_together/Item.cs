@@ -13,8 +13,11 @@ namespace textRPG
         public string info { get; set; }
         public int price { get; set; }
         public bool isHave { get; set; }
+        public int quantity { get; set; }
+        public int maxQuantity { get; set; }
+
         public Item() { }
-        public Item(string name, Effect effect, string info, int price, bool isHave, bool isEquipped)
+        public Item(string name, Effect effect, string info, int price, bool isHave, bool isEquipped, int maxQuantity = 2)
         {
             this.name = name;
             this.effect = effect;
@@ -22,6 +25,7 @@ namespace textRPG
             this.price = price;
             this.isHave = isHave;
             this.isEquipped = isEquipped;
+            this.maxQuantity = maxQuantity;
         }
     }
 
