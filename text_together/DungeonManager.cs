@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Codecs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,7 @@ namespace textRPG
 
         public string message ="";
         public MonsterManager enemy = new MonsterManager();
+        Random rand = new Random();
 
         public int deadCount = 0;
         private static DungeonManager instance;
@@ -120,10 +122,19 @@ namespace textRPG
         {
             dungeon.stage += 1;
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
+            bool skip = false;
 
             while (true)
             {
                 Console.Clear();
+
+                if (skip)
+                {
+                    Console.WriteLine("도망치기에 실패하였다!!");
+                    Console.WriteLine("도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.");
+                    player.health -= 5;
+                }
+
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
@@ -144,7 +155,7 @@ namespace textRPG
                 Console.WriteLine("레벨 : {0} \n", player.level);
 
                 Console.WriteLine("1. 공격 ");
-                Console.WriteLine("0. 나가기 \n");
+                Console.WriteLine("0. 도망가기 \n");
 
                 if(deadCount == monster.Count)
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
@@ -153,14 +164,27 @@ namespace textRPG
 
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
-                    return;
-                else if (input == 1)
                 {
-                    MonsterSelect(player, dungeon, monster);
+                    bool success = rand.Next(0, 100) < 50;
+                    Console.WriteLine("입력값: " + input);
+                    if (success)
+                    {
+                        LeaveRaid(player);
+                        return;
+                    }
+                    else
+                    {
+                        skip = true;
+                    }
+                }
+                else if (input == 1 || skip)
+                {
+                    MonsterSelect(player, dungeon, monster,skip);
                     if(deadCount >= monster.Count) 
                     {
                         ResultDungeon(monster, player, dungeon);
                         deadCount = 0;
+                        skip = false;
                         return;
                     }
 
@@ -199,11 +223,12 @@ namespace textRPG
             }
         }
 
-        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster)
+        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, bool skip)
         {
             while (true)
             {
                 Console.Clear();
+
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
@@ -309,5 +334,52 @@ namespace textRPG
                 }
             }
         }
+
+        // 레이드에서 도망
+        public void LeaveRaid(Player player)
+        {
+            Console.Clear();
+            Console.WriteLine("당신은 재빨리 던전을 빠져나왔습니다.\n");
+            int lostCoin = RandomNumber(50);
+            Console.Write($"\n도망가는 동안 {lostCoin} Gold 잃었습니다!      \n");
+            player.gold -= lostCoin;
+            Console.WriteLine("\n아무키나 누르시면 던전입구로 갑니다.");
+            Console.ReadLine();
+        }
+
+        // 숫자 랜덤
+        public int RandomNumber(int num)
+        {
+            int finalNum = 0;
+            finalNum = rand.Next(0, num);
+
+            return finalNum;
+        }
+
+        // 사망 페널티
+        public void DeathPenalty(Player player)
+        {
+            Console.WriteLine("플레이어가 사망하였습니다.");
+            int randExp = RandomNumber(10);
+            int randCoin = RandomNumber(10);
+
+            player.exp -= randExp;
+            player.gold -= randCoin;
+
+            Console.WriteLine($"경험치가 {player.exp}만큼 소실되었습니다.");
+            Console.WriteLine($"금화가 {player.gold}만큼 소실되었습니다.");
+
+            bool isSteal = rand.Next(0, 100) < 50;
+
+            // 인벤토리에서 가져가게끔
+            if (isSteal)
+            {
+                // develop 브런치에서 pull해오면 추가 작성 예정
+            }
+
+            Console.WriteLine("\n아무키나 누르시면 던전입구로 갑니다.");
+            Console.ReadLine();
+        }
+
     }
 }
