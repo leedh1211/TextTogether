@@ -55,7 +55,7 @@ public class UIManager
             // 클리어 x,y값은 변경될 가능성 높음
             for (int y = 0; y < mainSpace_y; y++)
             {
-                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + y);
+                Console.SetCursorPosition(1, 1 + y);
 
                 for (int x = 0; x < mainSpace_x; x++)
                 {
@@ -232,6 +232,7 @@ public class UIManager
     {
         Console.Title = " ";
         Console.CursorVisible = false;
+        Console.SetBufferSize(120, 50);
         Console.SetWindowSize(120, 50);
 
         for (int i = 0; i < 120 * 50; i++)
@@ -246,42 +247,51 @@ public class UIManager
 
         
     }
+    
+    static public int inputController(List<Option> option)
+    {
+        int index = option.Count-1;
+        int count = option.Count;
+        MakeOptionString(option, index);
+
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Enter)
+                return option[index].value;
+
+            int delta = GetDelta(key);
+            if (delta == 0)
+                continue;  
+
+            // 순환(ring) 방식으로 인덱스 보정
+            Clear(3);
+            index = (index + delta + count) % count;
+            MakeOptionString(option, index);
+        }
+    }
+    
+    static void MakeOptionString(List<Option> option, int index)
+    {
+        string text = "";
+        for (int i = 0; i < option.Count; i++)
+        {
+            if (i == index)
+            {
+                text = "\u25b7"+option[i].text;
+            }
+            else
+            {
+                text = option[i].text;
+            }
+            UIManager.WriteLine(3,text);
+        }
+    }
+    
+    static int GetDelta(ConsoleKey key) => key switch
+    {
+        ConsoleKey.W or ConsoleKey.UpArrow   => -1,
+        ConsoleKey.S or ConsoleKey.DownArrow => +1,
+        _                                    => 0
+    };
 }
-
-
-
-
-
-//-------------------------------------------------------------------------------------\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//|                                                                                   |\\
-//=====================================================================================\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|                                                |                                  |\\
-//|====================================================================================\\
