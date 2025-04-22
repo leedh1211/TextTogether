@@ -24,4 +24,9 @@ namespace textRPG
             this.isEquipped = isEquipped;
         }
     }
+
+    static class ItemData
+    {
+        
+    }
 }
