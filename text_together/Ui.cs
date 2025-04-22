@@ -1,6 +1,6 @@
 namespace text_together;
 
-public class Ui
+public class UI
 {
         public string? title { get; set; }
         public List<string>? content { get; set; }
