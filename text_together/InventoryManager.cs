@@ -28,9 +28,9 @@ namespace textRPG
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
             }
             Console.WriteLine();
         }
@@ -42,9 +42,9 @@ namespace textRPG
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info}");
+                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 idx++;
             }
         }

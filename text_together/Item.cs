@@ -25,6 +25,7 @@ namespace textRPG
             this.price = price;
             this.isHave = isHave;
             this.isEquipped = isEquipped;
+            this.quantity = 1;
             this.maxQuantity = maxQuantity;
         }
     }
