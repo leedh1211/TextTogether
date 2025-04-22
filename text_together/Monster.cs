@@ -32,6 +32,12 @@ namespace textRPG
         {
             Random rand = new Random();
 
+            // 몬스터 피가 0 이하면 데미지 없이 리턴
+            if(monster.health <= 0)
+            {
+                return;
+            }
+
             // 0.5 오차 반올림 
             int round = (int)Math.Round(monster.attack * 0.1, MidpointRounding.AwayFromZero);
 

@@ -13,12 +13,13 @@ namespace textRPG
         public float attack { get; set; }
         public int shield { get; set; }
         public int health { get; set; }
+        public int mana { get; set; }
         public int gold { get; set; }
         public int exp { get; set; }
         public int maxEXP {get; set; }
 
         public Player() { }
-        public Player(string name, string job, int level, float attack, int shield, int health, int gold, int exp, int maxEXP)
+        public Player(string name, string job, int level, float attack, int shield, int health, int mana, int gold, int exp, int maxEXP)
         {
             this.name = name;
             this.job = job;
@@ -26,6 +27,7 @@ namespace textRPG
             this.attack = attack;
             this.shield = shield;
             this.health = health;
+            this.mana = mana;
             this.gold = gold;
             this.exp = exp;
             this.maxEXP = maxEXP;
