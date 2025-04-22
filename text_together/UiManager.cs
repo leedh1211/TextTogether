@@ -548,13 +548,13 @@ public class UIManager
     }
 
     
+    
+    
     static public int inputController(List<Option> option)
     {
-        int index = 0;
-        int count = option.Count;
-        int page = 0;
-        MakeOptionString(option, index, page);
-
+        int index = 0, prevIndex = 0;
+        int page = 0, prevPage = 0;
+        RefreshOptionsPage(option, index, page);
 
         while (true)
         {
@@ -563,60 +563,58 @@ public class UIManager
                 return option[index].value;
 
             int delta = GetDelta(key);
-            if (delta == 0)
-                continue;  
+            if (delta == 0) continue;
 
-            // 순환(ring) 방식으로 인덱스 보정
-            int unitMax = (int)Math.Ceiling((double)count / 6) * 6;
-            index = (index + delta + unitMax) % unitMax;
-            if (count % 6 != 0 && count-1 < index && index < unitMax )
+            // 1) 새 인덱스·페이지 계산
+            int unitMax = (int)Math.Ceiling(option.Count / 6.0) * 6;
+            int newIndex = (index + delta + unitMax) % unitMax;
+            if (option.Count % 6 != 0 && newIndex >= option.Count)
+                newIndex = (delta == 1) ? 0 : option.Count - 1;
+            int newPage = newIndex / 6;
+
+            // 2) 페이지가 바뀌었는지 확인
+            if (newPage != page)
             {
-                if (delta != 1)
-                {
-                    index = count - 1;    
-                }
-                else
-                {
-                    index = 0;    
-                }
-            }
-            page = index / 6;
-            MakeOptionString(option, index, page);
-        }
-    }
-    
-    static void MakeOptionString(List<Option> option, int index, int page)
-    {
-        string text = "";
-        int optionCount;
-        if (option.Count > 6)
-        {
-            optionCount = 6;
-        }
-        else
-        {
-            optionCount = option.Count;
-        }
-        Clear(3);
-        for (int i = 0; i < optionCount; i++)
-        {
-            if (i + page * 6 < option.Count)
-            {
-                if (i+page*6 == index)
-                {
-                    text = "\u25b7"+option[i+page*6].text;
-                }
-                else
-                {
-                    text = "  "+option[i+page*6].text;
-                }
-                WriteLine(3,text);;
+                RefreshOptionsPage(option, newPage, newIndex);
             }
             else
             {
-                return;
+                // RefreshOptionsPage(option, newPage, newIndex);
+                // 같은 페이지 내에서만 ▶만 이동
+                int oldLocal = index % 6;
+                int newLocal = newIndex % 6;
+                MoveHighlight(oldLocal, newLocal);
             }
+
+            // 3) 상태 갱신
+            prevIndex = index;
+            prevPage  = page;
+            index     = newIndex;
+            page      = newPage;
         }
+    }
+    
+    static void RefreshOptionsPage(List<Option> option, int page, int selectedIndex)
+    {
+        Clear(3);
+        int start = page * 6;
+        int countOnPage = Math.Min(6, option.Count - start);
+        for (int i = 0; i < countOnPage; i++)
+        {
+            string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
+            Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + i);
+            Console.Write(prefix + option[start + i].text);
+        }
+    }
+    
+    static void MoveHighlight(int oldLocal, int newLocal)
+    {
+        // 이전 ▶ 지우기
+        Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + oldLocal);
+        Console.Write(" ");
+        // 새 ▶ 그리기
+        Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
+        Console.Write("\u25B7");
     }
     
     static int GetDelta(ConsoleKey key) => key switch
