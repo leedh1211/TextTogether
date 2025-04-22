@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using textRPG;
 
 namespace text_together
 {
@@ -36,15 +39,22 @@ namespace text_together
         public bool IsCompleted => questGoals.All(g => g.IsComplete);
 
         // 퀘스트 성공했을 경우 보상
-        public void GiveReward(Quest quest)
+        public void GiveReward(Quest quest, Player player)
         {
-            // 인벤토리로 변경 예정
+            // 인벤토리 업데이트
             if (IsCompleted)
             {
                 Console.WriteLine($"'{quest.questName}' 퀘스트 완료! 보상을 받았습니다");
                 foreach (var reward in quest.questRewards) 
                 {
-                    Console.WriteLine($"- {reward.rewardName} x{reward.rewardQuantity}");
+                    if (reward.rewardType == "G")
+                    {
+                        player.gold += reward.rewardPrice;
+                    }
+                    else
+                    {
+                        InventoryManager.Instance.inventory.Add(new Item(reward.rewardName, new Effect(reward.rewardType, reward.rewardEffect), reward.rewardInfo, reward.rewardPrice, false, false));
+                    }
                 }
             }
         }
