@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Text;
@@ -21,7 +22,7 @@ public class UIManager
     static int contentStartPos_x = 1;
     static int contentStartPos_y = 30;
 
-    static int optionSpace_x = 58;
+    static int optionSpace_x = 57;
     static int optionSpace_y = 19;
     static int optionStartPos_x = 61;
     static int optionStartPos_y = 30;
@@ -52,12 +53,33 @@ public class UIManager
         static public List<string> mainText { get; set; } = new List<string>();
         static public List<string> contentText { get; set; } = new List<string>();
         static public List<string> optionText { get; set; } = new List<string>();
+
+        static public List<string> mainTextTemp { get; set; }
+        static public List<string> contentTextTemp { get; set; }
+        static public List<string> optionTextTemp { get; set; }
+
+
     }
 
 
     //버퍼에 담을 문자열을 만들 공간
     static StringBuilder textTemp = new StringBuilder();
 
+
+
+
+
+    static public void SetCursor()
+    {
+        cursors[0][0] = mainStartPos_x;
+        cursors[0][1] = mainStartPos_y;
+
+        cursors[1][0] = contentStartPos_x;
+        cursors[1][1] = contentStartPos_y;
+
+        cursors[2][0] = optionStartPos_x;
+        cursors[2][1] = optionStartPos_y;
+    }
 
     //UI 매개변수를 어떻게 받을까
     //이넘으로 변환해서받기
@@ -253,7 +275,7 @@ public class UIManager
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i > mainSpace_x)
+                if ((i + textTemp.Length) % mainSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
 
@@ -280,7 +302,7 @@ public class UIManager
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i > contentSpace_x)
+                if ((i + textTemp.Length) % contentSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
@@ -305,7 +327,7 @@ public class UIManager
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i > optionSpace_x)
+                if ((i + textTemp.Length) % optionSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
@@ -643,7 +665,7 @@ public class UIManager
                 //View.DrawAsciiFrame();
                 //View.DrawAsciiFrame();
 
-                
+
 
                 //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
                 //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
@@ -656,22 +678,70 @@ public class UIManager
                 newLineCnt[1] = 0;
                 newLineCnt[2] = 0;
 
+                Text.mainTextTemp = new List<string>(Text.mainText);
+                Text.contentTextTemp = new List<string>(Text.contentText);
+                Text.optionTextTemp = new List<string>(Text.optionText);
+
+                //문자열 합치기
+                StringBuilder temp = new StringBuilder();
+
+                foreach (var a in Text.mainTextTemp)
+                {
+                    temp.Append(a);
+                }
+
+                /*
+                foreach (var a in Text.mainTextTemp)
+                {
+                    temp.Append(a);
+                }
+
+                foreach (var a in Text.mainTextTemp)
+                {
+                    temp.Append(a);
+                }
+                */
+
+
+                Text.mainText.Clear();
+                Text.contentText.Clear();
+                Text.optionText.Clear();
+
+
+                SetCursor();
+                /*
+                UIManager.Clear(1);
+                Console.SetCursorPosition(cursors[0][0], cursors[0][1]);
+                Console.Write(cursors[0][0] + " 하.. " + cursors[0][1]);
+                Console.ReadKey();
+                */
+
+
                 //UI 텍스트 뿌려주기
-               /* for (int j = 0; j < Text.mainText.Count; j++)
+                /*
+                for (int j = 0; j < Text.mainTextTemp.Count; j++)
                 {
-                    UIManager.WriteLine(1, Text.mainText[j]);
+                    UIManager.Write(1, Text.mainTextTemp[j]);
                 }
-                for (int j = 0; j < Text.contentText.Count; j++)
-                {
-                    UIManager.WriteLine(2, Text.contentText[j]);
-                }*/
-                for (int j = 0; j < Text.optionText.Count; j++)
-                {
-                    UIManager.WriteLine(3, Text.optionText[j]);
-                }
+                */
+                UIManager.Write(1,temp.ToString());
 
 
-                Console.CursorVisible = false;// 입력 숨겨주는거 
+                for (int j = 0; j < Text.contentTextTemp.Count; j++)
+                {
+                    UIManager.WriteLine(2, Text.contentTextTemp[j]);
+                }
+                for (int j = 0; j < Text.optionTextTemp.Count; j++)
+                {
+                    UIManager.WriteLine(3, Text.optionTextTemp[j]);
+                }
+
+                Text.mainTextTemp.Clear();
+                Text.contentTextTemp.Clear();
+                Text.optionTextTemp.Clear();
+
+
+                //Console.CursorVisible = false;// 입력 숨겨주는거 
 
             }
         }
