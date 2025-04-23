@@ -41,6 +41,47 @@ namespace textRPG
             return storeItems;
         }
 
+        // 상점 갱신
+        public void UpdateShop()
+        {
+            // 아이템 풀 셔플 리스트 만들기
+            List<Item> shuffle = new List<Item>(ItemData.ItemPool);
+
+            Random random = new Random();
+
+            for (int i = shuffle.Count - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                Item temp = shuffle[i];
+                shuffle[i] = shuffle[j];
+                shuffle[j] = temp;
+            }
+
+            storeItems.Clear();
+
+            // 5개로 개수제한
+            for(int i = 0; i < 5; i++)
+            {
+                Item original = shuffle[i];
+
+                // 깊은 복사
+                Item updateItem = new Item(
+                    original.name,
+                    new Effect(original.effect.type, original.effect.value),
+                    original.info,
+                    original.price,
+                    false,
+                    false,
+                    original.maxQuantity
+                    );
+
+                updateItem.quantity = 1;
+                storeItems.Add(updateItem);
+            }
+
+            // Console.Clear();
+        }
+
         // 상점탭 관리
         public void GoShop(Player player, List<Item> items, List<Item> inventory)
         {
@@ -58,7 +99,7 @@ namespace textRPG
                 ShopInfo(items, inventory);
                 Console.WriteLine();
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n0. 나가기");
+                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 상점 물품 업데이트\n0. 나가기");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
@@ -76,6 +117,10 @@ namespace textRPG
                 else if (input == 3)
                 {
                     ItemGatcha(player, inventory);
+                }
+                else if (input == 4)
+                {
+                    UpdateShop();
                 }
                 else
                 {
