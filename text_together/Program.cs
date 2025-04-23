@@ -79,7 +79,7 @@ class Solution
             items = ShopManager.Instance.InitializeStore(player);
 
             // 던전 추가
-            dungeon = new Dungeon("", 0);
+            dungeon = new Dungeon("", 0,false, false, 0);
         }
         // 게임 시작
         GameStart(player, items, inventory, dungeon);

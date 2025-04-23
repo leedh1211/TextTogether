@@ -73,7 +73,7 @@ namespace text_together
                 {
                     dungeon.dungeonLevel = "보통";
                         MonsterManager.Instance.FixMonster(dungeon);
-                        
+
                         MonsterManager.Instance.ResetMonsters();
 
                         if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
