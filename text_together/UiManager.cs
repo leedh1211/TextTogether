@@ -155,6 +155,35 @@ public class UIManager
         }
     }
 
+    static public void Write1(int index, string text)
+    {
+        index -= 1;
+
+        //커서 설정
+        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+
+        if (index + 1 == 1)
+        {
+
+        }
+
+        else if(index +1 == 2)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                Console.Write(text[i]);
+
+                if ((textTemp.Length) % mainSpace_x == 0 && i != 0)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                    Text.mainText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+            }
+        }
+    }
 
     static public void Write(int index, string text)
     {
@@ -162,7 +191,7 @@ public class UIManager
         // 해당 UI의 마지막 커서위치 설정
         Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
-        // 상단 UI
+        // 상단 UI (index + 1 == 1)
         if (index + 1 == 1)
         {
             if (Text.mainText.Count > 0)
@@ -179,8 +208,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리
-                if ((textTemp.Length) % mainSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= mainStartPos_x + mainSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
@@ -197,7 +229,7 @@ public class UIManager
             }
         }
 
-        // 하단 좌측 UI
+        // 하단 좌측 UI (index + 1 == 2)
         else if (index + 1 == 2)
         {
             if (Text.contentText.Count > 0)
@@ -214,8 +246,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리
-                if ((textTemp.Length) % contentSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= contentStartPos_x + contentSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
@@ -232,7 +267,7 @@ public class UIManager
             }
         }
 
-        // 하단 우측 UI
+        // 하단 우측 UI (index + 1 == 3)
         else if (index + 1 == 3)
         {
             if (Text.optionText.Count > 0)
@@ -249,8 +284,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리
-                if ((textTemp.Length) % optionSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI3의 범위를 벗어나면 줄 바꿈 (UI3는 optionStartPos_x부터 시작)
+                if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
@@ -278,15 +316,13 @@ public class UIManager
         // 해당 UI의 마지막 커서위치 설정
         Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
-        // 상단 UI
+        // 상단 UI (index + 1 == 1)
         if (index + 1 == 1)
         {
             if (Text.mainText.Count > 0)
             {
                 // 최근 문자열 가져오기
                 textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
-
-                // 기존 버퍼 내용 제거
                 Text.mainText.RemoveAt(Text.mainText.Count - 1);
             }
 
@@ -295,8 +331,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리 (WriteLine의 특성상 이 부분이 없어도 줄바꿈이 자동으로 됨)
-                if ((textTemp.Length) % mainSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= mainSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
@@ -308,25 +347,26 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
-                textTemp.Append("\n");
                 Text.mainText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
 
-            newLineCnt[index]++;
-            cursors[index][0] = mainStartPos_x;
-            cursors[index][1] = mainStartPos_y + newLineCnt[index];
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+            }
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
         }
 
-        // 하단 좌측 UI
+        // 하단 좌측 UI (index + 1 == 2)
         else if (index + 1 == 2)
         {
             if (Text.contentText.Count > 0)
             {
-                // 최근 문자열 가져오기
                 textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
-
-                // 기존 버퍼 내용 제거
                 Text.contentText.RemoveAt(Text.contentText.Count - 1);
             }
 
@@ -335,8 +375,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리
-                if ((textTemp.Length) % contentSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= contentSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
@@ -348,25 +391,26 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
-                textTemp.Append("\n");
                 Text.contentText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
 
-            newLineCnt[index]++;
-            cursors[index][0] = contentStartPos_x;
-            cursors[index][1] = contentStartPos_y + newLineCnt[index];
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+            }
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
         }
 
-        // 하단 우측 UI
+        // 하단 우측 UI (index + 1 == 3)
         else if (index + 1 == 3)
         {
             if (Text.optionText.Count > 0)
             {
-                // 최근 문자열 가져오기
                 textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
-
-                // 기존 버퍼 내용 제거
                 Text.optionText.RemoveAt(Text.optionText.Count - 1);
             }
 
@@ -375,8 +419,11 @@ public class UIManager
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
 
-                // 줄 바꿈 처리
-                if ((textTemp.Length) % optionSpace_x == 0 && i != 0)
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈 (UI3는 optionStartPos_X부터 시작)
+                if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
@@ -388,17 +435,21 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
-                
-                textTemp.Append("\n");
                 Text.optionText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
 
-            newLineCnt[index]++;
-            cursors[index][0] = optionStartPos_x;
-            cursors[index][1] = optionStartPos_y + newLineCnt[index];
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+            }
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
         }
-        
+
+
 
     }
 
@@ -683,33 +734,7 @@ public class UIManager
             {
                 Console.Clear();
                 // 만약 기존크기에셔 변경 될 경우 아래 수행
-                mainSpace_x = Console.WindowWidth - 2;
-                mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.65);
-                mainStartPos_x = 1;
-                mainStartPos_y = 1;
-
-                contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.6) - 2;
-                contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 1;
-                contentStartPos_x = 1;
-                contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65); //downY
-
-                optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.4) - 2;
-                optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 1;
-                optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.6) + 1;
-                optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.35);
-
-
-                ////////////////
-                //View클래스 변경
-                ////////////////
-                View.width = Console.WindowWidth - 1;
-                View.height = Console.WindowHeight - 1;
-                View.downY = (int)Math.Round(Console.WindowHeight * 0.4);
-                View.highX = (int)Math.Round(Console.WindowWidth * 0.5);
-
-                //이전 크기 저장
-                prevWidth = Console.WindowWidth;
-                prevHeight = Console.WindowHeight;
+                UISetup();
 
                 //UI 뿌리기
                 //View.DrawAsciiFrame();
@@ -728,7 +753,7 @@ public class UIManager
                 newLineCnt[1] = 0;
                 newLineCnt[2] = 0;
 
-                
+
 
                 //얘는 새로운 리스트일뿐이야
                 Text.mainTextTemp = new List<string>(Text.mainText);
@@ -736,19 +761,23 @@ public class UIManager
                 Text.optionTextTemp = new List<string>(Text.optionText);
 
                 Text.mainText.Clear();
+                Text.contentText.Clear();
+                Text.optionText.Clear();
 
                 List<string> test = new List<string>();
 
                 //문자열 합치기
                 StringBuilder temp = new StringBuilder();
-
+                string[] lines;
+                string fullText;
+                
                 foreach (var a in Text.mainTextTemp)
                 {
                     temp.Append(a);
                 }
 
-                string fullText = temp.ToString();
-                string[] lines = fullText.Split('\n');
+                fullText = temp.ToString();
+                lines = fullText.Split('\n');
 
                 // 줄 단위로 다시 나누기
                 foreach (string line in lines)
@@ -761,83 +790,88 @@ public class UIManager
                 }
 
 
-
+                //해상도에 맞게 각 UI의 커서위치 초기화
                 SetCursor();
 
                 for (int j = 0; j < test.Count; j++)
                 {
                     UIManager.WriteLine(1, test[j]);
                 }
-
                 
+                ////////////////////////////////////////////////////
 
-
-
-                /*
-                foreach (var a in Text.mainTextTemp)
-                {
-                    temp.Append(a);
-                }*/
-
-                /*
-                foreach (var a in Text.mainTextTemp)
+                //비워줘야함
+                temp.Clear();
+                test.Clear();
+                lines = new string[0];
+                foreach (var a in Text.contentTextTemp)
                 {
                     temp.Append(a);
                 }
 
-                foreach (var a in Text.mainTextTemp)
+                fullText = temp.ToString();
+                lines = fullText.Split('\n');
+
+                // 줄 단위로 다시 나누기
+                foreach (string line in lines)
+                {
+                    for (int i = 0; i < line.Length; i += contentSpace_x)
+                    {
+                        int length = Math.Min(contentSpace_x, line.Length - i);
+                        test.Add(line.Substring(i, length));
+                    }
+                }
+
+                //해상도에 맞게 각 UI의 커서위치 초기화
+                //SetCursor();
+
+                for (int j = 0; j < test.Count; j++)
+                {
+                    UIManager.WriteLine(2, test[j]);
+                }
+
+                //////////////////////////////////////////////////////
+                //비워줘야함
+                temp.Clear();
+                test.Clear();
+
+                foreach (var a in Text.optionTextTemp)
                 {
                     temp.Append(a);
                 }
-                */
 
+                fullText = temp.ToString();
+                lines = fullText.Split('\n');
 
-                /*
-                Text.mainText.Clear();
-                Text.contentText.Clear();
-                Text.optionText.Clear();
-                */
-
-
-                
-
-
-
-                
-                /*
-                UIManager.Clear(1);
-                Console.SetCursorPosition(cursors[0][0], cursors[0][1]);
-                Console.Write(cursors[0][0] + " 하.. " + cursors[0][1]);
-                Console.ReadKey();
-                */
-
-
-                //UI 텍스트 뿌려주기
-                /*
-                for (int j = 0; j < Text.mainTextTemp.Count; j++)
+                // 줄 단위로 다시 나누기
+                foreach (string line in lines)
                 {
-                    UIManager.Write(1, Text.mainTextTemp[j]);
-                }
-                */
-                //UIManager.Write(1,temp.ToString());
-                /*
-
-                for (int j = 0; j < Text.contentTextTemp.Count; j++)
-                {
-                    UIManager.WriteLine(2, Text.contentTextTemp[j]);
-                }
-                for (int j = 0; j < Text.optionTextTemp.Count; j++)
-                {
-                    UIManager.WriteLine(3, Text.optionTextTemp[j]);
+                    for (int i = 0; i < line.Length; i += optionSpace_x)
+                    {
+                        int length = Math.Min(optionSpace_x, line.Length - i);
+                        test.Add(line.Substring(i, length));
+                    }
                 }
 
-                */
+
+                //해상도에 맞게 각 UI의 커서위치 초기화
+                SetCursor();
+
+                for (int j = 0; j < test.Count; j++)
+                {
+                    UIManager.WriteLine(3, test[j]);
+                }
+
+
+
+
+
 
 
                 Text.mainTextTemp.Clear();
                 Text.contentTextTemp.Clear();
                 Text.optionTextTemp.Clear();
-                
+
 
                 //Console.CursorVisible = false;// 입력 숨겨주는거 
 
@@ -845,6 +879,40 @@ public class UIManager
         }
 
         //변경된 크기를 기준으로 UI 뿌려주기
+    }
+
+
+
+    static public void UISetup()
+    {
+        mainSpace_x = Console.WindowWidth - 3;
+        mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.65) - 2;
+        mainStartPos_x = 1;
+        mainStartPos_y = 1;
+
+        contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.6) - 4;
+        contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 3;
+        contentStartPos_x = 3; // padding1 + 첫줄 경계선
+        contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65) + 1; //downY
+
+        optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.4) - 3;
+        optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 3;
+        optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.6) + 1;
+        optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65) + 1;
+
+        ////////////////
+        //View클래스 변경
+        ////////////////
+        View.width = Console.WindowWidth - 1;
+        View.height = Console.WindowHeight - 1;
+        View.downY = (int)Math.Round(Console.WindowHeight * 0.65);
+        View.highX = (int)Math.Round(Console.WindowWidth * 0.6);
+
+        //이전 크기 저장
+        prevWidth = Console.WindowWidth;
+        prevHeight = Console.WindowHeight;
+
+        SetCursor();
     }
     static public void test()
     {
@@ -866,8 +934,7 @@ public class UIManager
 
     }
 
-    
-    
+
     
     static public int inputController(List<Option> option)
     {
