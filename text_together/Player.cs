@@ -42,7 +42,7 @@ namespace text_together
         }
 
         // 플레이어의 공격
-        public string PlayerAttack(Monster monster, Player player, Skill skill)
+        public string PlayerAttack(Monster monster, Player player, Skill skill, Dungeon dungeon)
         {
             Random rand = new Random();
             string message;
@@ -58,12 +58,33 @@ namespace text_together
             if(rand.Next(100) < 15)
             {
                damage *= 1.6f;
-               message = $"{monster.name} 에게 {(int)damage} 의 치명적인 데미지!";
+               message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 치명적인 데미지!";
             }
-            else message = $"{monster.name} 에게 {(int)damage} 의 데미지!";
+            else message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 데미지!";
 
             monster.health -= (int)damage;
             player.mana -= skill.Cost;
+
+            // 쓰려트렸을 때
+            if(monster.health <= 0)
+            {
+                message+=$"\n{monster.name}을 쓰러트렸다!";
+
+                // 경험치 획득
+                int plusExp = (int)(monster.gold * 0.02);
+                player.exp += plusExp;
+                message+=$"\n{plusExp}의 경험치를 획득했다.";
+
+                // 경험치 최대치 이상 획득시 레밸업
+                while (player.exp >= player.maxEXP)
+                {
+                    player.LevelUp(player);
+                    player.exp -= player.maxEXP;
+                    player.maxEXP = (int)(player.maxEXP * 1.5f);
+                    message+=$"\nLv 가 {player.level}로 올랐다.";
+                }
+                dungeon.deadCount++;
+            }
 
             return message;
         }
