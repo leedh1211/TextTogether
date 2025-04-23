@@ -159,49 +159,53 @@ public class UIManager
     static public void Write(int index, string text)
     {
         index -= 1;
-        //해당 UI의 마지막 커서위치 설정
+        // 해당 UI의 마지막 커서위치 설정
         Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
-        //상단 UI
+        // 상단 UI
         if (index + 1 == 1)
         {
             if (Text.mainText.Count > 0)
             {
-                //최근 문자열 가져오기
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
 
-                //기존 버퍼 내용 제거
+                // 기존 버퍼 내용 제거
                 Text.mainText.RemoveAt(Text.mainText.Count - 1);
             }
+
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % mainSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리
+                if ((textTemp.Length) % mainSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.mainText.Add(textTemp.ToString());
-                    textTemp.Clear();
-
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
 
-            Text.mainText.Add(textTemp.ToString());
-            textTemp.Clear();
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-        //하단 좌측 UI
+        // 하단 좌측 UI
         else if (index + 1 == 2)
         {
             if (Text.contentText.Count > 0)
             {
-                //최근 문자열 가져오기
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
 
-                //기존 버퍼 내용 제거
+                // 기존 버퍼 내용 제거
                 Text.contentText.RemoveAt(Text.contentText.Count - 1);
             }
 
@@ -209,30 +213,34 @@ public class UIManager
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % contentSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리
+                if ((textTemp.Length) % contentSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.contentText.Add(textTemp.ToString());
-                    textTemp.Clear();
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
-            //아 어지럽네 이거 다시 꺼내서 재작성 해야하는거 아니야?? 흠..
-            Text.contentText.Add(text.ToString());
-            textTemp.Clear();
+
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-        //하단 우측 UI
+        // 하단 우측 UI
         else if (index + 1 == 3)
         {
             if (Text.optionText.Count > 0)
             {
-                //최근 문자열 가져오기
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
 
-                //기존 버퍼 내용 제거
+                // 기존 버퍼 내용 제거
                 Text.optionText.RemoveAt(Text.optionText.Count - 1);
             }
 
@@ -240,116 +248,144 @@ public class UIManager
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % optionSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리
+                if ((textTemp.Length) % optionSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.optionText.Add(textTemp.ToString());
-                    textTemp.Clear();
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
 
-            Text.optionText.Add(text.ToString()); ;
-            textTemp.Clear();
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-        
-        //커서위치 반환 (마지막 위치 기억용)
-        cursors[index][0] = Console.CursorLeft; //x축
-        cursors[index][1] = Console.CursorTop;  //y축
-
+        // 커서위치 반환 (마지막 위치 기억용)
+        cursors[index][0] = Console.CursorLeft; // x축
+        cursors[index][1] = Console.CursorTop;  // y축
     }
 
     static public void WriteLine(int index, string text)
     {
         index -= 1;
-        //해당 UI의 마지막 커서위치 설정
+        // 해당 UI의 마지막 커서위치 설정
         Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
-        //상단 UI
+        // 상단 UI
         if (index + 1 == 1)
         {
+            if (Text.mainText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.mainText.RemoveAt(Text.mainText.Count - 1);
+            }
+
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % mainSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리 (WriteLine의 특성상 이 부분이 없어도 줄바꿈이 자동으로 됨)
+                if ((textTemp.Length) % mainSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
-
-
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.mainText.Add(textTemp.ToString());
-                    textTemp.Clear();
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
 
-            newLineCnt[index]++;
-            Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
-
-            Text.mainText.Add(textTemp.ToString());
-            textTemp.Clear();
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-        //하단 좌측 UI
+        // 하단 좌측 UI
         else if (index + 1 == 2)
         {
+            if (Text.contentText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.contentText.RemoveAt(Text.contentText.Count - 1);
+            }
+
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % contentSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리
+                if ((textTemp.Length) % contentSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.contentText.Add(textTemp.ToString());
-                    textTemp.Clear();
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
 
-            newLineCnt[index]++;
-            Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
-
-            Text.contentText.Add(textTemp.ToString());
-            textTemp.Clear();
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-        //하단 우측 UI
+        // 하단 우측 UI
         else if (index + 1 == 3)
         {
+            if (Text.optionText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.optionText.RemoveAt(Text.optionText.Count - 1);
+            }
+
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if ((i + textTemp.Length) % optionSpace_x == 0 && i != 0)
+
+                // 줄 바꿈 처리
+                if ((textTemp.Length) % optionSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
-
-                    //버퍼또한 줄바꿈 후 클리어
                     Text.optionText.Add(textTemp.ToString());
-                    textTemp.Clear();
+                    textTemp.Clear(); // 버퍼를 클리어
                 }
             }
 
-            newLineCnt[index]++;
-            Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
-
-            Text.optionText.Add(text.ToString()); ;
-            textTemp.Clear();
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
         }
 
-
-        //커서위치 반환 (마지막 위치 기억용)
-        cursors[index][0] = Console.CursorLeft; //x축
-        cursors[index][1] = Console.CursorTop;  //y축
-
+        // 커서위치 반환 (마지막 위치 기억용)
+        cursors[index][0] = Console.CursorLeft; // x축
+        cursors[index][1] = Console.CursorTop;  // y축
     }
 
 
@@ -678,9 +714,16 @@ public class UIManager
                 newLineCnt[1] = 0;
                 newLineCnt[2] = 0;
 
+                
+
+                //얘는 새로운 리스트일뿐이야
                 Text.mainTextTemp = new List<string>(Text.mainText);
                 Text.contentTextTemp = new List<string>(Text.contentText);
                 Text.optionTextTemp = new List<string>(Text.optionText);
+
+                Text.mainText.Clear();
+
+                List<string> test = new List<string>();
 
                 //문자열 합치기
                 StringBuilder temp = new StringBuilder();
@@ -689,6 +732,39 @@ public class UIManager
                 {
                     temp.Append(a);
                 }
+
+                string fullText = temp.ToString();
+                //fullText = "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddefffffffffggggggggghhhhhhhhhhiijjjjjjjjjkkkkkkkkklllllllllmmmmmmmmmmnnnnnnnnnoooooooooopppppppppqqqqqqqqqrrrrrrrrrsssssssssssttttttttttuuuuuuuuuvvvvvvvvvvwwwwwwwwwwxxxxxxxxxxxyyyyyyyyyyzzzzzzzzzz";
+                
+                // 줄 단위로 다시 나누기
+                for (int i = 0; i < fullText.Length; i += mainSpace_x)
+                {
+                    int length = Math.Min(mainSpace_x, fullText.Length - i);
+                    test.Add(fullText.Substring(i, length));
+                }
+
+
+
+                SetCursor();
+                Console.Write("★");
+                //Console.ReadKey();
+                // Write 호출 (다시 Write 내부에서 텍스트를 나누지 않아도 됨)
+                for (int j = 0; j < test.Count; j++)
+                {
+                    UIManager.Write(1, test[j]);
+                    //newLineCnt[0]++;
+                    //Console.SetCursorPosition(0, j);
+                }
+
+                
+
+
+
+                /*
+                foreach (var a in Text.mainTextTemp)
+                {
+                    temp.Append(a);
+                }*/
 
                 /*
                 foreach (var a in Text.mainTextTemp)
@@ -703,12 +779,18 @@ public class UIManager
                 */
 
 
+                /*
                 Text.mainText.Clear();
                 Text.contentText.Clear();
                 Text.optionText.Clear();
+                */
 
 
-                SetCursor();
+                
+
+
+
+                
                 /*
                 UIManager.Clear(1);
                 Console.SetCursorPosition(cursors[0][0], cursors[0][1]);
@@ -724,8 +806,8 @@ public class UIManager
                     UIManager.Write(1, Text.mainTextTemp[j]);
                 }
                 */
-                UIManager.Write(1,temp.ToString());
-
+                //UIManager.Write(1,temp.ToString());
+                /*
 
                 for (int j = 0; j < Text.contentTextTemp.Count; j++)
                 {
@@ -736,10 +818,13 @@ public class UIManager
                     UIManager.WriteLine(3, Text.optionTextTemp[j]);
                 }
 
+                */
+
+
                 Text.mainTextTemp.Clear();
                 Text.contentTextTemp.Clear();
                 Text.optionTextTemp.Clear();
-
+                
 
                 //Console.CursorVisible = false;// 입력 숨겨주는거 
 
