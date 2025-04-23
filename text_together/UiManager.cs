@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Mime;
 using System.Text;
 
@@ -142,46 +143,97 @@ public class UIManager
         //상단 UI
         if (index + 1 == 1)
         {
+            if (Text.mainText.Count > 0)
+            {
+                //최근 문자열 가져오기
+                textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
+
+                //기존 버퍼 내용 제거
+                Text.mainText.RemoveAt(Text.mainText.Count - 1);
+            }
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i % mainSpace_x == 0 && i != 0)
+                if ((i + textTemp.Length) % mainSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.mainText.Add(textTemp.ToString());
+                    textTemp.Clear();
+
                 }
             }
+
+            Text.mainText.Add(textTemp.ToString());
+            textTemp.Clear();
         }
 
         //하단 좌측 UI
         else if (index + 1 == 2)
         {
+            if (Text.contentText.Count > 0)
+            {
+                //최근 문자열 가져오기
+                textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
+
+                //기존 버퍼 내용 제거
+                Text.contentText.RemoveAt(Text.contentText.Count - 1);
+            }
+
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i > contentSpace_x)
+                if ((i + textTemp.Length) % contentSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.contentText.Add(textTemp.ToString());
+                    textTemp.Clear();
                 }
             }
+            //아 어지럽네 이거 다시 꺼내서 재작성 해야하는거 아니야?? 흠..
+            Text.contentText.Add(text.ToString());
+            textTemp.Clear();
         }
 
         //하단 우측 UI
         else if (index + 1 == 3)
         {
+            if (Text.optionText.Count > 0)
+            {
+                //최근 문자열 가져오기
+                textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
+
+                //기존 버퍼 내용 제거
+                Text.optionText.RemoveAt(Text.optionText.Count - 1);
+            }
+
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
-                if (i > optionSpace_x)
+                if ((i + textTemp.Length) % optionSpace_x == 0 && i != 0)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.optionText.Add(textTemp.ToString());
+                    textTemp.Clear();
                 }
             }
+
+            Text.optionText.Add(text.ToString()); ;
+            textTemp.Clear();
         }
 
-
+        
         //커서위치 반환 (마지막 위치 기억용)
         cursors[index][0] = Console.CursorLeft; //x축
         cursors[index][1] = Console.CursorTop;  //y축
@@ -199,16 +251,26 @@ public class UIManager
         {
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
                 if (i > mainSpace_x)
                 {
                     newLineCnt[index]++;
+
+
                     Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.mainText.Add(textTemp.ToString());
+                    textTemp.Clear();
                 }
             }
 
             newLineCnt[index]++;
             Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+
+            Text.mainText.Add(textTemp.ToString());
+            textTemp.Clear();
         }
 
         //하단 좌측 UI
@@ -216,16 +278,24 @@ public class UIManager
         {
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
                 if (i > contentSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.contentText.Add(textTemp.ToString());
+                    textTemp.Clear();
                 }
             }
 
             newLineCnt[index]++;
             Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+
+            Text.contentText.Add(textTemp.ToString());
+            textTemp.Clear();
         }
 
         //하단 우측 UI
@@ -233,16 +303,24 @@ public class UIManager
         {
             for (int i = 0; i < text.Length; i++)
             {
+                textTemp.Append(text[i]);
                 Console.Write(text[i]);
                 if (i > optionSpace_x)
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+                    //버퍼또한 줄바꿈 후 클리어
+                    Text.optionText.Add(textTemp.ToString());
+                    textTemp.Clear();
                 }
             }
 
             newLineCnt[index]++;
             Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+
+            Text.optionText.Add(text.ToString()); ;
+            textTemp.Clear();
         }
 
 
@@ -568,9 +646,31 @@ public class UIManager
                 
 
                 //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
-                Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
+                //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
                 //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
                 View.DrawUIFast();
+
+
+
+                newLineCnt[0] = 0;
+                newLineCnt[1] = 0;
+                newLineCnt[2] = 0;
+
+                //UI 텍스트 뿌려주기
+               /* for (int j = 0; j < Text.mainText.Count; j++)
+                {
+                    UIManager.WriteLine(1, Text.mainText[j]);
+                }
+                for (int j = 0; j < Text.contentText.Count; j++)
+                {
+                    UIManager.WriteLine(2, Text.contentText[j]);
+                }*/
+                for (int j = 0; j < Text.optionText.Count; j++)
+                {
+                    UIManager.WriteLine(3, Text.optionText[j]);
+                }
+
+
                 Console.CursorVisible = false;// 입력 숨겨주는거 
 
             }
