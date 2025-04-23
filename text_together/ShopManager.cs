@@ -145,9 +145,9 @@ namespace textRPG
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price}");
+                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price}");
+                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
                 idx++;
             }
         }
@@ -169,9 +169,11 @@ namespace textRPG
         // 아이템 판매 관리
         void ItemSell(Player player, List<Item> items, List<Item> inventory)
         {
+            double sellPrice = 0;
 
             while (true)
             {
+
                 UpdateSellUI(player, items, inventory);
                 Console.WriteLine("판매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
@@ -179,19 +181,33 @@ namespace textRPG
                 {
                     return;
                 }
-                if (input > inventory.Count || input < 0)
+                else if (input > inventory.Count || input < 0)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                     continue;
                 }
-                if (inventory[input - 1].isEquipped)
+                else if (inventory[input -1].quantity > 1)
                 {
-                    inventory[input - 1].isEquipped = false;
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].quantity -= 1;
                 }
-                double sellPrice = inventory[input - 1].price * 0.85;
-                //Console.WriteLine($"{inventory[input-1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                else if (inventory[input - 1].isEquipped)
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].isEquipped = false;
+                    inventory.RemoveAt(input - 1);
+                }
+                else
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory.RemoveAt(input - 1);
+                }
+                
                 player.gold += (int)sellPrice;
-                inventory.RemoveAt(input - 1);
+                
                 UpdateSellUI(player, items, inventory);
             }
 
