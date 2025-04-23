@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using System.Text;
 
 
 namespace text_together;
@@ -19,7 +20,7 @@ public class UIManager
     static int contentStartPos_x = 1;
     static int contentStartPos_y = 30;
 
-    static int optionSpace_x = 58;
+    static int optionSpace_x = 57;
     static int optionSpace_y = 19;
     static int optionStartPos_x = 61;
     static int optionStartPos_y = 30;
@@ -39,6 +40,23 @@ public class UIManager
         new int[] { contentStartPos_x, contentStartPos_y },  // 2번 커서
         new int[] { optionStartPos_x, optionStartPos_y }     // 3번 커서
     };
+
+
+    //텍스트를 담을 버퍼 클래스
+    static public class Text
+    {
+        //아마 한 줄마다 문자열을 만든 후 리스트에 넣어주지않을까
+        //그 후 줄마다 출력
+
+        static public List<string> mainText { get; set; } = new List<string>();
+        static public List<string> contentText { get; set; } = new List<string>();
+        static public List<string> optionText { get; set; } = new List<string>();
+    }
+
+
+    //버퍼에 담을 문자열을 만들 공간
+    static StringBuilder textTemp = new StringBuilder();
+
 
     //UI 매개변수를 어떻게 받을까
     //이넘으로 변환해서받기
@@ -479,49 +497,83 @@ public class UIManager
 
     }
 
+    static bool isChecking = false;
+    public static async Task Call_CheckWindow()
+    {
+        while (true)
+        {
+            if (!isChecking)
+            {
+                _ = Task.Run(() => CheckWindow());
+            }
 
-    
+            await Task.Delay(100); // 0.1초마다 체크
+        }
+    }
+    private static readonly object _lockObject = new object();
+
     static public void CheckWindow()
     {
-        // 변경 없으면 아무것도 안 함
-        if (prevWidth == Console.WindowWidth && prevHeight == Console.WindowHeight)
+        lock (_lockObject)
         {
-            return;
-        }
+            if (isChecking)
+            {
+                return;
+            }
+            isChecking = true;
+            isChecking = false;
+            // 변경 없으면 아무것도 안 함
+            if (prevWidth == Console.WindowWidth && prevHeight == Console.WindowHeight)
+            {
+                isChecking = false;
+                return;
+            }
 
-        else
-        {
-            // 만약 기존크기에셔 변경 될 경우 아래 수행
-            mainSpace_x = Console.WindowWidth - 2;
-            mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.6);
-            mainStartPos_x = 1;
-            mainStartPos_y = 1;
+            else
+            {
+                Console.Clear();
+                // 만약 기존크기에셔 변경 될 경우 아래 수행
+                mainSpace_x = Console.WindowWidth - 2;
+                mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                mainStartPos_x = 1;
+                mainStartPos_y = 1;
 
-            contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
-            contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
-            contentStartPos_x = 1;
-            contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
+                contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
+                contentStartPos_x = 1;
+                contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
 
-            optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
-            optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
-            optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.5) + 1;
-            optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
+                optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
+                optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.5) + 1;
+                optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
 
 
-            ////////////////
-            //View클래스 변경
-            ////////////////
-            View.width = Console.WindowWidth -1;
-            View.height = Console.WindowHeight -1;
-            View.downY = (int)Math.Round(Console.WindowHeight * 0.4);
-            View.highX = (int)Math.Round(Console.WindowWidth * 0.5);
+                ////////////////
+                //View클래스 변경
+                ////////////////
+                View.width = Console.WindowWidth - 1;
+                View.height = Console.WindowHeight - 1;
+                View.downY = (int)Math.Round(Console.WindowHeight * 0.4);
+                View.highX = (int)Math.Round(Console.WindowWidth * 0.5);
 
-            //이전 크기 저장
-            prevWidth = Console.WindowWidth;
-            prevHeight = Console.WindowHeight;
+                //이전 크기 저장
+                prevWidth = Console.WindowWidth;
+                prevHeight = Console.WindowHeight;
 
-            //UI 뿌리기
-            View.DrawAsciiFrame();
+                //UI 뿌리기
+                //View.DrawAsciiFrame();
+                //View.DrawAsciiFrame();
+
+                
+
+                //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
+                Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
+                //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
+                View.DrawUIFast();
+                Console.CursorVisible = false;// 입력 숨겨주는거 
+
+            }
         }
 
         //변경된 크기를 기준으로 UI 뿌려주기
