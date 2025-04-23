@@ -8,15 +8,15 @@ namespace text_together
 
         static public int width = 119;   // 전체 가로 길이 (콘솔 너비)
         static public int height = 50;   // 전체 세로 길이 (콘솔 높이)
-        static public int downY = 20;        // 상단/하단을 나누는 줄 위치
-        static public int highX = 50;        // 하단에서 좌/우 나누는 위치
+        static public int downY = 29;        // 상단/하단을 나누는 줄 위치
+        static public int highX = 60;        // 하단에서 좌/우 나누는 위치
 
 
         static public void View1()
         {
             // 콘솔크기            
-            Console.SetBufferSize(120, 50);
-            Console.SetWindowSize(120, 50); // 콘솔창 사이즈
+            Console.SetBufferSize(120, 51);
+            Console.SetWindowSize(120, 51); // 콘솔창 사이즈
             Console.OutputEncoding = Encoding.UTF8; // 유니코드 적용
             Console.CursorVisible = false;// 입력 숨겨주는거 
 
