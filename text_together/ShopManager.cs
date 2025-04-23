@@ -271,6 +271,7 @@ namespace text_together
             Console.WriteLine();
             Console.WriteLine("0. 나가기\n");
         }
+
         // 아이템 구매 관리
         void ItemBuy(Player player, List<Item> items, List<Item> inventory)
         {
@@ -334,6 +335,21 @@ namespace text_together
                 inventory.Add(new Item(item.name, item.effect, item.info, item.price, true, false, item.maxQuantity));
                 Console.WriteLine($"{item.name}을(를) 획득했습니다!");
             }
+        }
+
+        // 아이템 강화
+        void EnforceItem()
+        {
+            Console.WriteLine("아이템을 강화해봅시다!");
+            Console.WriteLine("강화할 아이템을 선택해 주세요.");
+            Console.WriteLine();
+            Console.WriteLine();
+
+            // 인벤토리의 아이템 탐색
+
+            // 강화 성공. 성공을 거듭할수록 그 아이템의 강화확률은 낮아진다
+
+            // 강화 실패
         }
     }
 }
