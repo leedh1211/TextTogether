@@ -308,9 +308,14 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
+                textTemp.Append("\n");
                 Text.mainText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
+
+            newLineCnt[index]++;
+            cursors[index][0] = mainStartPos_x;
+            cursors[index][1] = mainStartPos_y + newLineCnt[index];
         }
 
         // 하단 좌측 UI
@@ -343,9 +348,14 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
+                textTemp.Append("\n");
                 Text.contentText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
+
+            newLineCnt[index]++;
+            cursors[index][0] = contentStartPos_x;
+            cursors[index][1] = contentStartPos_y + newLineCnt[index];
         }
 
         // 하단 우측 UI
@@ -378,14 +388,18 @@ public class UIManager
             // 마지막에 남은 텍스트를 추가
             if (textTemp.Length > 0)
             {
+                
+                textTemp.Append("\n");
                 Text.optionText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
-        }
 
-        // 커서위치 반환 (마지막 위치 기억용)
-        cursors[index][0] = Console.CursorLeft; // x축
-        cursors[index][1] = Console.CursorTop;  // y축
+            newLineCnt[index]++;
+            cursors[index][0] = optionStartPos_x;
+            cursors[index][1] = optionStartPos_y + newLineCnt[index];
+        }
+        
+
     }
 
 
@@ -670,19 +684,19 @@ public class UIManager
                 Console.Clear();
                 // 만약 기존크기에셔 변경 될 경우 아래 수행
                 mainSpace_x = Console.WindowWidth - 2;
-                mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.65);
                 mainStartPos_x = 1;
                 mainStartPos_y = 1;
 
-                contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
-                contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
+                contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.6) - 2;
+                contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 1;
                 contentStartPos_x = 1;
-                contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65); //downY
 
-                optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.5) - 2;
-                optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.4) - 1;
-                optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.5) + 1;
-                optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.6);
+                optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.4) - 2;
+                optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 1;
+                optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.6) + 1;
+                optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.35);
 
 
                 ////////////////
@@ -734,26 +748,25 @@ public class UIManager
                 }
 
                 string fullText = temp.ToString();
-                //fullText = "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddefffffffffggggggggghhhhhhhhhhiijjjjjjjjjkkkkkkkkklllllllllmmmmmmmmmmnnnnnnnnnoooooooooopppppppppqqqqqqqqqrrrrrrrrrsssssssssssttttttttttuuuuuuuuuvvvvvvvvvvwwwwwwwwwwxxxxxxxxxxxyyyyyyyyyyzzzzzzzzzz";
-                
+                string[] lines = fullText.Split('\n');
+
                 // 줄 단위로 다시 나누기
-                for (int i = 0; i < fullText.Length; i += mainSpace_x)
+                foreach (string line in lines)
                 {
-                    int length = Math.Min(mainSpace_x, fullText.Length - i);
-                    test.Add(fullText.Substring(i, length));
+                    for (int i = 0; i < line.Length; i += mainSpace_x)
+                    {
+                        int length = Math.Min(mainSpace_x, line.Length - i);
+                        test.Add(line.Substring(i, length));
+                    }
                 }
 
 
 
                 SetCursor();
-                Console.Write("★");
-                //Console.ReadKey();
-                // Write 호출 (다시 Write 내부에서 텍스트를 나누지 않아도 됨)
+
                 for (int j = 0; j < test.Count; j++)
                 {
-                    UIManager.Write(1, test[j]);
-                    //newLineCnt[0]++;
-                    //Console.SetCursorPosition(0, j);
+                    UIManager.WriteLine(1, test[j]);
                 }
 
                 

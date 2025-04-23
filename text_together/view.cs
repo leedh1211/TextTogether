@@ -8,8 +8,8 @@ namespace text_together
 
         static public int width = 119;   // 전체 가로 길이 (콘솔 너비)
         static public int height = 50;   // 전체 세로 길이 (콘솔 높이)
-        static public int downY = 29;        // 상단/하단을 나누는 줄 위치
-        static public int highX = 60;        // 하단에서 좌/우 나누는 위치
+        static public int downY;        // 상단/하단을 나누는 줄 위치
+        static public int highX;        // 하단에서 좌/우 나누는 위치
 
 
         static public void View1()
@@ -32,8 +32,8 @@ namespace text_together
             // 콘솔 크기 갱신
             width = Console.WindowWidth;
             height = Console.WindowHeight;
-            downY = (int)(height * 0.4);
-            highX = (int)(width * 0.5);
+            downY = (int)(height * 0.65);
+            highX = (int)(width * 0.6);
 
             StringBuilder buffer = new StringBuilder();
 
