@@ -130,7 +130,7 @@ namespace text_together
         }
 
         // 인벤토리탭 관리
-        public void GoInventory(Player player, List<Item> items)
+        public void GoInventory(Player player)
         {
             // inventory가 null인 경우 초기화
             if (inventory == null)
@@ -152,7 +152,7 @@ namespace text_together
                 int input = int.Parse(Console.ReadLine());
                 if (input == 1)
                 {
-                    EquippedManage(player, items);
+                    EquippedManage(player);
                 }
                 else if (input == 2)
                 {
@@ -165,7 +165,7 @@ namespace text_together
             }
         }
         // 장착탭 관리
-        void EquippedManage(Player player, List<Item> items)
+        void EquippedManage(Player player)
         {
             while (true)
             {

@@ -35,7 +35,7 @@ class Solution
         switch (selectedValue)
         {
             case 1: PlayerManager.Instance.PlayerInfo(player); break;
-            case 2: InventoryManager.Instance.GoInventory(player, items); break;
+            case 2: InventoryManager.Instance.GoInventory(player); break;
             case 3: ShopManager.Instance.GoShop(player, inventory); break;
             case 4: DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
             case 5: RestManager.Instance.GoRest(player, items, inventory); break;
@@ -47,9 +47,9 @@ class Solution
     {
         Player player;
         // 빈 인벤토리 만들기
-        List<Item> inventory;
+        List<Item> inventory = InventoryManager.Instance.inventory;
         // 상점에 아이템들 추가
-        List<Item> items;
+        List<Item> items = ShopManager.Instance.InitializeStore(); ;
         // 던전 추가
         Dungeon dungeon;
 
@@ -61,12 +61,6 @@ class Solution
             player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 100, 1500, 0, 10);
             items = new List<Item>();
             dungeon = new Dungeon();
-
-            // 인벤토리 초기화
-            inventory = InventoryManager.Instance.inventory;
-
-            // 상점 초기화
-            items = ShopManager.Instance.InitializeStore(player);
 
             // 던전 추가
             dungeon = new Dungeon("", 0);

@@ -26,9 +26,8 @@ namespace text_together
             }
         }
 
-        public List<Item> InitializeStore(Player player)
+        public List<Item> InitializeStore()
         {
-            this.player = player;
             this.storeItems = new List<Item>();
 
             // 초기 판매 아이템
@@ -86,6 +85,7 @@ namespace text_together
         // 상점탭 관리
         public void GoShop(Player player, List<Item> inventory)
         {
+            this.player = player;
             int idx = 0;
             while (true)
             {
@@ -109,15 +109,15 @@ namespace text_together
                 }
                 else if (input == 1)
                 {
-                    ItemBuy(player, inventory);
+                    ItemBuy(inventory);
                 }
                 else if (input == 2)
                 {
-                    ItemSell(player, storeItems, inventory);
+                    ItemSell(inventory);
                 }
                 else if (input == 3)
                 {
-                    ItemGatcha(player, inventory);
+                    ItemGatcha(inventory);
                 }
                 else if (input == 4)
                 {
@@ -133,7 +133,7 @@ namespace text_together
                 }
             }
         }
-        void ItemGatcha(Player player, List<Item> inventory)
+        void ItemGatcha(List<Item> inventory)
         {
             if(player.gold >= 150)
             {
@@ -202,7 +202,7 @@ namespace text_together
             }
         }
         // 아이템 판매하고 UI 갱신
-        void UpdateSellUI(Player player, List<Item> inventory)
+        void UpdateSellUI(List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 판매");
@@ -217,14 +217,14 @@ namespace text_together
 
         }
         // 아이템 판매 관리
-        void ItemSell(Player player, List<Item> items, List<Item> inventory)
+        void ItemSell(List<Item> inventory)
         {
             double sellPrice = 0;
 
             while (true)
             {
 
-                UpdateSellUI(player, inventory);
+                UpdateSellUI(inventory);
                 Console.WriteLine("판매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
 
@@ -259,12 +259,12 @@ namespace text_together
                 
                 player.gold += (int)sellPrice;
                 
-                UpdateSellUI(player, inventory);
+                UpdateSellUI(inventory);
             }
 
         }
         // 아이템 구매하고 UI 갱신
-        void UpdateBuyUI(Player player, List<Item> inventory)
+        void UpdateBuyUI(List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 구매");
@@ -279,11 +279,11 @@ namespace text_together
         }
 
         // 아이템 구매 관리
-        void ItemBuy(Player player, List<Item> inventory)
+        void ItemBuy(List<Item> inventory)
         {
             while (true)
             {
-                UpdateBuyUI(player, inventory);
+                UpdateBuyUI(inventory);
                 Console.WriteLine("구매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
 
@@ -308,7 +308,7 @@ namespace text_together
                     else
                     {
                         AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
-                        UpdateBuyUI(player, inventory);
+                        UpdateBuyUI(inventory);
                     }
                 }
 
