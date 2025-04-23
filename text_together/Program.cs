@@ -33,11 +33,11 @@ class Solution
                 PlayerManager.Instance.PlayerInfo(player);
             else if (input == 2)
             {
-                InventoryManager.Instance.GoInventory(player, items, inventory);
+                InventoryManager.Instance.GoInventory(player, items);
             }
             else if (input == 3)
             {
-                ShopManager.Instance.GoShop(player, items, inventory);
+                ShopManager.Instance.GoShop(player, inventory);
             }
             else if (input == 4)
             {

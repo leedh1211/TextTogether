@@ -84,7 +84,7 @@ namespace text_together
         }
 
         // 상점탭 관리
-        public void GoShop(Player player, List<Item> items, List<Item> inventory)
+        public void GoShop(Player player, List<Item> inventory)
         {
             int idx = 0;
             while (true)
@@ -113,7 +113,7 @@ namespace text_together
                 }
                 else if (input == 2)
                 {
-                    ItemSell(player, items, inventory);
+                    ItemSell(player, storeItems, inventory);
                 }
                 else if (input == 3)
                 {
