@@ -21,7 +21,7 @@ public class UIManager
     static int contentStartPos_x = 1;
     static int contentStartPos_y = 30;
 
-    static int optionSpace_x = 58;
+    static int optionSpace_x = 57;
     static int optionSpace_y = 19;
     static int optionStartPos_x = 61;
     static int optionStartPos_y = 30;
