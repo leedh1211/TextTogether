@@ -96,7 +96,7 @@ namespace text_together
                 Console.WriteLine("[보유 골드]");
                 Console.WriteLine($"{player.gold} G\n");
 
-                ShopInfo(items, inventory);
+                ShopInfo(inventory);
                 Console.WriteLine();
 
                 Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 상점 물품 업데이트\n0. 나가기");
@@ -108,7 +108,7 @@ namespace text_together
                 }
                 else if (input == 1)
                 {
-                    ItemBuy(player, items, inventory);
+                    ItemBuy(player, inventory);
                 }
                 else if (input == 2)
                 {
@@ -165,11 +165,11 @@ namespace text_together
 
 
         // 아이템들 상점에서 정보
-        void ShopInfo(List<Item> items, List<Item> inventory)
+        void ShopInfo( List<Item> inventory)
         {
             Console.WriteLine("[아이템 목록]");
             int idx = 1;
-            foreach (var item in items)
+            foreach (var item in storeItems)
             {
                 bool isHaved = inventory.Any(x => x.name == item.name);
                 if (isHaved)
@@ -197,7 +197,7 @@ namespace text_together
             }
         }
         // 아이템 판매하고 UI 갱신
-        void UpdateSellUI(Player player, List<Item> items, List<Item> inventory)
+        void UpdateSellUI(Player player, List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 판매");
@@ -219,9 +219,10 @@ namespace text_together
             while (true)
             {
 
-                UpdateSellUI(player, items, inventory);
+                UpdateSellUI(player, inventory);
                 Console.WriteLine("판매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
+
                 if (input == 0)
                 {
                     return;
@@ -253,12 +254,12 @@ namespace text_together
                 
                 player.gold += (int)sellPrice;
                 
-                UpdateSellUI(player, items, inventory);
+                UpdateSellUI(player, inventory);
             }
 
         }
         // 아이템 구매하고 UI 갱신
-        void UpdateBuyUI(Player player, List<Item> items, List<Item> inventory)
+        void UpdateBuyUI(Player player, List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 구매");
@@ -267,17 +268,17 @@ namespace text_together
             Console.WriteLine("[보유 골드]");
             Console.WriteLine($"{player.gold} G\n");
 
-            ShopInfo(items, inventory);
+            ShopInfo(inventory);
             Console.WriteLine();
             Console.WriteLine("0. 나가기\n");
         }
 
         // 아이템 구매 관리
-        void ItemBuy(Player player, List<Item> items, List<Item> inventory)
+        void ItemBuy(Player player, List<Item> inventory)
         {
             while (true)
             {
-                UpdateBuyUI(player, items, inventory);
+                UpdateBuyUI(player, inventory);
                 Console.WriteLine("구매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
 
@@ -285,7 +286,7 @@ namespace text_together
                 {
                     return;
                 }
-                if (input > items.Count || input < 0)
+                if (input > storeItems.Count || input < 0)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                     continue;
@@ -294,15 +295,15 @@ namespace text_together
                 else
                 {
 
-                    if (items[input - 1].price > player.gold)
+                    if (storeItems[input - 1].price > player.gold)
                     {
                         Console.WriteLine("Gold가 부족합니다.");
                         continue;
                     }
                     else
                     {
-                        AddItem(items[input-1], inventory, items[input - 1].price);
-                        UpdateBuyUI(player, items, inventory);
+                        AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
+                        UpdateBuyUI(player, inventory);
                     }
                 }
 
