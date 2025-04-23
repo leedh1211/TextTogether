@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace textRPG
+namespace text_together
 {
     class ShopManager
     {
