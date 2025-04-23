@@ -42,18 +42,30 @@ namespace text_together
         }
 
         // 플레이어의 공격
-        public void PlayerAttack(Monster monster, Player player, Skill skill)
+        public string PlayerAttack(Monster monster, Player player, Skill skill)
         {
             Random rand = new Random();
+            string message;
 
             // 0.5 오차 반올림
             int round = (int)Math.Round((player.attack + skill.Attack) * 0.1, MidpointRounding.AwayFromZero);
 
             // 공격력의 10% 오차 적용
-            int damage = (int)(rand.Next((int)player.attack + skill.Attack - round, (int)player.attack + skill.Attack + round)) - (int)(monster.shield * 0.7f );
-            if(damage <= 0) damage=1; 
-            monster.health -= damage;
+            float damage = (rand.Next((int)player.attack + skill.Attack - round, (int)player.attack + skill.Attack + round)) - (monster.shield * 0.7f );
+            if(damage <= 0) damage=1;
+
+            // 치명타 구현 ( 15%의 확률로 1.6배의 데미지)
+            if(rand.Next(100) < 15)
+            {
+               damage *= 1.6f;
+               message = $"{monster.name} 에게 {(int)damage} 의 치명적인 데미지!";
+            }
+            else message = $"{monster.name} 에게 {(int)damage} 의 데미지!";
+
+            monster.health -= (int)damage;
             player.mana -= skill.Cost;
+
+            return message;
         }
 
     }
