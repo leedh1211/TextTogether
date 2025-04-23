@@ -1,5 +1,8 @@
-﻿using System;
+﻿using NAudio.CoreAudioApi;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Numerics;
 using System.Text;
 
 namespace text_together
@@ -34,6 +37,17 @@ namespace text_together
             }
             Console.WriteLine();
         }
+
+        void DungeonInventoryInfo(List<Item> inventory)
+        {
+            Console.WriteLine("[아이템 목록]");
+            foreach (var item in inventory)
+            {
+                if (item.effect.type == "포션")
+                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.value} | {item.info} | {item.quantity}");
+            }
+            Console.WriteLine();
+        }
         // 아이템들 장착여부 정보
         void EquippedInfo(List<Item> inventory)
         {
@@ -46,6 +60,68 @@ namespace text_together
                 else
                     Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 idx++;
+            }
+        }
+        // 던젼 인벤토리 관리
+        public void GoDungeonInventory(Player player, List<Item> items, List<Item> inventory)
+        {
+            // inventory가 null인 경우 초기화
+            if (inventory == null)
+            {
+                inventory = new List<Item>(); // 인벤토리 초기화
+                Console.WriteLine("인벤토리가 초기화되었습니다.");
+            }
+            
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("인벤토리");
+                Console.WriteLine("포션 아이템을 먹어서 스텟을 올릴 수 있다!\n");
+
+                DungeonInventoryInfo(inventory);
+
+                Console.WriteLine("아이템 번호를 입력하시면 포션을 먹을 수 있습니다. \n0.나가기\n");
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                int input = int.Parse(Console.ReadLine());
+                if (input > 0 && input <= inventory.Count)
+                {
+                    ManagePotion(player,inventory,input);
+                }
+                else if (input == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("다시 입력해주세요.");
+                }
+            }
+        }
+
+        // 포션 관리
+        public void ManagePotion(Player player,List<Item> inventory,int input)
+        {
+            var item = inventory[input - 1];
+
+            if (inventory[input - 1].effect.type == "포션")
+            {
+                Console.WriteLine($"{item.name}을 마셨다.");
+                Console.WriteLine($"{item.info} 효능이 발동하였다.");
+                if (item.name.Contains("생명력"))
+                    player.health += item.effect.value;
+                else if (item.name.Contains("마나"))
+                    player.mana += item.effect.value;
+
+                item.quantity--;
+                if (item.quantity <= 0)
+                {
+                    inventory.RemoveAt(input - 1);
+                    Console.WriteLine("포션을 모두 사용하여 인벤토리에서 제거되었습니다.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("해당 아이템은 포션이 아닙니다.");
             }
         }
 

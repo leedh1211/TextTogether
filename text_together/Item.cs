@@ -45,7 +45,8 @@ namespace text_together
             new Item("전설의 냄비뚜껑", new Effect("방어력", 8), "어머니의 사랑이 담긴 무적의 방패. 단점: 무겁다.", 2700, false, false),
             new Item("감성 기타", new Effect("공격력", 4), "잔잔한 멜로디로 적의 심장을 후벼판다.", 1600, false, false),
             new Item("고대의 슬리퍼", new Effect("공격력", 6), "집안에서 가장 강력한 무기. 맞으면 정신적 데미지 +999.", 2000, false, false),
-            new Item("치즈 방패", new Effect("방어력", 5), "말랑하지만 단단한 수수께끼의 방어구. 고양이들이 좋아한다.", 1900, false, false)
+            new Item("치즈 방패", new Effect("방어력", 5), "말랑하지만 단단한 수수께끼의 방어구. 고양이들이 좋아한다.", 1900, false, false),
+            new Item("생명력 포션", new Effect("포션",3), "생명력을 올리는 포션이다",500,false,false)
         };
     }
 }
