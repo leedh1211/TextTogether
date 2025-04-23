@@ -15,6 +15,7 @@ namespace text_together
         public bool isHave { get; set; }
         public int quantity { get; set; }
         public int maxQuantity { get; set; }
+        public int upgradeLevel { get; set; }
 
         public Item() { }
         public Item(string name, Effect effect, string info, int price, bool isHave, bool isEquipped, int maxQuantity = 2)
@@ -27,6 +28,7 @@ namespace text_together
             this.isEquipped = isEquipped;
             this.quantity = 1;
             this.maxQuantity = maxQuantity;
+            this.upgradeLevel = 0;
         }
     }
 

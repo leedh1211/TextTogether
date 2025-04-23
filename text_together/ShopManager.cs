@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Text;
 
@@ -99,7 +100,7 @@ namespace text_together
                 ShopInfo(inventory);
                 Console.WriteLine();
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 상점 물품 업데이트\n0. 나가기");
+                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 장비 강화\n5. 상점 물품 업데이트\n0. 나가기");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
@@ -119,6 +120,10 @@ namespace text_together
                     ItemGatcha(player, inventory);
                 }
                 else if (input == 4)
+                {
+                    EnforceItem(inventory);
+                }
+                else if(input == 5)
                 {
                     UpdateShop();
                 }
@@ -183,7 +188,7 @@ namespace text_together
             Console.WriteLine();
         }
         // 아이템들 판매시 정보 
-        void SellInfo(List<Item> inventory)
+        void InventoryInfo(List<Item> inventory)
         {
             int idx = 1;
             Console.WriteLine("[아이템 목록]");
@@ -206,7 +211,7 @@ namespace text_together
             Console.WriteLine("[보유 골드]");
             Console.WriteLine($"{player.gold} G\n");
 
-            SellInfo(inventory);
+            InventoryInfo(inventory);
             Console.WriteLine();
             Console.WriteLine("0. 나가기\n");
 
@@ -323,7 +328,7 @@ namespace text_together
                 {
                     player.gold -= price;
                     haveItem.quantity++;
-                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity}째 얻었습니다!");
+                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity} 개째 얻었습니다!");
                 }
                 else
                 {
@@ -339,14 +344,126 @@ namespace text_together
         }
 
         // 아이템 강화
-        void EnforceItem()
+        void EnforceItem(List<Item> inventory)
         {
-            Console.WriteLine("아이템을 강화해봅시다!");
-            Console.WriteLine("강화할 아이템을 선택해 주세요.");
-            Console.WriteLine();
-            Console.WriteLine();
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine("아이템을 강화해봅시다!");
+                Console.WriteLine("강화할 아이템을 선택해 주세요.");
+                Console.WriteLine();
 
-            // 인벤토리의 아이템 탐색
+                InventoryInfo(inventory);
+                Console.WriteLine("0. 나가기\n");
+
+                int input = int.Parse(Console.ReadLine());
+
+                if (input == 0)
+                {
+                    return;
+                }
+
+                Item upgradeItem = inventory[input - 1];
+
+                // 강화를 거듭할수록 실패확률이 오른다
+                int defaultSuccess = 100;
+                int penalty = 15;
+                int success = defaultSuccess -= (upgradeItem.upgradeLevel * penalty);
+                
+                // 최소 10퍼센트 성공률
+                success = Math.Max(defaultSuccess, 10);
+
+
+                if(upgradeItem.effect.type == "포션")
+                {
+                    Console.WriteLine("소모품은 강화할 수 없습니다.");
+                    continue;
+                }
+
+                else if(input < 1 || input > inventory.Count)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    continue;
+                }
+
+                else if (player.gold < 100)
+                {
+                    Console.WriteLine("골드가 부족합니다...");
+                    break;
+                }
+
+                Console.WriteLine($"{upgradeItem.name}을(를) 강화합니다.");
+                Console.WriteLine($"현재 {upgradeItem.upgradeLevel}번 강화했습니다.");
+                Console.WriteLine($"성공 확률: {success} %");
+                Console.WriteLine();
+                Console.WriteLine($"강화하시겠습니까?");
+                Console.WriteLine("1. 예");
+                Console.WriteLine("2. 아니오");
+
+                int confirm = int.Parse(Console.ReadLine());
+
+                if(confirm == 2)
+                {
+                    break;
+                }
+
+                else if (confirm != 1 && confirm !=2)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    continue;
+                }
+
+                player.gold -= 100;
+
+                // 장착 중이라면 해제
+                if (upgradeItem.isEquipped)
+                {
+                    upgradeItem.isEquipped = false;
+                }
+
+                // 성공률보다 작거나 같은 숫자를 뽑았을 때 성공
+                Random randomRoll = new Random();
+                int roll = randomRoll.Next(1, 101);
+
+                Console.Clear();
+
+                if(roll <= success)
+                {
+                    upgradeItem.upgradeLevel++;
+                    upgradeItem.effect.value += 2;
+                    Console.WriteLine("강화 성공!");
+                    Console.WriteLine($"{upgradeItem.name}의 공격력/방어력이 {upgradeItem.effect.value}가 되었습니다.");
+                }
+
+                else
+                {
+                    Console.WriteLine("강화 실패...");
+                    upgradeItem.quantity--;
+                    Console.WriteLine("장비가 파괴되었습니다...");
+
+                    if(upgradeItem.quantity == 0)
+                    {
+                        inventory.Remove(upgradeItem);
+                    }
+                }
+
+                while (true)
+                {
+                    Console.WriteLine("0. 나가기");
+                    int exit = int.Parse(Console.ReadLine());
+
+                    if (exit == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                    }
+                }
+
+
+            }
 
             // 강화 성공. 성공을 거듭할수록 그 아이템의 강화확률은 낮아진다
 
