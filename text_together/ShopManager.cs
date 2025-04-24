@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Text;
 
@@ -25,9 +26,8 @@ namespace text_together
             }
         }
 
-        public List<Item> InitializeStore(Player player)
+        public List<Item> InitializeStore()
         {
-            this.player = player;
             this.storeItems = new List<Item>();
 
             // 초기 판매 아이템
@@ -41,9 +41,51 @@ namespace text_together
             return storeItems;
         }
 
-        // 상점탭 관리
-        public void GoShop(Player player, List<Item> items, List<Item> inventory)
+        // 상점 갱신
+        public void UpdateShop()
         {
+            // 아이템 풀 셔플 리스트 만들기
+            List<Item> shuffle = new List<Item>(ItemData.ItemPool);
+
+            Random random = new Random();
+
+            for (int i = shuffle.Count - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                Item temp = shuffle[i];
+                shuffle[i] = shuffle[j];
+                shuffle[j] = temp;
+            }
+
+            storeItems.Clear();
+
+            // 5개로 개수제한
+            for(int i = 0; i < 5; i++)
+            {
+                Item original = shuffle[i];
+
+                // 깊은 복사
+                Item updateItem = new Item(
+                    original.name,
+                    new Effect(original.effect.type, original.effect.value),
+                    original.info,
+                    original.price,
+                    false,
+                    false,
+                    original.maxQuantity
+                    );
+
+                updateItem.quantity = 1;
+                storeItems.Add(updateItem);
+            }
+
+            // Console.Clear();
+        }
+
+        // 상점탭 관리
+        public void GoShop(Player player, List<Item> inventory)
+        {
+            this.player = player;
             int idx = 0;
             while (true)
             {
@@ -55,10 +97,10 @@ namespace text_together
                 Console.WriteLine("[보유 골드]");
                 Console.WriteLine($"{player.gold} G\n");
 
-                ShopInfo(items, inventory);
+                ShopInfo(inventory);
                 Console.WriteLine();
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n0. 나가기");
+                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 장비 강화\n5. 상점 물품 업데이트\n0. 나가기");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 if (input == 0)
@@ -67,15 +109,23 @@ namespace text_together
                 }
                 else if (input == 1)
                 {
-                    ItemBuy(player, items, inventory);
+                    ItemBuy(inventory);
                 }
                 else if (input == 2)
                 {
-                    ItemSell(player, items, inventory);
+                    ItemSell(inventory);
                 }
                 else if (input == 3)
                 {
-                    ItemGatcha(player, inventory);
+                    ItemGatcha(inventory);
+                }
+                else if (input == 4)
+                {
+                    EnforceItem(inventory);
+                }
+                else if(input == 5)
+                {
+                    UpdateShop();
                 }
                 else
                 {
@@ -83,7 +133,9 @@ namespace text_together
                 }
             }
         }
-        void ItemGatcha(Player player, List<Item> inventory)
+
+        // 뽑기 기능
+        void ItemGatcha(List<Item> inventory)
         {
             if(player.gold >= 150)
             {
@@ -120,11 +172,11 @@ namespace text_together
 
 
         // 아이템들 상점에서 정보
-        void ShopInfo(List<Item> items, List<Item> inventory)
+        void ShopInfo( List<Item> inventory)
         {
             Console.WriteLine("[아이템 목록]");
             int idx = 1;
-            foreach (var item in items)
+            foreach (var item in storeItems)
             {
                 bool isHaved = inventory.Any(x => x.name == item.name);
                 if (isHaved)
@@ -138,21 +190,21 @@ namespace text_together
             Console.WriteLine();
         }
         // 아이템들 판매시 정보 
-        void SellInfo(List<Item> inventory)
+        void InventoryInfo(List<Item> inventory)
         {
             int idx = 1;
             Console.WriteLine("[아이템 목록]");
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price}");
+                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price}");
+                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
                 idx++;
             }
         }
         // 아이템 판매하고 UI 갱신
-        void UpdateSellUI(Player player, List<Item> items, List<Item> inventory)
+        void UpdateSellUI(List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 판매");
@@ -161,43 +213,60 @@ namespace text_together
             Console.WriteLine("[보유 골드]");
             Console.WriteLine($"{player.gold} G\n");
 
-            SellInfo(inventory);
+            InventoryInfo(inventory);
             Console.WriteLine();
             Console.WriteLine("0. 나가기\n");
 
         }
         // 아이템 판매 관리
-        void ItemSell(Player player, List<Item> items, List<Item> inventory)
+        void ItemSell(List<Item> inventory)
         {
+            double sellPrice = 0;
 
             while (true)
             {
-                UpdateSellUI(player, items, inventory);
+
+                UpdateSellUI(inventory);
                 Console.WriteLine("판매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
+
                 if (input == 0)
                 {
                     return;
                 }
-                if (input > inventory.Count || input < 0)
+                else if (input > inventory.Count || input < 0)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                     continue;
                 }
-                if (inventory[input - 1].isEquipped)
+                else if (inventory[input -1].quantity > 1)
                 {
-                    inventory[input - 1].isEquipped = false;
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].quantity -= 1;
                 }
-                double sellPrice = inventory[input - 1].price * 0.85;
-                //Console.WriteLine($"{inventory[input-1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                else if (inventory[input - 1].isEquipped)
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].isEquipped = false;
+                    inventory.RemoveAt(input - 1);
+                }
+                else
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory.RemoveAt(input - 1);
+                }
+                
                 player.gold += (int)sellPrice;
-                inventory.RemoveAt(input - 1);
-                UpdateSellUI(player, items, inventory);
+                
+                UpdateSellUI(inventory);
             }
 
         }
         // 아이템 구매하고 UI 갱신
-        void UpdateBuyUI(Player player, List<Item> items, List<Item> inventory)
+        void UpdateBuyUI(List<Item> inventory)
         {
             Console.Clear();
             Console.WriteLine("상점 - 아이템 구매");
@@ -206,16 +275,17 @@ namespace text_together
             Console.WriteLine("[보유 골드]");
             Console.WriteLine($"{player.gold} G\n");
 
-            ShopInfo(items, inventory);
+            ShopInfo(inventory);
             Console.WriteLine();
             Console.WriteLine("0. 나가기\n");
         }
+
         // 아이템 구매 관리
-        void ItemBuy(Player player, List<Item> items, List<Item> inventory)
+        void ItemBuy(List<Item> inventory)
         {
             while (true)
             {
-                UpdateBuyUI(player, items, inventory);
+                UpdateBuyUI(inventory);
                 Console.WriteLine("구매하고 싶은 아이템 번호를 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
 
@@ -223,7 +293,7 @@ namespace text_together
                 {
                     return;
                 }
-                if (input > items.Count || input < 0)
+                if (input > storeItems.Count || input < 0)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                     continue;
@@ -232,15 +302,15 @@ namespace text_together
                 else
                 {
 
-                    if (items[input - 1].price > player.gold)
+                    if (storeItems[input - 1].price > player.gold)
                     {
                         Console.WriteLine("Gold가 부족합니다.");
                         continue;
                     }
                     else
                     {
-                        AddItem(items[input-1], inventory, items[input - 1].price);
-                        UpdateBuyUI(player, items, inventory);
+                        AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
+                        UpdateBuyUI(inventory);
                     }
                 }
 
@@ -260,7 +330,7 @@ namespace text_together
                 {
                     player.gold -= price;
                     haveItem.quantity++;
-                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity}째 얻었습니다!");
+                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity} 개째 얻었습니다!");
                 }
                 else
                 {
@@ -273,6 +343,133 @@ namespace text_together
                 inventory.Add(new Item(item.name, item.effect, item.info, item.price, true, false, item.maxQuantity));
                 Console.WriteLine($"{item.name}을(를) 획득했습니다!");
             }
+        }
+
+        // 아이템 강화
+        void EnforceItem(List<Item> inventory)
+        {
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine("아이템을 강화해봅시다!");
+                Console.WriteLine("강화할 아이템을 선택해 주세요.");
+                Console.WriteLine();
+
+                InventoryInfo(inventory);
+                Console.WriteLine("0. 나가기\n");
+
+                int input = int.Parse(Console.ReadLine());
+
+                if (input == 0)
+                {
+                    return;
+                }
+
+                Item upgradeItem = inventory[input - 1];
+
+                // 강화를 거듭할수록 실패확률이 오른다
+                int defaultSuccess = 100;
+                int penalty = 15;
+                int success = defaultSuccess -= (upgradeItem.upgradeLevel * penalty);
+                
+                // 최소 10퍼센트 성공률
+                success = Math.Max(success, 10);
+
+
+                if(upgradeItem.effect.type == "포션")
+                {
+                    Console.WriteLine("소모품은 강화할 수 없습니다.");
+                    continue;
+                }
+
+                else if(input < 1 || input > inventory.Count)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    continue;
+                }
+
+                else if (player.gold < 100)
+                {
+                    Console.WriteLine("골드가 부족합니다...");
+                    break;
+                }
+
+                Console.WriteLine($"{upgradeItem.name}을(를) 강화합니다.");
+                Console.WriteLine($"현재 {upgradeItem.upgradeLevel}번 강화했습니다.");
+                Console.WriteLine($"성공 확률: {success} %");
+                Console.WriteLine();
+                Console.WriteLine($"강화하시겠습니까?");
+                Console.WriteLine("1. 예");
+                Console.WriteLine("2. 아니오");
+
+                int confirm = int.Parse(Console.ReadLine());
+
+                if(confirm == 2)
+                {
+                    break;
+                }
+
+                else if (confirm != 1 && confirm !=2)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    continue;
+                }
+
+                player.gold -= 100;
+
+                // 장착 중이라면 해제
+                if (upgradeItem.isEquipped)
+                {
+                    upgradeItem.isEquipped = false;
+                }
+
+                // 성공률보다 작거나 같은 숫자를 뽑았을 때 성공
+                Random randomRoll = new Random();
+                int roll = randomRoll.Next(1, 101);
+
+                Console.Clear();
+
+                if(roll <= success)
+                {
+                    upgradeItem.upgradeLevel++;
+                    upgradeItem.effect.value += 2;
+                    Console.WriteLine("강화 성공!");
+                    Console.WriteLine($"{upgradeItem.name}의 공격력/방어력이 {upgradeItem.effect.value}가 되었습니다.");
+                }
+
+                else
+                {
+                    Console.WriteLine("강화 실패...");
+                    upgradeItem.quantity--;
+                    Console.WriteLine("장비가 파괴되었습니다...");
+
+                    if(upgradeItem.quantity == 0)
+                    {
+                        inventory.Remove(upgradeItem);
+                    }
+                }
+
+                while (true)
+                {
+                    Console.WriteLine("0. 나가기");
+                    int exit = int.Parse(Console.ReadLine());
+
+                    if (exit == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                    }
+                }
+
+
+            }
+
+            // 강화 성공. 성공을 거듭할수록 그 아이템의 강화확률은 낮아진다
+
+            // 강화 실패
         }
     }
 }
