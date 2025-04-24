@@ -1026,4 +1026,29 @@ public class UIManager
         ConsoleKey.D or ConsoleKey.RightArrow => +6,
         _                                    => 0
     };
+    
+    public static void DrawAscii(string asciiArt)
+    {
+        UIManager.Clear(1);
+        string[] lines = asciiArt.Split('\n');
+
+        int sectorWidth = UIManager.mainSpace_x;
+        int sectorHeight = UIManager.mainSpace_y;
+        int startX, startY;
+
+        // 하단 정렬
+        startY = UIManager.mainStartPos_y + sectorHeight - lines.Length;
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            int lineLength = line.Length;
+
+            // 가운데 정렬
+            startX = UIManager.mainStartPos_x + (sectorWidth - lineLength) / 2;
+
+            Console.SetCursorPosition(startX, startY + i);
+            Console.Write(line);
+        }
+    }
 }
