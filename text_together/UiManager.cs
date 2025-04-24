@@ -823,7 +823,7 @@ public class UIManager
                 }
 
                 //해상도에 맞게 각 UI의 커서위치 초기화
-                //SetCursor();
+                SetCursor();
 
                 for (int j = 0; j < test.Count; j++)
                 {
@@ -878,27 +878,42 @@ public class UIManager
             }
         }
 
-        //변경된 크기를 기준으로 UI 뿌려주기
+        
     }
 
 
+    //메인UI 높이 비율
+    static float mainHeightRatio = 0.65f;
 
+    //콘텐트UI 가로 비율
+    static float contentWidthRatio = 0.6f;
+    //콘텐트UI 세로 비율
+    static float contentHeightRatio = 0.35f; // 세로빼면 되서 자동으로 받을수있지 않을까
+
+    //옵션UI 비율
+    static float optionWidthRatio = 0.4f;
+    static float optionHeightRatio = 0.65f;
+
+
+
+    //실질적으로 변경되어야하는 친구는
+    //mainHeightRatio, contentWidthRatio
     static public void UISetup()
     {
         mainSpace_x = Console.WindowWidth - 3;
-        mainSpace_y = (int)Math.Round(Console.WindowHeight * 0.65) - 2;
+        mainSpace_y = (int)Math.Round(Console.WindowHeight * mainHeightRatio) - 2;
         mainStartPos_x = 1;
         mainStartPos_y = 1;
 
-        contentSpace_x = (int)Math.Round(Console.WindowWidth * 0.6) - 4;
-        contentSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 3;
+        contentSpace_x = (int)Math.Round(Console.WindowWidth * contentWidthRatio) - 4;
+        contentSpace_y = (int)Math.Round(Console.WindowHeight * contentHeightRatio) - 3;
         contentStartPos_x = 3; // padding1 + 첫줄 경계선
-        contentStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65) + 1; //downY
+        contentStartPos_y = (int)Math.Round(Console.WindowHeight * mainHeightRatio) + 1; //downY
 
-        optionSpace_x = (int)Math.Round(Console.WindowWidth * 0.4) - 3;
-        optionSpace_y = (int)Math.Round(Console.WindowHeight * 0.35) - 3;
-        optionStartPos_x = (int)Math.Round(Console.WindowWidth * 0.6) + 1;
-        optionStartPos_y = (int)Math.Round(Console.WindowHeight * 0.65) + 1;
+        optionSpace_x = (int)Math.Round(Console.WindowWidth * optionWidthRatio) - 3; //해당비율은 1.00 - content가로비율임
+        optionSpace_y = (int)Math.Round(Console.WindowHeight * contentHeightRatio) - 3;    //해당 비율 수치는 공간이기때문에 1.00 - main높이비율임
+        optionStartPos_x = (int)Math.Round(Console.WindowWidth * contentWidthRatio) + 1;  //x 시작점이 결국 콘텐츠스페이스 +1이니까 content비율을 곱해줌
+        optionStartPos_y = (int)Math.Round(Console.WindowHeight * mainHeightRatio) + 1;  //y 시작점이 결국 메인스페이스 +1이니까 main비율을 곱해줌
 
         ////////////////
         //View클래스 변경
