@@ -28,6 +28,10 @@ public class UIManager
     static int optionStartPos_y = 30;
 
     static int typingDelay = 60;
+    
+    static List<Option> currentOptions = new List<Option>();
+    static string currentArt = "";
+    static bool isResolutionChanged = false;
 
     //음원 경로
     static string filePath = "../../../../Resources/voice_sans.wav";
@@ -994,14 +998,15 @@ public class UIManager
 
 
 
-
-                
+                isResolutionChanged = true;
+                inputController(currentOptions);
+                isResolutionChanged = false;
+                DrawAscii(currentArt);
 
 
                 Text.mainTextTemp.Clear();
                 Text.contentTextTemp.Clear();
                 Text.optionTextTemp.Clear();
-
 
                 //Console.CursorVisible = false;// 입력 숨겨주는거 
 
@@ -1086,12 +1091,20 @@ public class UIManager
         int index = 0, prevIndex = 0;
         int page = 0, prevPage = 0;
         RefreshOptionsPage(option, index, page);
-
+        currentOptions = option;
         while (true)
         {
+            if (isResolutionChanged)
+            {
+                return -1; // or 다른 특별한 코드로 루프 탈출
+            }
+            
             var key = Console.ReadKey(intercept: true).Key;
             if (key == ConsoleKey.Enter)
+            {
+                currentOptions = new List<Option>();
                 return option[index].value;
+            }
 
             int delta = GetDelta(key);
             if (delta == 0) continue;
@@ -1159,6 +1172,7 @@ public class UIManager
     
     public static void DrawAscii(string asciiArt)
     {
+        currentArt = asciiArt;
         UIManager.Clear(1);
         string[] lines = asciiArt.Split('\n');
 
