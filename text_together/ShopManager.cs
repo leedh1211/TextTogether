@@ -60,7 +60,7 @@ namespace text_together
             storeItems.Clear();
 
             // 5개로 개수제한
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 6; i++)
             {
                 Item original = shuffle[i];
 
