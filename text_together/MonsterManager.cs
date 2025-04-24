@@ -10,14 +10,50 @@ namespace text_together
     {
         public List<Monster> monsters { get; private set; } = new List<Monster>();
         private Random random = new Random();
+        private static MonsterManager instance;
+        public static MonsterManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MonsterManager();
+                }
+                return instance;
+            }
+        }
 
         public MonsterManager()
         {
-            // 몬스터 생성 ( 이름, 레벨, 공격력, 방어력, 체력, 골드)
-            monsters.Add(new Monster("까부냥", 1, 5f, 5f, 12, 100));
-            monsters.Add(new Monster("도로롱", 1, 3f, 7f, 20, 150));
-            monsters.Add(new Monster("치킨", 1, 6f, 4f, 10, 200));
-            monsters.Add(new Monster("보스", 7, 10f, 10f, 30, 3000));
+            InitializeMonsters();
+        }
+
+        public void InitializeMonsters()
+        {
+            monsters = new List<Monster>
+        {
+            new Monster("까부냥", 1, 5f, 5f, 12, 100, MonsterType.Unit),
+            new Monster("도로롱", 1, 3f, 7f, 20, 150, MonsterType.Unit),
+            new Monster("치킨", 1, 6f, 4f, 10, 200, MonsterType.Unit),
+            new Monster("보스", 7, 10f, 10f, 30, 3000, MonsterType.Boss)
+        };
+        }
+
+        // 난이도에 따른 몬스터 스탯 수정
+        public void FixMonster(Dungeon dungeon)
+        {
+            float fix=0;
+
+            if (dungeon.dungeonLevel == "쉬움") return;
+            else if(dungeon.dungeonLevel == "보통") fix = 1.2f;
+            else if(dungeon.dungeonLevel == "어려움") fix = 1.5f;
+
+            foreach(var monster in monsters)
+            {
+                monster.attack *= fix;
+                monster.shield *= fix;
+                monster.health = (int)(monster.health * fix);
+            }
         }
 
         public List<Monster> RandomMonster(int stage)
@@ -25,12 +61,14 @@ namespace text_together
 
             List<Monster> newMonster = new List<Monster>();
             int count = random.Next(1, 4);
+            MonsterType type = MonsterType.Unit;
 
             for (int i = 0; i < random.Next(1, 4); i++)
             {
                 // 몬스터 레벨과 스테이지 값을 통한 몬스터 추출 범위 선정
-                var tempMonster = monsters.Where(m => m.level <= stage + 2 && m.level >= stage - 5).ToList();
-
+                if(stage % 5 == 0)type = MonsterType.Boss;
+                
+                var tempMonster = monsters.Where(m => m.level <= stage + 2 && m.level >= stage - 5 && m.monsterType == type).ToList();
                 //
                 // 선정된 몬스터를 랜덤 입력
                 int index = random.Next(tempMonster.Count);
@@ -43,7 +81,8 @@ namespace text_together
                     selectMonster.attack,
                     selectMonster.shield,
                     selectMonster.health,
-                    selectMonster.gold
+                    selectMonster.gold,
+                    selectMonster.monsterType
                 );
 
                 newMonster.Add(enemy);
@@ -57,10 +96,18 @@ namespace text_together
                 enemy.shield += (int)(enemy.level * (enemy.shield * 0.15f));
                 enemy.health += (int)(enemy.level * (enemy.health * 0.12f));
                 enemy.gold += random.Next(enemy.gold, enemy.gold + (enemy.gold * enemy.level / stage));
+
+                if(newMonster[i].monsterType == MonsterType.Boss) return newMonster;
             }
 
             return newMonster;
         }
+
+        public void ResetMonsters()
+        {
+            InitializeMonsters();
+        }
     }
+
 
 }

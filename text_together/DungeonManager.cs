@@ -8,12 +8,11 @@ namespace text_together
     class DungeonManager
     {
 
-        public string message ="";
+        public string message = "";
         public MonsterManager enemy = new MonsterManager();
         public SkillManager skill = new SkillManager();
         Random rand = new Random();
 
-        public int deadCount = 0;
         private static DungeonManager instance;
 
         public static DungeonManager Instance
@@ -55,24 +54,45 @@ namespace text_together
                 }
                 if (input == 1)
                 {
-                    dungeon.dungeonLevel = "쉬움";
-                    BaseDungeon(player, dungeon);
-                    //ResultDungeon(player, items, inventory, BattleDungeon(player, dungeons[0].requiredDefense, dungeons[0].rewardGold, rand), dungeons[0].dungeonLevel, orgGold, orgHealth);
+                    while(dungeon.gameClear == false)
+                    {
+                        // 몬스터 난이도 설정
+                        dungeon.dungeonLevel = "쉬움";
+                        MonsterManager.Instance.FixMonster(dungeon);
+                        
+                        // 몬스터 리스트 리셋
+                        MonsterManager.Instance.ResetMonsters();
 
+                        // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
+                        if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
+                        DungeonRaid(player, dungeon);
+                
+                    }
                 }
                 else if (input == 2)
                 {
                     dungeon.dungeonLevel = "보통";
-                    DungeonRaid(player, dungeon);
+                        MonsterManager.Instance.FixMonster(dungeon);
+
+                        MonsterManager.Instance.ResetMonsters();
+
+                        if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
+                        DungeonRaid(player, dungeon);
                 }
                 else if (input == 3)
                 {
+                    dungeon.dungeonLevel = "어려움";
+                        MonsterManager.Instance.FixMonster(dungeon);
+                        
+                        MonsterManager.Instance.ResetMonsters();
 
+                        if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
+                        DungeonRaid(player, dungeon);
                 }
             }
         }
 
-        public void BaseDungeon(Player player, Dungeon dungeon)
+        public void BaseDungeon(Player player, Dungeon dungeon, List<Item> items, List<Item> inventory)
         {
             while (true)
             {
@@ -80,12 +100,11 @@ namespace text_together
                 Console.WriteLine("베이스 캠프");
                 Console.WriteLine("이곳에서 나아가기 전 활동을 할 수 있습니다.\n");
 
-                //PlayerInfo
-
                 Console.WriteLine("1. 나아가기");
                 Console.WriteLine("2. 휴식하기");
-                Console.WriteLine("3. 저장");
-                Console.WriteLine("4. 상태보기");   
+                Console.WriteLine("3. 상점");
+                Console.WriteLine("4. 상태보기");
+                Console.WriteLine("5. 저장");
                 Console.WriteLine("0. 나가기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -101,15 +120,15 @@ namespace text_together
                 if (input == 1)
                 {
                     DungeonRaid(player, dungeon);
+                    return;
                 }
                 else if (input == 2)
                 {
-                    dungeon.dungeonLevel = "보통";
-                    DungeonRaid(player, dungeon);
+
                 }
                 else if (input == 3)
                 {
-
+                    ShopManager.Instance.GoShop(player, items, inventory);
                 }
                 else if (input == 4)
                 {
@@ -124,15 +143,14 @@ namespace text_together
             dungeon.stage += 1;
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             bool skip = false;
-
-            while (true)
+            dungeon.dungeonClear = false;
+            
+            while (dungeon.dungeonClear == false)
             {
                 Console.Clear();
-
                 if (skip)
                 {
-                    Console.WriteLine("도망치기에 실패하였다!!");
-                    Console.WriteLine("도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.");
+                    message = "도망치기에 실패하였다!! \n 도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.";
                     player.health -= 5;
                 }
 
@@ -141,25 +159,26 @@ namespace text_together
 
                 for (int i = 0; i < monster.Count; i++)
                 {
-                    Console.Write("{0} 출현!", monster[i].name);
+                    Console.Write($"[Lv. {monster[i].level}] {monster[i].name}  | ");
                     Console.WriteLine(monster[i].health <= 0 ? "Dead" : $"HP : {monster[i].health} ");
-                    Console.WriteLine("Level : {0} \n", monster[i].level);
                     //Console.WriteLine("Pow : {0} ", monster[i].attack);
                     //Console.WriteLine("Def : {0} ", monster[i].shield);
                     //Console.WriteLine("Gold : {0} \n", monster[i].gold);
                 }
 
-
-                Console.WriteLine("[플레이어] 체력 : {0}", player.health);
+                Console.WriteLine("");
+                Console.WriteLine("[플레이어]");
                 Console.WriteLine("체력 : {0}", player.health);
                 Console.WriteLine("마나 : {0}", player.mana);
-                Console.WriteLine("레벨 : {0} \n", player.level);
+                Console.WriteLine("Lv : {0} \n", player.level);
 
                 Console.WriteLine("1. 공격 ");
                 Console.WriteLine("0. 도망가기 \n");
 
-                if(deadCount == monster.Count)
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.WriteLine(message);
+
+                // if (dungeon.deadCount == monster.Count)
+                //     Console.WriteLine("원하시는 행동을 입력해주세요.");
 
                 Console.Write(">>");
 
@@ -180,15 +199,7 @@ namespace text_together
                 }
                 else if (input == 1 || skip)
                 {
-                    Skills(monster, player, dungeon);
-
-                    if(deadCount >= monster.Count) 
-                    {
-                        ResultDungeon(monster, player, dungeon);
-                        deadCount = 0;
-                        skip = false;
-                        return;
-                    }
+                    SkillManager.Instance.SelectSkill(monster, player, dungeon);
                 }
                 else
                 {
@@ -198,50 +209,10 @@ namespace text_together
             }
         }
 
-        public void Skills(List<Monster> monster, Player player, Dungeon dungeon)
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
-                Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
-
-                int i=0;
-                foreach(var skill in skill.skills)
-                {   
-                    i++;
-                    Console.Write($"{i}. {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n");
-                }
-
-
-                Console.WriteLine("[플레이어]");
-                Console.WriteLine("체력 : {0}", player.health);
-                Console.WriteLine("마나 : {0}", player.mana);
-                Console.WriteLine("레벨 : {0} \n", player.level);
-
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-                Console.Write(">>");
-
-                int input = int.Parse(Console.ReadLine());
-                if (input == 0)
-                    return;
-                else if (input >= 1 && input <= skill.skills.Count)
-                {
-                    MonsterSelect(player, dungeon, monster, skill.skills[input-1]);
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("다시 입력해주세요");
-                    continue;
-                }
-            }
-        }
 
         public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, Skill skill)
         {
-            while (true)
+            while (dungeon.dungeonClear == false)
             {
                 Console.Clear();
 
@@ -250,22 +221,14 @@ namespace text_together
 
                 for (int i = 0; i < monster.Count; i++)
                 {
-                    Console.Write($"{i + 1} : {monster[i].name} ");
+                    Console.Write($"{i+1}. [Lv. {monster[i].level}] {monster[i].name}  | ");
                     Console.WriteLine(monster[i].health <= 0 ? "Dead" : $"HP : {monster[i].health} ");
                 }
 
                 Console.WriteLine($"\n[플레이어]");
                 Console.WriteLine($"체력 : {player.health}");
-                Console.WriteLine($"플레이어 Lv : {player.level}");
-                Console.WriteLine($"적 데카 Lv : {deadCount}");
 
-                // if
-                if(deadCount == monster.Count)
-                {
-                    ResultDungeon(monster, player, dungeon);
-                    return;
-                }
-
+                Console.WriteLine(message);
                 Console.Write(">>");
 
                 int input = int.Parse(Console.ReadLine());
@@ -276,23 +239,10 @@ namespace text_together
                     // 이미 죽인 몬스터는 예외 처리
                     if (monster[input - 1].health <= 0)
                     {
-                        Console.WriteLine("이미 죽어있습니다.");
+                        message = "대상으로 선택할 수 없습니다.";
                         continue;
                     }
-
-                    // 해당 몬스터 공격
-                    player.PlayerAttack(monster[input - 1], player, skill);
-
-                    // 죽였을 때 경험치 보상
-                    if(monster[input - 1].health <= 0)
-                    {
-                        ResultExp(monster[input-1], player);
-                    }
-
-                    // 몬스터 수 만큼 공격 받음
-                    for (int i = 0; i < monster.Count; i++)
-                        monster[i].MonsterAttack(monster[i], player);
-
+                    BattleInfo(monster, monster[input - 1], player, skill, dungeon);
                     return;
                 }
                 else
@@ -302,18 +252,49 @@ namespace text_together
                 }
             }
         }
-        
-        // 경험치 보상
-        public void ResultExp(Monster monster, Player player)
+
+        public void BattleInfo(List<Monster> monsters, Monster selectMonster, Player player, Skill skill, Dungeon dungeon)
         {
-            player.exp += (int)(monster.gold * 0.02);
-            while (player.exp >= player.maxEXP)
+            bool isPlayerAttack = false;
+            for (int j = 0; j < monsters.Count + 1; j++)
+            {
+                Console.Clear();
+
+                // 플레이어의 공격 (1회)
+                if (!isPlayerAttack)
                 {
-                    player.LevelUp(player);
-                    player.exp -= player.maxEXP;
-                    player.maxEXP = (int)(player.maxEXP * 1.5f);
+                    message = player.PlayerAttack(selectMonster, player, skill, dungeon);
+                    isPlayerAttack = true;
                 }
-            deadCount++;
+
+                for (int i = 0; i < monsters.Count; i++)
+                {
+                    Console.Write($"[Lv. {monsters[i].level}] {monsters[i].name}  | ");
+                    Console.WriteLine(monsters[i].health <= 0 ? "Dead" : $"HP : {monsters[i].health} ");
+                }
+
+                Console.WriteLine("\n[플레이어]");
+                Console.WriteLine("체력 : {0}", player.health);
+                Console.WriteLine("마나 : {0}", player.mana);
+                Console.WriteLine($"Exp : {player.exp} / {player.maxEXP}");
+                Console.WriteLine("Lv: {0}", player.level);
+
+                Console.WriteLine();
+                Console.WriteLine(message);
+                Console.ReadLine();
+
+                // 전부 다 처치 시 보상
+                if (dungeon.deadCount == monsters.Count)
+                {
+                    ResultDungeon(monsters, player, dungeon);
+                    return;
+                }
+
+
+                if (j == monsters.Count) return;
+
+                message = monsters[j].MonsterAttack(monsters[j], player);
+            }
 
         }
 
@@ -328,8 +309,6 @@ namespace text_together
             }
             player.gold += resultGold;
 
-            while (true)
-            {
                 Console.Clear();
 
                 Console.WriteLine("클리어!");
@@ -339,18 +318,12 @@ namespace text_together
                 Console.WriteLine("[탐험 결과]");
                 Console.WriteLine($"{resultGold} Gold 획득");
 
-                Console.WriteLine("\n0. 나가기\n");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-                int input = int.Parse(Console.ReadLine());
-                if (input == 0)
-                    return;
-                else
-                {
-                    Console.WriteLine("다시 입력해주세요");
-                    continue;
-                }
-            }
+                Console.ReadLine();
+
+                message = "";
+                dungeons.deadCount=0;
+                dungeons.dungeonClear = true;
         }
 
         // 레이드에서 도망
@@ -400,4 +373,5 @@ namespace text_together
         }
 
     }
+
 }
