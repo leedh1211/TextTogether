@@ -34,18 +34,6 @@ namespace text_together
                 Console.WriteLine("던전입장");
                 Console.WriteLine("이곳에서 던전으로 들어가기전 난이도를 설정 할 수 있습니다.\n");
 
-                // Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
-                // Console.WriteLine("2. 일반 던전     | 방어력 11 이상 권장");
-                // Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
-                // Console.WriteLine("0.나가기\n");
-                // Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-                // int input = int.Parse(Console.ReadLine());
-                // if (input < 0 || input > 3)
-                // {
-                //     Console.WriteLine("다시 입력해주세요.");
-                // }
-
                 int orgGold = player.gold;
                 int orgHealth = player.health;
 
@@ -112,47 +100,6 @@ namespace text_together
                     case 7: return;
                 }
 
-                // if (input == 0)
-                // {
-                //     return;
-                // }
-                // if (input == 1)
-                // {
-                //     while(dungeon.gameClear == false)
-                //     {
-                //         // 몬스터 난이도 설정
-                //         dungeon.dungeonLevel = "쉬움";
-                //         MonsterManager.Instance.FixMonster(dungeon);
-
-                //         // 몬스터 리스트 리셋
-                //         MonsterManager.Instance.ResetMonsters();
-
-                //         // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
-                //         if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                //         DungeonRaid(player, dungeon);
-
-                //     }
-                // }
-                // else if (input == 2)
-                // {
-                //     dungeon.dungeonLevel = "보통";
-                //         MonsterManager.Instance.FixMonster(dungeon);
-
-                //         MonsterManager.Instance.ResetMonsters();
-
-                //         if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                //         DungeonRaid(player, dungeon);
-                // }
-                // else if (input == 3)
-                // {
-                //     dungeon.dungeonLevel = "어려움";
-                //         MonsterManager.Instance.FixMonster(dungeon);
-
-                //         MonsterManager.Instance.ResetMonsters();
-
-                //         if(dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                //         DungeonRaid(player, dungeon);
-                // }
             }
         }
 
@@ -163,14 +110,6 @@ namespace text_together
                 Console.Clear();
                 Console.WriteLine("베이스 캠프");
                 Console.WriteLine("이곳에서 나아가기 전 활동을 할 수 있습니다.\n");
-
-                // Console.WriteLine("1. 나아가기");
-                // Console.WriteLine("2. 휴식하기");
-                // Console.WriteLine("3. 상점");
-                // Console.WriteLine("4. 상태보기");
-                // Console.WriteLine("5. 저장");
-                // Console.WriteLine("0. 나가기\n");
-                // Console.WriteLine("원하시는 행동을 입력해주세요.");
 
                 List<Option> options = new List<Option>
                 {
@@ -191,41 +130,12 @@ namespace text_together
                     case 4: PlayerManager.Instance.PlayerInfo(player); break;
                     case 0: return;
                 }
-
-
-                // int input = int.Parse(Console.ReadLine());
-                // if (input < 0 || input > 4)
-                // {
-                //     Console.WriteLine("다시 입력해주세요.");
-                // }
-                // if (input == 0)
-                // {
-                //     return;
-                // }
-                // if (input == 1)
-                // {
-                //     DungeonRaid(player, dungeon);
-                //     return;
-                // }
-                // else if (input == 2)
-                // {
-
-                // }
-                // else if (input == 3)
-                // {
-                //     ShopManager.Instance.GoShop(player, items, inventory);
-                // }
-                // else if (input == 4)
-                // {
-                //     PlayerManager.Instance.PlayerInfo(player);
-                // }
             }
         }
 
         // 던전 몬스터 조우
         public void DungeonRaid(Player player, Dungeon dungeon)
         {
-            dungeon.stage += 1;
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             bool skip = false;
             dungeon.dungeonClear = false;
@@ -247,15 +157,6 @@ namespace text_together
                     Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
                     Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                 }
-
-                // for (int i = 0; i < monster.Count; i++)
-                // {
-                //     Console.Write($"[Lv. {monster[i].level}] {monster[i].name}  | ");
-                //     Console.WriteLine(monster[i].health <= 0 ? "Dead" : $"HP : {monster[i].health} ");
-                //     //Console.WriteLine("Pow : {0} ", monster[i].attack);
-                //     //Console.WriteLine("Def : {0} ", monster[i].shield);
-                //     //Console.WriteLine("Gold : {0} \n", monster[i].gold);
-                // }
 
                 Console.WriteLine("");
                 Console.WriteLine("[플레이어]");
@@ -290,43 +191,7 @@ namespace text_together
                         }
                         return;
                 }
-
-
-
-                // Console.WriteLine("1. 공격 ");
-                // Console.WriteLine("0. 도망가기 \n");
-
                 Console.WriteLine(message);
-
-                // if (dungeon.deadCount == monster.Count)
-                //     Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-                // Console.Write(">>");
-
-                // int input = int.Parse(Console.ReadLine());
-                // if (input == 0)
-                // {
-                //     bool success = rand.Next(0, 100) < 50;
-                //     Console.WriteLine("입력값: " + input);
-                //     if (success)
-                //     {
-                //         LeaveRaid(player);
-                //         return;
-                //     }
-                //     else
-                //     {
-                //         skip = true;
-                //     }
-                // }
-                // else if (input == 1 || skip)
-                // {
-                //     SkillManager.Instance.SelectSkill(monster, player, dungeon);
-                // }
-                // else
-                // {
-                //     Console.WriteLine("다시 입력해주세요");
-                //     continue;
-                // }
             }
         }
 
@@ -374,38 +239,8 @@ namespace text_together
                             return;
                         }
                 }
-
-
-                // for (int i = 0; i < monster.Count; i++)
-                // {
-                //     Console.Write($"{i + 1}. [Lv. {monster[i].level}] {monster[i].name}  | ");
-                //     Console.WriteLine(monster[i].health <= 0 ? "Dead" : $"HP : {monster[i].health} ");
-                // }
-
                 Console.WriteLine($"\n[플레이어]");
                 Console.WriteLine($"체력 : {player.health}");
-
-                // Console.Write(">>");
-
-                // int input = int.Parse(Console.ReadLine());
-                // if (input == 0)
-                //     return;
-                // else if (input >= 1 && input <= monster.Count)
-                // {
-                //     // 이미 죽인 몬스터는 예외 처리
-                //     if (monster[input - 1].health <= 0)
-                //     {
-                //         message = "대상으로 선택할 수 없습니다.";
-                //         continue;
-                //     }
-                //     BattleInfo(monster, monster[input - 1], player, skill, dungeon);
-                //     return;
-                // }
-                // else
-                // {
-                //     Console.WriteLine("다시 입력해주세요");
-                //     continue;
-                // }
             }
         }
 
@@ -480,6 +315,7 @@ namespace text_together
             message = "";
             dungeons.deadCount = 0;
             dungeons.dungeonClear = true;
+            dungeons.stage++;
         }
 
         // 레이드에서 도망

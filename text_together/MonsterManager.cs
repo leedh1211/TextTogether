@@ -32,10 +32,10 @@ namespace text_together
         {
             monsters = new List<Monster>
         {
-            new Monster("까부냥", 1, 5f, 5f, 12, 100, MonsterType.Unit),
-            new Monster("도로롱", 1, 3f, 7f, 20, 150, MonsterType.Unit),
-            new Monster("치킨", 1, 6f, 4f, 10, 200, MonsterType.Unit),
-            new Monster("보스", 7, 10f, 10f, 30, 3000, MonsterType.Boss)
+            new Monster("까부냥", 1, 5f, 5f, 12, 100, MonsterType.Unit, "까부냥은 오늘도 까분다."),
+            new Monster("도로롱", 1, 3f, 7f, 20, 150, MonsterType.Unit, "도로롱의 털이 좋아보인다."),
+            new Monster("치킨", 1, 6f, 4f, 10, 200, MonsterType.Unit, "치킨의 때깔이 좋아보인다."),
+            new Monster("보스", 7, 10f, 10f, 30, 3000, MonsterType.Boss, "보스는 떨고있다.")
         };
         }
 
@@ -82,7 +82,8 @@ namespace text_together
                     selectMonster.shield,
                     selectMonster.health,
                     selectMonster.gold,
-                    selectMonster.monsterType
+                    selectMonster.monsterType,
+                    selectMonster.monsterInfo
                 );
 
                 newMonster.Add(enemy);

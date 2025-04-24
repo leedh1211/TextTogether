@@ -75,14 +75,6 @@ namespace text_together
                     }
                 }
 
-                // int i = 0;
-                // foreach (var skill in skills)
-                // {
-                //     i++;
-                //     Console.Write($"{i}. {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n");
-                // }
-
-
                 Console.WriteLine("[플레이어]");
                 Console.WriteLine("체력 : {0}", player.health);
                 Console.WriteLine("마나 : {0}", player.mana);
