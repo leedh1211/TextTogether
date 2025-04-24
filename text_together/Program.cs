@@ -57,6 +57,8 @@ class Solution
             dungeon = new Dungeon();
             quests = QuestManager.Instance.QuestInit();
 
+            inventory = InventoryManager.Instance.inventory;
+
             // 던전 추가
             dungeon = new Dungeon("", 0,false, false, 0);
         }
