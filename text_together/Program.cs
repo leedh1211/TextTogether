@@ -66,7 +66,7 @@ class Solution
             dungeon = new Dungeon();
 
             // 던전 추가
-            dungeon = new Dungeon("", 0);
+            dungeon = new Dungeon("", 0,false, false, 0);
         }
         // 게임 시작
         int startActionResult = title.SelectTitleOption();
