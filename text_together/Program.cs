@@ -27,7 +27,7 @@ class Solution
                 case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
                 case 2: status = InventoryManager.Instance.GoInventory(player); break;
                 case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
-                // case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
+                case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
                 case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
                 // case 6: status = QuestManager.Instance.GoQuest(player); break;
                 case 7: return;
@@ -56,6 +56,8 @@ class Solution
             items = new List<Item>();
             dungeon = new Dungeon();
             quests = QuestManager.Instance.QuestInit();
+
+            inventory = InventoryManager.Instance.inventory;
 
             // 던전 추가
             dungeon = new Dungeon("", 0,false, false, 0);

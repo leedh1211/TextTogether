@@ -27,39 +27,41 @@ namespace text_together
         }
         void InventoryInfo()
         {
-            Console.WriteLine("[아이템 목록]");
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+
+            UIManager.WriteLine(2, "[아이템 목록]");
+
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
             }
-            Console.WriteLine();
         }
 
         void DungeonInventoryInfo()
         {
-            Console.WriteLine("[아이템 목록]");
+            UIManager.WriteLine(2, "[아이템 목록]");
             foreach (var item in inventory)
             {
                 if (item.effect.type == "포션")
-                    Console.WriteLine($"{item.name.PadRight(10)}| {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"{item.name.PadRight(10)}| {item.effect.value} | {item.info} | {item.quantity}");
             }
-            Console.WriteLine();
         }
 
         // 아이템들 장착여부 정보
         void EquippedInfo()
         {
             int idx = 1;
-            Console.WriteLine("[아이템 목록]");
+            UIManager.WriteLine(2, "[아이템 목록]");
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
                 idx++;
             }
         }
@@ -71,19 +73,23 @@ namespace text_together
             if (inventory == null)
             {
                 inventory = new List<Item>(); // 인벤토리 초기화
-                Console.WriteLine("인벤토리가 초기화되었습니다.");
             }
             
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("인벤토리");
-                Console.WriteLine("포션 아이템을 먹어서 스텟을 올릴 수 있다!\n");
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+
+                UIManager.WriteLine(2, "인벤토리");
+                UIManager.WriteLine(2, "포션 아이템을 먹어서 스텟을 올릴 수 있다!");
 
                 DungeonInventoryInfo();
 
-                Console.WriteLine("아이템 번호를 입력하시면 포션을 먹을 수 있습니다. \n0.나가기\n");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                UIManager.WriteLine(2, "원하시는 행동을 선택해주세요.");
+
+
+                
+
                 int input = int.Parse(Console.ReadLine());
                 if (input > 0 && input <= inventory.Count)
                 {
@@ -95,7 +101,7 @@ namespace text_together
                 }
                 else
                 {
-                    Console.WriteLine("다시 입력해주세요.");
+                    UIManager.WriteLine(2, "다시 입력해주세요.");
                 }
             }
         }
@@ -107,8 +113,8 @@ namespace text_together
 
             if (inventory[input - 1].effect.type == "포션")
             {
-                Console.WriteLine($"{item.name}을 마셨다.");
-                Console.WriteLine($"{item.info} 효능이 발동하였다.");
+                UIManager.WriteLine(2, $"{item.name}을 마셨다.");
+                UIManager.WriteLine(2, $"{item.info} 효능이 발동하였다.");
 
                 if (item.name.Contains("생명력"))
                     player.health += item.effect.value;
@@ -120,12 +126,12 @@ namespace text_together
                 if (item.quantity <= 0)
                 {
                     inventory.RemoveAt(input - 1);
-                    Console.WriteLine("포션을 모두 사용하여 인벤토리에서 제거되었습니다.");
+                    UIManager.WriteLine(2, "포션을 모두 사용하여 인벤토리에서 제거되었습니다.");
                 }
             }
             else
             {
-                Console.WriteLine("해당 아이템은 포션이 아닙니다.");
+                UIManager.WriteLine(2, "해당 아이템은 포션이 아닙니다.");
             }
         }
 
@@ -136,31 +142,33 @@ namespace text_together
             if (inventory == null)
             {
                 inventory = new List<Item>(); // 인벤토리 초기화
-                Console.WriteLine("인벤토리가 초기화되었습니다.");
             }
 
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("인벤토리");
-                Console.WriteLine("보유 중인 아이템을 관리 할 수 있습니다.\n");
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+
+                UIManager.WriteLine(2,"인벤토리");
+                UIManager.WriteLine(2,"보유 중인 아이템을 관리 할 수 있습니다.\n");
 
                 InventoryInfo();
 
-                Console.WriteLine("1.장착 관리 \n2.나가기\n");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-                int input = int.Parse(Console.ReadLine());
-                if (input == 1)
+                List<Option> options = new List<Option>
                 {
-                    EquippedManage(player);
-                }
-                else if (input == 2)
+                    new Option { text = "장착 관리", value = 1 },
+                    new Option { text = "나가기", value = 0 }
+                };
+
+                int selectedValue = UIManager.inputController(options);
+
+                switch (selectedValue)
                 {
-                    return 2;
-                }
-                else
-                {
-                    Console.WriteLine("다시 입력해주세요.");
+                    case 1:
+                        EquippedManage(player);
+                        break;
+                    case 0:
+                        return 0;
                 }
             }
         }
@@ -170,14 +178,14 @@ namespace text_together
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("인벤토리 - 장착 관리");
-                Console.WriteLine("보유 중인 아이템을 관리 할 수 있습니다.\n");
+                UIManager.WriteLine(2, "인벤토리 - 장착 관리");
+                UIManager.WriteLine(2, "보유 중인 아이템을 관리 할 수 있습니다.\n");
 
                 EquippedInfo();
 
 
-                Console.WriteLine("\n0. 나가기 \n");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                UIManager.WriteLine(2, "\n0. 나가기 \n");
+                UIManager.WriteLine(2, "원하시는 행동을 입력해주세요.");
                 int input = int.Parse(Console.ReadLine());
                 int index;
 
@@ -189,13 +197,13 @@ namespace text_together
                 {
                     if (inventory[input-1].effect.type == "포션")
                     {
-                        Console.WriteLine("포션은 장착할 수 없습니다.");
+                        UIManager.WriteLine(2, "포션은 장착할 수 없습니다.");
                     }
 
                     // 장착중인 아이템일 경우 장착해제
                     else if (inventory[input - 1].isEquipped)
                     {
-                        Console.WriteLine($"{inventory[input - 1].name}을 장착 해제했습니다.");
+                        UIManager.WriteLine(2, $"{inventory[input - 1].name}을 장착 해제했습니다.");
                         inventory[input - 1].isEquipped = false;
 
                         if (inventory[input - 1].effect.type == "방어력")
@@ -220,7 +228,7 @@ namespace text_together
                             player.attack -= inventory[index].effect.value;
                             player.attack += inventory[input - 1].effect.value;
                         }
-                        Console.WriteLine($"{inventory[index].name}을 장착 해제하고 {inventory[input - 1].name} 장착하였습니다.\n");
+                        UIManager.WriteLine(2, $"{inventory[index].name}을 장착 해제하고 {inventory[input - 1].name} 장착하였습니다.\n");
                     }
                     else
                     {
@@ -233,12 +241,12 @@ namespace text_together
                         {
                             player.attack += inventory[input - 1].effect.value;
                         }
-                        Console.WriteLine($"{inventory[input - 1].name}을 장착하였습니다.\n");
+                        UIManager.WriteLine(2, $"{inventory[input - 1].name}을 장착하였습니다.\n");
                     }
                 }
                 else if (inventory[input - 1].isHave)
                 {
-                    Console.WriteLine("아이템을 가지고 있지 않습니다. 다시 입력해주세요 \n");
+                    UIManager.WriteLine(2, "아이템을 가지고 있지 않습니다. 다시 입력해주세요 \n");
                 }
             }
 
