@@ -13,13 +13,15 @@ namespace text_together
         public string rewardInfo;
         public string rewardType;
         public int rewardEffect;
-        public QuestReward(string rewardName, int rewardPrice, string rewardInfo, string rewardType, int rewardEffect)
+        public int rewardCount;
+        public QuestReward(string rewardName, int rewardPrice, string rewardInfo, string rewardType, int rewardEffect = 0, int rewardCount = 0)
         {
             this.rewardName = rewardName;
             this.rewardPrice = rewardPrice;
             this.rewardInfo = rewardInfo;
             this.rewardType = rewardType;
-            this.rewardEffect = rewardEffect; 
+            this.rewardEffect = rewardEffect;
+            this.rewardCount = rewardCount;
         }
-    }
+    }   
 }
