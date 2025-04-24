@@ -14,7 +14,7 @@ namespace text_together
 
         static public void View1()
         {
-            // 콘솔크기            
+            // 콘솔크기
             Console.SetBufferSize(121, 51);
             Console.SetWindowSize(121, 51); // 콘솔창 사이즈
             Console.OutputEncoding = Encoding.UTF8; // 유니코드 적용

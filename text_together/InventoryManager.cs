@@ -130,7 +130,7 @@ namespace text_together
         }
 
         // 인벤토리탭 관리
-        public void GoInventory(Player player)
+        public int GoInventory(Player player)
         {
             // inventory가 null인 경우 초기화
             if (inventory == null)
@@ -156,7 +156,7 @@ namespace text_together
                 }
                 else if (input == 2)
                 {
-                    return;
+                    return 2;
                 }
                 else
                 {

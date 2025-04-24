@@ -83,53 +83,41 @@ namespace text_together
         }
 
         // 상점탭 관리
-        public void GoShop(Player player, List<Item> inventory)
+        public int GoShop(Player player, List<Item> inventory)
         {
             this.player = player;
-            int idx = 0;
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine(idx);
-                idx++;
-                Console.WriteLine("상점\n 필요한 아이템을 얻을 수 있는 상점입니다.\n");
-
-                Console.WriteLine("[보유 골드]");
-                Console.WriteLine($"{player.gold} G\n");
+                UIManager.Clear(2);   
+                UIManager.WriteLine(2,"[상점]");
+                UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있는 상점입니다.");
+                UIManager.WriteLine(2,"[보유 골드]");
+                
+                UIManager.WriteLine(2,$"{player.gold} G\n");
 
                 ShopInfo(inventory);
-                Console.WriteLine();
+                
+                List<Option> options = new List<Option>
+                {
+                    new Option { text = "아이템 구매", value = 1 },
+                    new Option { text = "아이템 판매", value = 2 },
+                    new Option { text = "아이템 뽑기", value = 3 },
+                    new Option { text = "장비 강화", value = 4 },
+                    new Option { text = "상점 물품 업데이트", value = 5 },
+                    new Option { text = "나가기", value = 0 }
+                };
 
-                Console.WriteLine("1. 아이템 구매 \n2. 아이템 판매\n3. 아이템 뽑기\n4. 장비 강화\n5. 상점 물품 업데이트\n0. 나가기");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-                int input = int.Parse(Console.ReadLine());
-                if (input == 0)
+                int selectedValue = UIManager.inputController(options);
+                
+                switch (selectedValue)
                 {
-                    return;
-                }
-                else if (input == 1)
-                {
-                    ItemBuy(inventory);
-                }
-                else if (input == 2)
-                {
-                    ItemSell(inventory);
-                }
-                else if (input == 3)
-                {
-                    ItemGatcha(inventory);
-                }
-                else if (input == 4)
-                {
-                    EnforceItem(inventory);
-                }
-                else if(input == 5)
-                {
-                    UpdateShop();
-                }
-                else
-                {
-                    Console.WriteLine("다시 입력해주세요.");
+                    case 1: selectedValue = ItemBuy(inventory); break;
+                    case 2: selectedValue = ItemSell(inventory); break;
+                    // case 3: selectedValue = ItemGatcha(inventory); break;
+                    // case 4: selectedValue = EnforceItem(inventory); break;
+                    // case 5: selectedValue = UpdateShop(); break;
+                    case 6: selectedValue = GoShop(player, inventory); break;
+                    case 0: return 0;
                 }
             }
         }
@@ -174,148 +162,157 @@ namespace text_together
         // 아이템들 상점에서 정보
         void ShopInfo( List<Item> inventory)
         {
-            Console.WriteLine("[아이템 목록]");
+            UIManager.WriteLine(2,"[아이템 목록]");
             int idx = 1;
             foreach (var item in storeItems)
             {
                 bool isHaved = inventory.Any(x => x.name == item.name);
                 if (isHaved)
                 {
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | 보유 중");
+                    UIManager.WriteLine(2,$"- {idx} {item.name.PadRight(10)}|보유 중");
                 }
+                //| {item.effect.type} + {item.effect.value} | {item.info} | 
                 else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} G");
+                {
+                    UIManager.WriteLine(2,$"- {idx} {item.name.PadRight(10)} {item.price} G");
+                }
+                //| {item.effect.type} + {item.effect.value} | {item.info} |
                 idx++;
             }
-            Console.WriteLine();
         }
         // 아이템들 판매시 정보 
         void InventoryInfo(List<Item> inventory)
         {
             int idx = 1;
-            Console.WriteLine("[아이템 목록]");
+            // Console.WriteLine("[아이템 목록]");
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    Console.WriteLine($"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
-                else
-                    Console.WriteLine($"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.price} | {item.quantity}");
+                    UIManager.WriteLine(2,$"- {idx} [E]{item.name.PadRight(10)}|{item.price} | {item.quantity}"); //| {item.effect.type} + {item.effect.value}  {item.info} |  
+                else //{item.effect.type} + {item.effect.value} | {item.info} |
+                    UIManager.WriteLine(2,$"- {idx} {item.name.PadRight(10)}|  {item.price} | {item.quantity}");
                 idx++;
             }
         }
         // 아이템 판매하고 UI 갱신
-        void UpdateSellUI(List<Item> inventory)
+        List<Option> UpdateSellUI(List<Item> inventory)
         {
-            Console.Clear();
-            Console.WriteLine("상점 - 아이템 판매");
-            Console.WriteLine("필요한 아이템을 판매할 수 있는 상점입니다.\n");
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.WriteLine(2,"상점 - 아이템 판매");
+            UIManager.WriteLine(2,"필요한 아이템을 판매할 수 있는 상점입니다.");
 
-            Console.WriteLine("[보유 골드]");
-            Console.WriteLine($"{player.gold} G\n");
+            UIManager.WriteLine(2,"[보유 골드]");
+            UIManager.WriteLine(2,$"{player.gold} G");
 
             InventoryInfo(inventory);
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기\n");
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "나가기", value = 0 },
+            };
 
+            int idx = 1;
+            foreach (var item in inventory)
+            {
+                Option targetOption = new Option { text = item.name, value = idx };
+                options.Add(targetOption);
+                idx++;
+            }
+
+            return options;
         }
         // 아이템 판매 관리
-        void ItemSell(List<Item> inventory)
+        int ItemSell(List<Item> inventory)
         {
             double sellPrice = 0;
 
-            while (true)
+            List<Option> options = UpdateSellUI(inventory);
+            UIManager.WriteLine(2,"판매하고 싶은 아이템을 선택해주세요.");
+            int input = UIManager.inputController(options);
+
+            if (input == 0)
             {
-
-                UpdateSellUI(inventory);
-                Console.WriteLine("판매하고 싶은 아이템 번호를 입력해주세요.");
-                int input = int.Parse(Console.ReadLine());
-
-                if (input == 0)
-                {
-                    return;
-                }
-                else if (input > inventory.Count || input < 0)
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                    continue;
-                }
-                else if (inventory[input -1].quantity > 1)
-                {
-                    sellPrice = inventory[input - 1].price * 0.85;
-                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                    inventory[input - 1].quantity -= 1;
-                }
-                else if (inventory[input - 1].isEquipped)
-                {
-                    sellPrice = inventory[input - 1].price * 0.85;
-                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                    inventory[input - 1].isEquipped = false;
-                    inventory.RemoveAt(input - 1);
-                }
-                else
-                {
-                    sellPrice = inventory[input - 1].price * 0.85;
-                    Console.WriteLine($"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                    inventory.RemoveAt(input - 1);
-                }
-                
-                player.gold += (int)sellPrice;
-                
-                UpdateSellUI(inventory);
+                return 6;
             }
+            else if (inventory[input -1].quantity > 1)
+            {
+                sellPrice = inventory[input - 1].price * 0.85;
+                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                inventory[input - 1].quantity -= 1;
+            }
+            else if (inventory[input - 1].isEquipped)
+            {
+                sellPrice = inventory[input - 1].price * 0.85;
+                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                inventory[input - 1].isEquipped = false;
+                inventory.RemoveAt(input - 1);
+            }
+            else
+            {
+                sellPrice = inventory[input - 1].price * 0.85;
+                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                inventory.RemoveAt(input - 1);
+            }
+                
+            player.gold += (int)sellPrice;
+                
+            UpdateSellUI(inventory);
 
+            return 1;
         }
-        // 아이템 구매하고 UI 갱신
-        void UpdateBuyUI(List<Item> inventory)
+        // 아이템 구매할때 UI 갱신
+        List<Option> UpdateBuyUI(List<Item> inventory)
         {
-            Console.Clear();
-            Console.WriteLine("상점 - 아이템 구매");
-            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.\n");
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.WriteLine(2,"상점 - 아이템 구매");
+            UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있는 상점입니다.\n");
 
-            Console.WriteLine("[보유 골드]");
-            Console.WriteLine($"{player.gold} G\n");
+            UIManager.WriteLine(2,"[보유 골드]");
+            UIManager.WriteLine(2,$"{player.gold} G\n");
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "나가기", value = 0 },
+            };
 
+            int idx = 1;
+            foreach (var item in storeItems)
+            {
+                bool isHaved = inventory.Any(x => x.name == item.name);
+                if (!isHaved)
+                {
+                    Option targetOption = new Option { text = item.name, value = idx };
+                    options.Add(targetOption);
+                }
+                idx++;
+            }
             ShopInfo(inventory);
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기\n");
+            return options;
         }
 
         // 아이템 구매 관리
-        void ItemBuy(List<Item> inventory)
+        int ItemBuy(List<Item> inventory)
         {
-            while (true)
+            List<Option> options = UpdateBuyUI(inventory);
+            UIManager.WriteLine(2,"구매하고 싶은 아이템 번호를 입력해주세요.");
+            int input = UIManager.inputController(options);
+            // int input = int.Parse(Console.ReadLine());
+
+            if (input == 0)
             {
-                UpdateBuyUI(inventory);
-                Console.WriteLine("구매하고 싶은 아이템 번호를 입력해주세요.");
-                int input = int.Parse(Console.ReadLine());
-
-                if (input == 0)
+                return 6;
+            }else{
+                if (storeItems[input - 1].price > player.gold)
                 {
-                    return;
+                    UIManager.WriteLine(2,"Gold가 부족합니다.");
                 }
-                if (input > storeItems.Count || input < 0)
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                    continue;
-                }
-
                 else
                 {
-
-                    if (storeItems[input - 1].price > player.gold)
-                    {
-                        Console.WriteLine("Gold가 부족합니다.");
-                        continue;
-                    }
-                    else
-                    {
-                        AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
-                        UpdateBuyUI(inventory);
-                    }
+                    AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
+                    UpdateBuyUI(inventory);
                 }
-
             }
-
+            return 1;
         }
 
         void AddItem(Item item, List<Item> inventory, int price)

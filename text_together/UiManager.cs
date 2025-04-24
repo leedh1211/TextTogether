@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Text;
+using NAudio.Mixer;
 
 
 namespace text_together;
 
 public class UIManager
 {
-
     static int prevWidth = Console.WindowWidth;
     static int prevHeight = Console.WindowHeight;
 
@@ -38,9 +38,9 @@ public class UIManager
 
     static List<int[]> cursors = new List<int[]>()
     {
-        new int[] { mainStartPos_x, mainStartPos_y },        // 1번 커서
-        new int[] { contentStartPos_x, contentStartPos_y },  // 2번 커서
-        new int[] { optionStartPos_x, optionStartPos_y }     // 3번 커서
+        new int[] { mainStartPos_x, mainStartPos_y }, // 1번 커서
+        new int[] { contentStartPos_x, contentStartPos_y }, // 2번 커서
+        new int[] { optionStartPos_x, optionStartPos_y } // 3번 커서
     };
 
 
@@ -57,16 +57,11 @@ public class UIManager
         static public List<string> mainTextTemp { get; set; }
         static public List<string> contentTextTemp { get; set; }
         static public List<string> optionTextTemp { get; set; }
-
-
     }
 
 
     //버퍼에 담을 문자열을 만들 공간
     static StringBuilder textTemp = new StringBuilder();
-
-
-
 
 
     static public void SetCursor()
@@ -96,7 +91,6 @@ public class UIManager
         //상단 UI
         if (index + 1 == 1)
         {
-
             //커서 위치 초기화
             cursors[index][0] = mainStartPos_x;
             cursors[index][1] = mainStartPos_y;
@@ -110,6 +104,7 @@ public class UIManager
                 {
                     Console.Write(" ");
                 }
+
                 Console.WriteLine();
             }
         }
@@ -130,6 +125,7 @@ public class UIManager
                 {
                     Console.Write(" ");
                 }
+
                 Console.WriteLine();
             }
         }
@@ -150,6 +146,7 @@ public class UIManager
                 {
                     Console.Write(" ");
                 }
+
                 Console.WriteLine();
             }
         }
@@ -165,10 +162,9 @@ public class UIManager
 
         if (index + 1 == 1)
         {
-
         }
 
-        else if(index +1 == 2)
+        else if (index + 1 == 2)
         {
             for (int i = 0; i < text.Length; i++)
             {
@@ -307,7 +303,7 @@ public class UIManager
 
         // 커서위치 반환 (마지막 위치 기억용)
         cursors[index][0] = Console.CursorLeft; // x축
-        cursors[index][1] = Console.CursorTop;  // y축
+        cursors[index][1] = Console.CursorTop; // y축
     }
 
     static public void WriteLine(int index, string text)
@@ -351,6 +347,8 @@ public class UIManager
                 textTemp.Clear(); // 버퍼 클리어
             }
 
+
+            //이거 뭐냐??
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
@@ -366,6 +364,7 @@ public class UIManager
         {
             if (Text.contentText.Count > 0)
             {
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
                 Text.contentText.RemoveAt(Text.contentText.Count - 1);
             }
@@ -395,6 +394,8 @@ public class UIManager
                 textTemp.Clear(); // 버퍼 클리어
             }
 
+
+            //이거 뭐냐??
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
@@ -410,6 +411,7 @@ public class UIManager
         {
             if (Text.optionText.Count > 0)
             {
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
                 Text.optionText.RemoveAt(Text.optionText.Count - 1);
             }
@@ -422,8 +424,8 @@ public class UIManager
                 // 현재 커서 위치 확인
                 int currentCursorLeft = Console.CursorLeft;
 
-                // 커서가 UI 범위를 벗어나면 줄 바꿈 (UI3는 optionStartPos_X부터 시작)
-                if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= optionStartPos_x + optionSpace_x) //이거 까먹으면 안댐
                 {
                     newLineCnt[index]++;
                     Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
@@ -439,6 +441,8 @@ public class UIManager
                 textTemp.Clear(); // 버퍼 클리어
             }
 
+
+            //이거 뭐냐??
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
@@ -448,9 +452,6 @@ public class UIManager
             cursors[index][0] = Console.CursorLeft;
             cursors[index][1] = Console.CursorTop;
         }
-
-
-
     }
 
 
@@ -474,13 +475,13 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
@@ -505,18 +506,19 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
                     }
                 }
+
                 Thread.Sleep(typingDelay);
             }
         }
@@ -535,18 +537,19 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
                     }
                 }
+
                 Thread.Sleep(typingDelay);
             }
         }
@@ -554,8 +557,7 @@ public class UIManager
 
         //커서위치 반환 (마지막 위치 기억용)
         cursors[index][0] = Console.CursorLeft; //x축
-        cursors[index][1] = Console.CursorTop;  //y축
-
+        cursors[index][1] = Console.CursorTop; //y축
     }
 
     static public void TypingLine(int index, string text)
@@ -578,18 +580,19 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
                     }
                 }
+
                 Thread.Sleep(typingDelay);
             }
 
@@ -611,18 +614,19 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
                     }
                 }
+
                 Thread.Sleep(typingDelay);
             }
 
@@ -644,18 +648,19 @@ public class UIManager
                     //해당 문자 표현시 소리재생 X
                     if (text[i] == ' ' || text[i] == '.')
                     {
-
                     }
 
                     else
                     {
                         if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        {
+                            //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                             Thread thread = new Thread(SoundManager.sound);
                             thread.Start();
                         }
                     }
                 }
+
                 Thread.Sleep(typingDelay);
             }
 
@@ -666,8 +671,7 @@ public class UIManager
 
         //커서위치 반환 (마지막 위치 기억용)
         cursors[index][0] = Console.CursorLeft; //x축
-        cursors[index][1] = Console.CursorTop;  //y축
-
+        cursors[index][1] = Console.CursorTop; //y축
     }
 
     //타이핑 효과
@@ -680,13 +684,13 @@ public class UIManager
             //해당 문자 표현시 소리재생 X
             if (text[i] == ' ' || text[i] == '.')
             {
-
             }
 
             else
             {
                 if (filePath != null)
-                {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                {
+                    //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
                     Thread thread = new Thread(SoundManager.sound);
                     thread.Start();
                 }
@@ -695,10 +699,10 @@ public class UIManager
             //타이핑 후 대기시간
             Thread.Sleep(60);
         }
-
     }
 
     static bool isChecking = false;
+
     public static async Task Call_CheckWindow()
     {
         while (true)
@@ -711,6 +715,7 @@ public class UIManager
             await Task.Delay(100); // 0.1초마다 체크
         }
     }
+
     private static readonly object _lockObject = new object();
 
     static public void CheckWindow()
@@ -721,6 +726,7 @@ public class UIManager
             {
                 return;
             }
+
             isChecking = true;
             isChecking = false;
             // 변경 없으면 아무것도 안 함
@@ -741,18 +747,15 @@ public class UIManager
                 //View.DrawAsciiFrame();
 
 
-
                 //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
                 //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
                 //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
                 View.DrawUIFast();
 
 
-
                 newLineCnt[0] = 0;
                 newLineCnt[1] = 0;
                 newLineCnt[2] = 0;
-
 
 
                 //얘는 새로운 리스트일뿐이야
@@ -770,7 +773,7 @@ public class UIManager
                 StringBuilder temp = new StringBuilder();
                 string[] lines;
                 string fullText;
-                
+
                 foreach (var a in Text.mainTextTemp)
                 {
                     temp.Append(a);
@@ -797,7 +800,7 @@ public class UIManager
                 {
                     UIManager.WriteLine(1, test[j]);
                 }
-                
+
                 ////////////////////////////////////////////////////
 
                 //비워줘야함
@@ -863,22 +866,14 @@ public class UIManager
                 }
 
 
-
-
-
-
-
                 Text.mainTextTemp.Clear();
                 Text.contentTextTemp.Clear();
                 Text.optionTextTemp.Clear();
 
 
                 //Console.CursorVisible = false;// 입력 숨겨주는거 
-
             }
         }
-
-        
     }
 
 
@@ -887,13 +882,13 @@ public class UIManager
 
     //콘텐트UI 가로 비율
     static float contentWidthRatio = 0.6f;
+
     //콘텐트UI 세로 비율
     static float contentHeightRatio = 0.35f; // 세로빼면 되서 자동으로 받을수있지 않을까
 
     //옵션UI 비율
     static float optionWidthRatio = 0.4f;
     static float optionHeightRatio = 0.65f;
-
 
 
     //실질적으로 변경되어야하는 친구는
@@ -911,9 +906,12 @@ public class UIManager
         contentStartPos_y = (int)Math.Round(Console.WindowHeight * mainHeightRatio) + 1; //downY
 
         optionSpace_x = (int)Math.Round(Console.WindowWidth * optionWidthRatio) - 3; //해당비율은 1.00 - content가로비율임
-        optionSpace_y = (int)Math.Round(Console.WindowHeight * contentHeightRatio) - 3;    //해당 비율 수치는 공간이기때문에 1.00 - main높이비율임
-        optionStartPos_x = (int)Math.Round(Console.WindowWidth * contentWidthRatio) + 1;  //x 시작점이 결국 콘텐츠스페이스 +1이니까 content비율을 곱해줌
-        optionStartPos_y = (int)Math.Round(Console.WindowHeight * mainHeightRatio) + 1;  //y 시작점이 결국 메인스페이스 +1이니까 main비율을 곱해줌
+        optionSpace_y =
+            (int)Math.Round(Console.WindowHeight * contentHeightRatio) - 3; //해당 비율 수치는 공간이기때문에 1.00 - main높이비율임
+        optionStartPos_x =
+            (int)Math.Round(Console.WindowWidth * contentWidthRatio) + 1; //x 시작점이 결국 콘텐츠스페이스 +1이니까 content비율을 곱해줌
+        optionStartPos_y =
+            (int)Math.Round(Console.WindowHeight * mainHeightRatio) + 1; //y 시작점이 결국 메인스페이스 +1이니까 main비율을 곱해줌
 
         ////////////////
         //View클래스 변경
@@ -929,6 +927,7 @@ public class UIManager
 
         SetCursor();
     }
+
     static public void test()
     {
         Console.Title = " ";
@@ -942,15 +941,10 @@ public class UIManager
         }
 
 
-
         Console.ReadKey();
-
-
-
     }
 
 
-    
     static public int inputController(List<Option> option)
     {
         int index = 0, prevIndex = 0;
@@ -989,12 +983,12 @@ public class UIManager
 
             // 3) 상태 갱신
             prevIndex = index;
-            prevPage  = page;
-            index     = newIndex;
-            page      = newPage;
+            prevPage = page;
+            index = newIndex;
+            page = newPage;
         }
     }
-    
+
     static void RefreshOptionsPage(List<Option> option, int page, int selectedIndex)
     {
         Clear(3);
@@ -1007,7 +1001,7 @@ public class UIManager
             Console.Write(prefix + option[start + i].text);
         }
     }
-    
+
     static void MoveHighlight(int oldLocal, int newLocal)
     {
         // 이전 ▶ 지우기
@@ -1017,16 +1011,16 @@ public class UIManager
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
         Console.Write("\u25B7");
     }
-    
+
     static int GetDelta(ConsoleKey key) => key switch
     {
-        ConsoleKey.W or ConsoleKey.UpArrow   => -1,
+        ConsoleKey.W or ConsoleKey.UpArrow => -1,
         ConsoleKey.S or ConsoleKey.DownArrow => +1,
-        ConsoleKey.A or ConsoleKey.LeftArrow   => -6,
+        ConsoleKey.A or ConsoleKey.LeftArrow => -6,
         ConsoleKey.D or ConsoleKey.RightArrow => +6,
-        _                                    => 0
+        _ => 0
     };
-    
+
     public static void DrawAscii(string asciiArt)
     {
         UIManager.Clear(1);
@@ -1049,6 +1043,33 @@ public class UIManager
 
             Console.SetCursorPosition(startX, startY + i);
             Console.Write(line);
+        }
+    }
+
+    public static void ClearList(int? x = null, int? y = null, int? z = null)
+    {
+        if (x == null && y == null && z == null)
+        {
+            Clear(1);
+            Clear(2);
+            Clear(3);
+        }
+        else
+        {
+            if (x != null)
+            {
+                Clear(1);
+            }
+
+            if (y != null)
+            {
+                Clear(2);
+            }
+
+            if (z != null)
+            {
+                Clear(3);
+            }
         }
     }
 }
