@@ -128,7 +128,7 @@ namespace text_together
                 }
                 else if (input == 3)
                 {
-                    ShopManager.Instance.GoShop(player, items, inventory);
+                    ShopManager.Instance.GoShop(player, inventory);
                 }
                 else if (input == 4)
                 {
