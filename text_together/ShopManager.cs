@@ -42,7 +42,7 @@ namespace text_together
         }
 
         // 상점 갱신
-        public void UpdateShop()
+        public int UpdateShop()
         {
             // 아이템 풀 셔플 리스트 만들기
             List<Item> shuffle = new List<Item>(ItemData.ItemPool);
@@ -79,7 +79,7 @@ namespace text_together
                 storeItems.Add(updateItem);
             }
 
-            // Console.Clear();
+            return 6;
         }
 
         // 상점탭 관리
@@ -113,9 +113,9 @@ namespace text_together
                 {
                     case 1: selectedValue = ItemBuy(inventory); break;
                     case 2: selectedValue = ItemSell(inventory); break;
-                    // case 3: selectedValue = ItemGatcha(inventory); break;
-                    // case 4: selectedValue = EnforceItem(inventory); break;
-                    // case 5: selectedValue = UpdateShop(); break;
+                    case 3: selectedValue = ItemGatcha(inventory); break;
+                    case 4: selectedValue = EnforceItem(inventory); break;
+                    case 5: selectedValue = UpdateShop(); break;
                     case 6: selectedValue = GoShop(player, inventory); break;
                     case 0: return 0;
                 }
@@ -123,9 +123,12 @@ namespace text_together
         }
 
         // 뽑기 기능
-        void ItemGatcha(List<Item> inventory)
+        int ItemGatcha(List<Item> inventory)
         {
-            if(player.gold >= 150)
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+
+            if (player.gold >= 150)
             {
                 player.gold -= 150;
 
@@ -133,29 +136,23 @@ namespace text_together
                 int index = random.Next(ItemData.ItemPool.Count);
                 Item randomItem = ItemData.ItemPool[index];
 
-                Console.Clear();
-                Console.WriteLine($"{randomItem.name}을(를) 뽑았습니다!");
-                Console.WriteLine($"{randomItem.effect.type} +{randomItem.effect.value} | {randomItem.info}");
-                Console.WriteLine();
+                UIManager.WriteLine(2, $"{randomItem.name}을(를) 뽑았습니다!");
+                UIManager.WriteLine(2, $"{randomItem.effect.type} +{randomItem.effect.value} | {randomItem.info}");
 
                 AddItem(randomItem, inventory, 150);
             }
             else
             {
-                Console.WriteLine("저축해서 다시 와 주세요...");
+                UIManager.WriteLine(2, "저축해서 다시 와 주세요...");
             }
 
-            Console.WriteLine("0. 나가기");
-            int input = int.Parse(Console.ReadLine());
-            if (input == 0)
+            List<Option> options = new List<Option>
             {
-                return;
-            }
-            else
-            {
-                Console.WriteLine("다시 입력해주세요.");
-            }
+                new Option { text = "나가기", value = 0 }
+            };
 
+            UIManager.inputController(options);
+            return 3;
         }
 
 
@@ -199,7 +196,7 @@ namespace text_together
         {
             UIManager.Clear(2);
             UIManager.Clear(3);
-            UIManager.WriteLine(2,"상점 - 아이템 판매");
+            UIManager.WriteLine(2,"[상점 - 아이템 판매]");
             UIManager.WriteLine(2,"필요한 아이템을 판매할 수 있는 상점입니다.");
 
             UIManager.WriteLine(2,"[보유 골드]");
@@ -228,7 +225,11 @@ namespace text_together
 
             List<Option> options = UpdateSellUI(inventory);
             UIManager.WriteLine(2,"판매하고 싶은 아이템을 선택해주세요.");
+
             int input = UIManager.inputController(options);
+
+            UIManager.Clear(2);
+            UIManager.Clear(3);
 
             if (input == 0)
             {
@@ -239,6 +240,7 @@ namespace text_together
                 sellPrice = inventory[input - 1].price * 0.85;
                 UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
                 inventory[input - 1].quantity -= 1;
+
             }
             else if (inventory[input - 1].isEquipped)
             {
@@ -255,7 +257,14 @@ namespace text_together
             }
                 
             player.gold += (int)sellPrice;
-                
+
+            List<Option> exitOptions = new List<Option>
+            {
+                new Option { text = "나가기", value = 0}
+            };
+
+            UIManager.inputController(exitOptions);
+
             UpdateSellUI(inventory);
 
             return 1;
@@ -296,7 +305,9 @@ namespace text_together
             List<Option> options = UpdateBuyUI(inventory);
             UIManager.WriteLine(2,"구매하고 싶은 아이템 번호를 입력해주세요.");
             int input = UIManager.inputController(options);
-            // int input = int.Parse(Console.ReadLine());
+
+            UIManager.Clear(2);
+            UIManager.Clear(3);
 
             if (input == 0)
             {
@@ -309,9 +320,16 @@ namespace text_together
                 else
                 {
                     AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
-                    UpdateBuyUI(inventory);
                 }
+
+                List<Option> exitOptions = new List<Option>
+                {
+                new Option { text = "나가기", value = 0}
+                };
+
+                UIManager.inputController(exitOptions);
             }
+            UpdateBuyUI(inventory);
             return 1;
         }
 
@@ -327,39 +345,47 @@ namespace text_together
                 {
                     player.gold -= price;
                     haveItem.quantity++;
-                    Console.WriteLine($"{haveItem.name}을 {haveItem.quantity} 개째 얻었습니다!");
+                    UIManager.WriteLine(2, $"{haveItem.name}을 {haveItem.quantity} 개째 얻었습니다!");
                 }
                 else
                 {
-                    Console.WriteLine($"{haveItem.name}은 최대 수량입니다. 더 이상 획득할 수 없습니다...");
+                    UIManager.WriteLine(2, $"{haveItem.name}은 최대 수량입니다. 더 이상 획득할 수 없습니다...");
                 }
             }
             else
             {
                 player.gold -= price;
                 inventory.Add(new Item(item.name, item.effect, item.info, item.price, true, false, item.maxQuantity));
-                Console.WriteLine($"{item.name}을(를) 획득했습니다!");
+                UIManager.WriteLine(2, $"{item.name}을(를) 획득했습니다!");
             }
         }
 
         // 아이템 강화
-        void EnforceItem(List<Item> inventory)
+        int EnforceItem(List<Item> inventory)
         {
             while(true)
             {
-                Console.Clear();
-                Console.WriteLine("아이템을 강화해봅시다!");
-                Console.WriteLine("강화할 아이템을 선택해 주세요.");
-                Console.WriteLine();
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+
+                UIManager.WriteLine(2, "아이템을 강화해봅시다!");
+                UIManager.WriteLine(2, "강화할 아이템을 선택해 주세요.");
 
                 InventoryInfo(inventory);
-                Console.WriteLine("0. 나가기\n");
 
-                int input = int.Parse(Console.ReadLine());
+                List<Option> options = new List<Option> { new Option { text = "나가기", value = 0 } };
+
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    options.Add(new Option { text = inventory[i].name, value = i + 1 });
+                }
+
+
+                int input = UIManager.inputController(options);
 
                 if (input == 0)
                 {
-                    return;
+                    return 4;
                 }
 
                 Item upgradeItem = inventory[input - 1];
@@ -375,41 +401,42 @@ namespace text_together
 
                 if(upgradeItem.effect.type == "포션")
                 {
-                    Console.WriteLine("소모품은 강화할 수 없습니다.");
+                    UIManager.WriteLine(2, "소모품은 강화할 수 없습니다.");
                     continue;
                 }
 
                 else if(input < 1 || input > inventory.Count)
                 {
-                    Console.WriteLine("잘못된 입력입니다.");
+                    UIManager.WriteLine(2, "잘못된 입력입니다.");
                     continue;
                 }
 
                 else if (player.gold < 100)
                 {
-                    Console.WriteLine("골드가 부족합니다...");
+                    UIManager.WriteLine(2, "골드가 부족합니다...");
                     break;
                 }
 
-                Console.WriteLine($"{upgradeItem.name}을(를) 강화합니다.");
-                Console.WriteLine($"현재 {upgradeItem.upgradeLevel}번 강화했습니다.");
-                Console.WriteLine($"성공 확률: {success} %");
-                Console.WriteLine();
-                Console.WriteLine($"강화하시겠습니까?");
-                Console.WriteLine("1. 예");
-                Console.WriteLine("2. 아니오");
+                UIManager.Clear(2);
+                UIManager.Clear(3);
 
-                int confirm = int.Parse(Console.ReadLine());
+                UIManager.WriteLine(2, $"{upgradeItem.name}을(를) 강화합니다.");
+                UIManager.WriteLine(2, $"현재 {upgradeItem.upgradeLevel}번 강화했습니다.");
+                UIManager.WriteLine(2, $"성공 확률: {success} %");
+                UIManager.WriteLine(2, "");
+                UIManager.WriteLine(2, $"강화하시겠습니까?");
 
-                if(confirm == 2)
+                List<Option> confirm = new List<Option>
                 {
-                    break;
-                }
+                    new Option { text = "예", value = 1 },
+                    new Option { text = "아니오", value = 2 }
+                };
 
-                else if (confirm != 1 && confirm !=2)
+                int confirmInput = UIManager.inputController(confirm);
+
+                if (confirmInput == 2)
                 {
-                    Console.WriteLine("잘못된 입력입니다.");
-                    continue;
+                    return 4;
                 }
 
                 player.gold -= 100;
@@ -424,21 +451,22 @@ namespace text_together
                 Random randomRoll = new Random();
                 int roll = randomRoll.Next(1, 101);
 
-                Console.Clear();
+                UIManager.Clear(2);
+                UIManager.Clear(3);
 
-                if(roll <= success)
+                if (roll <= success)
                 {
                     upgradeItem.upgradeLevel++;
                     upgradeItem.effect.value += 2;
-                    Console.WriteLine("강화 성공!");
-                    Console.WriteLine($"{upgradeItem.name}의 공격력/방어력이 {upgradeItem.effect.value}가 되었습니다.");
+                    UIManager.WriteLine(2, "강화 성공!");
+                    UIManager.WriteLine(2, $"{upgradeItem.name}의 공격력/방어력이 {upgradeItem.effect.value}가 되었습니다.");
                 }
 
                 else
                 {
-                    Console.WriteLine("강화 실패...");
+                    UIManager.WriteLine(2, "강화 실패...");
                     upgradeItem.quantity--;
-                    Console.WriteLine("장비가 파괴되었습니다...");
+                    UIManager.WriteLine(2, "장비가 파괴되었습니다...");
 
                     if(upgradeItem.quantity == 0)
                     {
@@ -446,27 +474,15 @@ namespace text_together
                     }
                 }
 
-                while (true)
+                List<Option> exitOption = new List<Option>
                 {
-                    Console.WriteLine("0. 나가기");
-                    int exit = int.Parse(Console.ReadLine());
+                    new Option { text = "나가기", value = 0 }
+                };
 
-                    if (exit == 0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("잘못된 입력입니다.");
-                    }
-                }
-
+                UIManager.inputController(exitOption);
 
             }
-
-            // 강화 성공. 성공을 거듭할수록 그 아이템의 강화확률은 낮아진다
-
-            // 강화 실패
+            return 4;
         }
     }
 }
