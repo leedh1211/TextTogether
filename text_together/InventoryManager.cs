@@ -159,6 +159,8 @@ namespace text_together
 
             while (true)
             {
+                UIManager.Clear(1);
+                UIManager.DrawAscii(UIAscii.BackPack);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
 

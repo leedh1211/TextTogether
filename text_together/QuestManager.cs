@@ -78,6 +78,7 @@ namespace text_together
             while (true)
             {
                 UIManager.Clear(1);
+                UIManager.DrawAscii(UIAscii.QuestArt);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
                 List<Option> options = new List<Option>();
@@ -88,7 +89,7 @@ namespace text_together
                 if (availableQuests.Count == 0)
                 {
 
-                    Console.WriteLine("수행할 수 있는 퀘스트가 없습니다.\n");
+                    Console.WriteLine("수행할 수 있는 퀘스트가 없습니다.");
                     continue;
                 }
                 for (int i = 0; i < availableQuests.Count; i++)
@@ -97,7 +98,7 @@ namespace text_together
                     string status = quest.isRewarded ? "[완료]" :
                                     quest.isAccepted && quest.questGoals.All(g => g.IsComplete) ? "[완료 대기]" :
                                     quest.isAccepted ? "[진행 중]" : "[미수락]";
-                    options.Add(new Option { text = $"{quest.questName} \n", value = i + 1, });
+                    options.Add(new Option { text = $"{quest.questName} ", value = i + 1, });
                     UIManager.WriteLine(2, $"{quest.questName} {quest.questInfo} {status}");
                 }
 
@@ -125,7 +126,7 @@ namespace text_together
             UIManager.Clear(1);
             UIManager.Clear(2);
             UIManager.Clear(3);
-            UIManager.WriteLine(2, $"{quest.questName} \n{quest.questInfo}");
+            UIManager.WriteLine(2, $"{quest.questName} {quest.questInfo}");
 
 
             foreach (var goal  in quest.questGoals)
@@ -133,11 +134,11 @@ namespace text_together
                 UIManager.WriteLine(2,$"- {goal.questTarget} {goal.requiredCount}마리 처치");
                 if(quest.isAccepted)
                 {
-                    UIManager.WriteLine(2,$"[퀘스트 진행] {quest.questName} - {goal.questTarget}: {goal.currentCount}/{goal.requiredCount}\n");
+                    UIManager.WriteLine(2,$"[퀘스트 진행] {quest.questName} - {goal.questTarget}: {goal.currentCount}/{goal.requiredCount}");
                 }
             }
            
-            UIManager.WriteLine(2, "\n보상");
+            UIManager.WriteLine(2, "보상");
             foreach(var reward in quest.questRewards)
             {
                 if(reward.rewardType == "G")

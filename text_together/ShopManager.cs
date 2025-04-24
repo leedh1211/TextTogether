@@ -88,6 +88,8 @@ namespace text_together
             this.player = player;
             while (true)
             {
+                UIManager.Clear(1);
+                UIManager.DrawAscii(UIAscii.ShopArt);
                 UIManager.Clear(2);   
                 UIManager.WriteLine(2,"[상점]");
                 UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있는 상점입니다.");

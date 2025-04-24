@@ -37,16 +37,18 @@ namespace text_together
             while (true)
             {
                 List<Option> options = new List<Option>();
-                Console.Clear();
-                Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
+                UIManager.Clear(1);
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+                UIManager.WriteLine(2,$"현재 스테이지1 : {dungeon.stage}" );
 
                 foreach (var monsters in monster)
                 {
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    String monsterinfoText = DungeonManager.getMonsterInfoText(monsters);
+                    UIManager.WriteLine(2,monsterinfoText);
                 }
 
-                Console.WriteLine(message);
+                UIManager.WriteLine(2,message);
                 
                 int i = 0;
                 foreach (var skill in skills)
@@ -54,7 +56,7 @@ namespace text_together
                     i++;
                     options.Add(new Option
                     {
-                        text = $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n", value = i,
+                        text = $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} ", value = i,
                     });
                 }
                 int selectedValue = UIManager.inputController(options);
@@ -77,17 +79,17 @@ namespace text_together
                     }
                 }
 
-                Console.WriteLine("[플레이어]");
-                Console.WriteLine("체력 : {0}", player.health);
-                Console.WriteLine("마나 : {0}", player.mana);
-                Console.WriteLine("레벨 : {0} \n", player.level);
+                UIManager.WriteLine(2,"[플레이어]");
+                UIManager.WriteLine(2,$"체력 : {player.health}" );
+                UIManager.WriteLine(2,$"마나 : {player.mana}" );
+                UIManager.WriteLine(2,$"레벨 : {player.level} " );
 
                 if (message != null)
                 {
-                    Console.WriteLine(message);
+                    UIManager.WriteLine(2,message);
                 }
 
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                UIManager.WriteLine(2,"원하시는 행동을 입력해주세요.");
 
                 Console.Write(">>");
 

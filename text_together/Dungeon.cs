@@ -13,7 +13,7 @@ namespace text_together
         public int deadCount { get; set;}
 
         public Dungeon() { }
-        public Dungeon(string dungeonLevel, int stagem, bool dungeonClear, bool gameClear, int deadCount)
+        public Dungeon(string dungeonLevel, int stage, bool dungeonClear, bool gameClear, int deadCount)
         {
             this.dungeonLevel = dungeonLevel;
             this.stage = stage;
