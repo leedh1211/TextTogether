@@ -34,17 +34,53 @@ namespace text_together
         public void SelectSkill(List<Monster> monster, Player player, Dungeon dungeon)
         {
             string message = "";
+            List<Option> options = new List<Option>();
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
+                foreach (var monsters in monster)
+                {
+                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
+                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                }
+                
                 int i = 0;
                 foreach (var skill in skills)
                 {
                     i++;
-                    Console.Write($"{i}. {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n");
+                    options.Add(new Option
+                    {
+                        text = $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n", value = i,
+                    });
                 }
+                int selectedValue = UIManager.inputController(options);
+                    
+
+                switch (selectedValue)
+                {
+                    case 0: return;
+                    default : 
+                    if (skills[selectedValue-1].Cost > player.mana)
+                    {
+                        message = "마나가 부족합니다.";
+                        continue;
+                    }
+                    else
+                    {
+                        message = "대상을 선택하세요.";
+                        DungeonManager.Instance.MonsterSelect(player, dungeon, monster, skills[selectedValue - 1]);
+                        return;
+                    }
+                }
+
+                // int i = 0;
+                // foreach (var skill in skills)
+                // {
+                //     i++;
+                //     Console.Write($"{i}. {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} \n");
+                // }
 
 
                 Console.WriteLine("[플레이어]");
