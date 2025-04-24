@@ -23,7 +23,7 @@ namespace text_together
             }
         }
         // 휴식 탭 관리
-        public void GoRest(Player player, List<Item> items, List<Item> inventory)
+        public int GoRest(Player player, List<Item> items, List<Item> inventory)
         {
             while (true)
             {
@@ -38,7 +38,7 @@ namespace text_together
                 }
                 if (input == 0)
                 {
-                    return;
+                    return 0;
                 }
                 if (input == 1)
                 {
