@@ -287,12 +287,9 @@ namespace text_together
             int idx = 1;
             foreach (var item in storeItems)
             {
-                bool isHaved = inventory.Any(x => x.name == item.name);
-                if (!isHaved)
-                {
-                    Option targetOption = new Option { text = item.name, value = idx };
-                    options.Add(targetOption);
-                }
+                Option targetOption = new Option { text = item.name, value = idx };
+                options.Add(targetOption);
+                
                 idx++;
             }
             ShopInfo(inventory);
