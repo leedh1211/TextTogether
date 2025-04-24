@@ -52,7 +52,7 @@ namespace text_together
 
             // 공격력의 10% 오차 적용
             float damage = (rand.Next((int)player.attack + skill.Attack - round, (int)player.attack + skill.Attack + round)) - (monster.shield * 0.7f );
-            if(damage <= 0) damage=1;
+            if(damage <= 1) damage=1;
 
             // 치명타 구현 ( 15%의 확률로 1.6배의 데미지)
             if(rand.Next(100) < 15)

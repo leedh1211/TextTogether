@@ -68,7 +68,7 @@ namespace text_together
             int count = random.Next(1, 4);
             MonsterType type = MonsterType.Unit;
 
-            for (int i = 0; i < random.Next(1, 4); i++)
+            for (int i = 0; i < 1; i++)
             {
                 // 몬스터 레벨과 스테이지 값을 통한 몬스터 추출 범위 선정
                 if(stage % 5 == 0)type = MonsterType.Boss;

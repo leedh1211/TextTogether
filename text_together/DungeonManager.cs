@@ -154,11 +154,7 @@ namespace text_together
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
-                foreach (var monsters in monster)
-                {
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
-                }
+                OutputMonster(monster);
 
                 Console.WriteLine("");
                 Console.WriteLine("[플레이어]");
@@ -203,7 +199,7 @@ namespace text_together
         }
 
 
-        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, Skill skill)
+        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monsters, Skill skill)
         {
             
             while (dungeon.dungeonClear == false)
@@ -214,16 +210,15 @@ namespace text_together
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
                 
+                OutputMonster(monsters);
                 int i = 0;
-                foreach (var monsters in monster)
+                foreach (var monster in monsters)
                 {
                     i++;
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                     options.Add(new Option
                     {
                        
-                        text = $"[Lv. {monsters.level}] {monsters.name} \n", value = i,
+                        text = $"[Lv. {monster.level}] {monster.name} \n", value = i,
                     });
                 }
                     options.Add(new Option{ text = "뒤로가기", value = 0, });
@@ -237,12 +232,12 @@ namespace text_together
                     case 0: return;
                     default:
                         {
-                            if (monster[selectedValue-1].health <= 0)
+                            if (monsters[selectedValue-1].health <= 0)
                             {
                                 message = "대상으로 선택할 수 없습니다.";
                                 continue;
                             }
-                            BattleInfo(monster, monster[selectedValue-1], player, skill, dungeon);
+                            BattleInfo(monsters, monsters[selectedValue-1], player, skill, dungeon);
                             return;
                         }
                 }
@@ -265,11 +260,7 @@ namespace text_together
                     isPlayerAttack = true;
                 }
 
-                for (int i = 0; i < monsters.Count; i++)
-                {
-                    Console.Write($"[Lv. {monsters[i].level}] {monsters[i].name}  | ");
-                    Console.WriteLine(monsters[i].health <= 0 ? "Dead" : $"HP : {monsters[i].health} ");
-                }
+                OutputMonster(monsters);
 
                 Console.WriteLine("\n[플레이어]");
                 Console.WriteLine("체력 : {0}", player.health);
@@ -370,7 +361,14 @@ namespace text_together
             Console.WriteLine("\n아무키나 누르시면 던전입구로 갑니다.");
             Console.ReadLine();
         }
-
+        public void OutputMonster(List<Monster> monster)
+        {
+            foreach (var monsters in monster)
+                {
+                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
+                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                }
+        }
     }
 
 }
