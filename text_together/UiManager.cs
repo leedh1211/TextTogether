@@ -326,6 +326,7 @@ public class UIManager
                 Text.mainText.RemoveAt(Text.mainText.Count - 1);
             }
 
+            //글자를 출력함
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
@@ -342,20 +343,34 @@ public class UIManager
                     Text.mainText.Add(textTemp.ToString());
                     textTemp.Clear(); // 버퍼를 클리어
                 }
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
             }
 
-            // 마지막에 남은 텍스트를 추가
-            if (textTemp.Length > 0)
-            {
-                Text.mainText.Add(textTemp.ToString());
-                textTemp.Clear(); // 버퍼 클리어
-            }
 
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
                 Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
             }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
 
             cursors[index][0] = Console.CursorLeft;
             cursors[index][1] = Console.CursorTop;
@@ -366,10 +381,12 @@ public class UIManager
         {
             if (Text.contentText.Count > 0)
             {
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
                 Text.contentText.RemoveAt(Text.contentText.Count - 1);
             }
 
+            //글자를 출력함
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
@@ -386,20 +403,34 @@ public class UIManager
                     Text.contentText.Add(textTemp.ToString());
                     textTemp.Clear(); // 버퍼를 클리어
                 }
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
             }
 
-            // 마지막에 남은 텍스트를 추가
-            if (textTemp.Length > 0)
-            {
-                Text.contentText.Add(textTemp.ToString());
-                textTemp.Clear(); // 버퍼 클리어
-            }
 
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
                 Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
             }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
 
             cursors[index][0] = Console.CursorLeft;
             cursors[index][1] = Console.CursorTop;
@@ -410,10 +441,12 @@ public class UIManager
         {
             if (Text.optionText.Count > 0)
             {
+                // 최근 문자열 가져오기
                 textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
                 Text.optionText.RemoveAt(Text.optionText.Count - 1);
             }
 
+            //글자를 출력함
             for (int i = 0; i < text.Length; i++)
             {
                 textTemp.Append(text[i]);
@@ -422,7 +455,7 @@ public class UIManager
                 // 현재 커서 위치 확인
                 int currentCursorLeft = Console.CursorLeft;
 
-                // 커서가 UI 범위를 벗어나면 줄 바꿈 (UI3는 optionStartPos_X부터 시작)
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
                 if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
                 {
                     newLineCnt[index]++;
@@ -430,25 +463,103 @@ public class UIManager
                     Text.optionText.Add(textTemp.ToString());
                     textTemp.Clear(); // 버퍼를 클리어
                 }
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
             }
 
-            // 마지막에 남은 텍스트를 추가
-            if (textTemp.Length > 0)
-            {
-                Text.optionText.Add(textTemp.ToString());
-                textTemp.Clear(); // 버퍼 클리어
-            }
 
             if (textTemp.Length > 0)
             {
                 newLineCnt[index]++;
                 Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
             }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
 
             cursors[index][0] = Console.CursorLeft;
             cursors[index][1] = Console.CursorTop;
         }
 
+
+    }
+
+    static public void BackUPWriteLine(int index, string text)
+    {
+        index -= 1;
+        // 해당 UI의 마지막 커서위치 설정
+        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+
+        // 하단 좌측 UI (index + 1 == 2)
+        if (index + 1 == 2)
+        {
+            if (Text.contentText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
+                Text.contentText.RemoveAt(Text.contentText.Count - 1);
+            }
+
+            //글자를 출력함
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= contentSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                    Text.contentText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
+            }
+
+
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                //textTemp.Append("\n"); 얘는 안넣어주는거지
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
+        }
+
+        
 
 
     }
@@ -744,6 +855,7 @@ public class UIManager
 
                 //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
                 //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
+                Console.SetBufferSize(Console.WindowWidth, 100);
                 //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
                 View.DrawUIFast();
 
@@ -771,24 +883,25 @@ public class UIManager
                 string[] lines;
                 string fullText;
                 
+                
                 foreach (var a in Text.mainTextTemp)
                 {
                     temp.Append(a);
                 }
 
                 fullText = temp.ToString();
-                lines = fullText.Split('\n');
+                lines = fullText.Split('\0');
 
                 // 줄 단위로 다시 나누기
                 foreach (string line in lines)
                 {
-                    for (int i = 0; i < line.Length; i += mainSpace_x)
-                    {
-                        int length = Math.Min(mainSpace_x, line.Length - i);
-                        test.Add(line.Substring(i, length));
-                    }
+                    test.Add(line);
                 }
 
+                if (test[test.Count - 1] == "")
+                {
+                    test.RemoveAt(test.Count - 1);
+                }
 
                 //해상도에 맞게 각 UI의 커서위치 초기화
                 SetCursor();
@@ -799,7 +912,8 @@ public class UIManager
                 }
                 
                 ////////////////////////////////////////////////////
-
+                //UI2번
+                //
                 //비워줘야함
                 temp.Clear();
                 test.Clear();
@@ -810,16 +924,28 @@ public class UIManager
                 }
 
                 fullText = temp.ToString();
-                lines = fullText.Split('\n');
+                lines = fullText.Split('\0');
 
+                
                 // 줄 단위로 다시 나누기
-                foreach (string line in lines)
+                foreach (string line in lines) //이거 크기에 맞게 슬라이스 할 필요가 있음?? 걍 \n만 슬라이스 하는게 맞지않나?
                 {
+                    /*
                     for (int i = 0; i < line.Length; i += contentSpace_x)
-                    {
+                    {   
+                        //아 test 이거 리스트 맞는데?
                         int length = Math.Min(contentSpace_x, line.Length - i);
                         test.Add(line.Substring(i, length));
                     }
+                    */
+
+                    test.Add(line);
+                    
+                }
+
+                if (test[test.Count - 1] == "")
+                {
+                    test.RemoveAt(test.Count - 1);
                 }
 
                 //해상도에 맞게 각 UI의 커서위치 초기화
@@ -831,7 +957,11 @@ public class UIManager
                 }
 
                 //////////////////////////////////////////////////////
+                ////UI 3번
+                ///
                 //비워줘야함
+
+                
                 temp.Clear();
                 test.Clear();
 
@@ -841,18 +971,18 @@ public class UIManager
                 }
 
                 fullText = temp.ToString();
-                lines = fullText.Split('\n');
+                lines = fullText.Split('\0');
 
                 // 줄 단위로 다시 나누기
                 foreach (string line in lines)
                 {
-                    for (int i = 0; i < line.Length; i += optionSpace_x)
-                    {
-                        int length = Math.Min(optionSpace_x, line.Length - i);
-                        test.Add(line.Substring(i, length));
-                    }
+                    test.Add(line);
                 }
 
+                if (test[test.Count - 1] == "")
+                {
+                    test.RemoveAt(test.Count - 1);
+                }
 
                 //해상도에 맞게 각 UI의 커서위치 초기화
                 SetCursor();
@@ -865,7 +995,7 @@ public class UIManager
 
 
 
-
+                
 
 
                 Text.mainTextTemp.Clear();
@@ -920,8 +1050,8 @@ public class UIManager
         ////////////////
         View.width = Console.WindowWidth - 1;
         View.height = Console.WindowHeight - 1;
-        View.downY = (int)Math.Round(Console.WindowHeight * 0.65);
-        View.highX = (int)Math.Round(Console.WindowWidth * 0.6);
+        View.downY = (int)Math.Round(Console.WindowHeight * mainHeightRatio);
+        View.highX = (int)Math.Round(Console.WindowWidth * contentWidthRatio);
 
         //이전 크기 저장
         prevWidth = Console.WindowWidth;
