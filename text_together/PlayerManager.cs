@@ -84,32 +84,23 @@ namespace text_together
             }
         }
         // 플레이어 상태탭 관리
-        public void PlayerInfo(Player player)
+        public int PlayerInfo(Player player)
         {
-            Console.Clear();
-            Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
-
-            Console.WriteLine($"Lv. {player.level}");
-            Console.WriteLine($"{player.name} ( {player.job} )");
-            Console.WriteLine($"공격력 : {player.attack}");
-            Console.WriteLine($"방어력 : {player.shield}");
-            Console.WriteLine($"체 력 : {player.health}");
-            Console.WriteLine($"Gold : {player.gold}G\n");
-
-            Console.WriteLine($"0. 나가기\n");
-            while (true)
+            
+            UIManager.WriteLine(2, "캐릭터의 정보가 표시됩니다.\n");
+            UIManager.WriteLine(2,$"Lv. {player.level}");
+            UIManager.WriteLine(2,$"{player.name} ( {player.job} )");
+            UIManager.WriteLine(2,$"공격력 : {player.attack}");
+            UIManager.WriteLine(2,$"방어력 : {player.shield}");
+            UIManager.WriteLine(2,$"체 력 : {player.health}");
+            UIManager.WriteLine(2,$"Gold : {player.gold}G\n");
+            
+            List<Option> options = new List<Option>
             {
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-                int n = int.Parse(Console.ReadLine());
-                if (n == 0)
-                {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("0을 입력하셔야 나가실 수 있습니다.");
-                }
-            }
+                new Option { text = "나가기", value = 0 },
+            };
+            int selectedValue = UIManager.inputController(options);
+            return selectedValue;
         }
     }
 }

@@ -25,23 +25,52 @@ namespace text_together
                 return instance;
             }
         }
-        private List<Quest> quests = new List<Quest>();
+        private List<Quest> quests;
+        // 보상 프리셋 정의
+        public QuestReward Gold(int amount = 50) =>
+            new QuestReward("골드", amount, "다양한 물품을 구매할 수 있는 골드이다.", "G");
 
+        public QuestReward Exp(int amount = 10) =>
+            new QuestReward("경험치", amount, "경험치를 모아서 레벨업을 해보아요", "경험치", amount);
+
+        public QuestReward Armor(string name, int price, string info, int effect, int count = 1) =>
+            new QuestReward(name, price, info, "방어구", effect, count);
+        public QuestReward Weapon(string name, int price, string info, int effect, int count = 1) =>
+           new QuestReward(name, price, info, "공격력", effect, count);
+    
         // 퀘스트 생성
-        public void QuestInit()
+        public List<Quest> QuestInit()
         {
-            var quest = new Quest(
-            questName: "마을을 위협하는 미니언 처치",
-            questInfo: "이봐! 마을 근처에 미니언들이 너무 많아졌다고 생각하지 않나?\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n모험가인 자네가 좀 처치해주게!",
-            questGoals: new List<QuestGoal>
-            {  new QuestGoal("미니언", 5, 0) },
-            questRewards: new List<QuestReward>
-            {
-                new QuestReward("쓸만한 방패", 1000,"튼튼한 방패", "방어구",5),
-                new QuestReward("골드", 50," ","G",0)
-            });
+            this.quests = new List<Quest>();
+            quests.Add(new Quest(
+            "도로롱의 위협",
+            "밤마다 도로롱이 마을 주변을 떠돌며 이상한 소리를 냅니다.\n주민들이 잠을 못 자요!",
+            new List<QuestGoal>
+            {  new QuestGoal("도로롱", 5, 0) },
+            new List<QuestReward>
+            {  Exp(10),Gold(50), Armor("수련자 갑옷", 500, "수련에 도움을 주는 갑옷입니다.", 5) }, 2));
+            quests.Add(new Quest(
+            "치킨의 복수",
+            "수상한 치킨들이 던전을 습격하고 있습니다. \n평화를 지켜주세요!",
+            new List<QuestGoal>
+            {  new QuestGoal("치킨", 3, 0) },
+            new List<QuestReward>
+            {  Exp(10),Gold(50), Armor("수련자 갑옷", 500, "수련에 도움을 주는 갑옷입니다.", 5) },1));
+            quests.Add(new Quest(
+             "까부냥 소탕 작전",
+             "까부냥들이 마을 근처에서 귀여움을 무기로 소란을 피우고 있어요! 모두 진정시켜 주세요!",
+            new List<QuestGoal>
+            {  new QuestGoal("까부냥", 5, 0) },
+            new List<QuestReward>{  Exp(10),Gold(50)},3));
+            quests.Add(new Quest(
+            "최종 결전! 보스를 물리쳐라",
+            "모든 재앙의 원흉 '보스'가 눈을 떴습니다. 모두의 힘을 모아 쓰러뜨리세요!",
+            new List<QuestGoal>
+            {  new QuestGoal("도로롱", 5, 0) },
+            new List<QuestReward>{  Exp(10),Gold(50)},4));
 
-            quests.Add(quest);
+
+            return quests;
         }
 
         public void GoQuest(Player player)
@@ -51,16 +80,26 @@ namespace text_together
                 Console.Clear();
                 Console.WriteLine("퀘스트 목록\n");
 
-                for (int i = 0; i < quests.Count; i++)
+                var availableQuests = quests.Where(q => q.level <= player.level).ToList();
+
+                if (availableQuests.Count == 0)
                 {
-                    var quest = quests[i];
+                    
+                    Console.WriteLine("수행할 수 있는 퀘스트가 없습니다.\n");
+                    Console.WriteLine("0. 나가기");
+                    if (int.TryParse(Console.ReadLine(), out int zero) && zero == 0)
+                        return;
+                    continue;
+                }
+                for (int i = 0; i < availableQuests.Count; i++)
+                {
+                    var quest = availableQuests[i];
                     string status = quest.isRewarded ? "[완료]" :
                                     quest.isAccepted && quest.questGoals.All(g => g.IsComplete) ? "[완료 대기]" :
                                     quest.isAccepted ? "[진행 중]" : "[미수락]";
 
                     Console.WriteLine($"{i + 1}. {quest.questName} {status}");
                 }
-
                 Console.WriteLine("\n0. 나가기");
                 Console.Write("퀘스트 번호를 입력해주세요: \n");
 
@@ -69,9 +108,9 @@ namespace text_together
                 {
                     return;
                 }
-                if (input > 0 && input <= quests.Count)
+                if (input > 0 && input <= availableQuests.Count)
                 {
-                    QuestUI(quests[input - 1], player);
+                    QuestUI(availableQuests[input - 1], player);
                 }
                 else
                 {
@@ -101,7 +140,13 @@ namespace text_together
             Console.WriteLine("\n보상");
             foreach(var reward in quest.questRewards)
             {
-                Console.WriteLine($"{reward.rewardName}");
+                if(reward.rewardType == "G")
+                    Console.WriteLine($"{reward.rewardPrice}G");
+                else if(reward.rewardType == "경험치")
+                    Console.WriteLine($"{reward.rewardPrice}EXP");
+                else
+                    Console.WriteLine($"{reward.rewardName} x {reward.rewardCount}");
+
             }
 
             if (!quest.isAccepted)

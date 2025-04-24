@@ -15,17 +15,19 @@ namespace text_together
         public string questInfo;
         public List<QuestGoal> questGoals;
         public List<QuestReward> questRewards;
+        public int level;
 
         public bool isAccepted = false;
         public bool isRewarded { get; set; } = false;
  
 
-        public Quest(string questName, string questInfo, List<QuestGoal> questGoals, List<QuestReward> questRewards)
+        public Quest(string questName, string questInfo, List<QuestGoal> questGoals, List<QuestReward> questRewards,int level)
         {
             this.questName = questName;
             this.questInfo = questInfo;
             this.questGoals = questGoals;
             this.questRewards = questRewards;
+            this.level = level;
         }
 
         // 퀘스트 수락
@@ -50,6 +52,10 @@ namespace text_together
                     if (reward.rewardType == "G")
                     {
                         player.gold += reward.rewardPrice;
+                    }
+                    else if(reward.rewardType == "경험치")
+                    {
+                        player.exp += reward.rewardEffect;
                     }
                     else
                     {

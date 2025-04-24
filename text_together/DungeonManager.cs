@@ -26,7 +26,7 @@ namespace text_together
                 return instance;
             }
         }
-        public void GoDungeon(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
+        public int GoDungeon(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
         {
             while (true)
             {
@@ -97,7 +97,7 @@ namespace text_together
 
                         }
                         break;
-                    case 7: return;
+                    case 0: return 0;
                 }
 
             }
@@ -126,7 +126,7 @@ namespace text_together
                 {
                     case 1: DungeonRaid(player, dungeon); break;
                     case 2: break;
-                    case 3: ShopManager.Instance.GoShop(player, items, inventory); break;
+                    case 3: ShopManager.Instance.GoShop(player, inventory); break;
                     case 4: PlayerManager.Instance.PlayerInfo(player); break;
                     case 0: return;
                 }
@@ -142,11 +142,13 @@ namespace text_together
 
             while (dungeon.dungeonClear == false)
             {
+                message = "";
                 Console.Clear();
                 if (skip)
                 {
                     message = "도망치기에 실패하였다!! \n 도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.";
                     player.health -= 5;
+                    skip=false;
                 }
 
                 Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
@@ -163,6 +165,9 @@ namespace text_together
                 Console.WriteLine("체력 : {0}", player.health);
                 Console.WriteLine("마나 : {0}", player.mana);
                 Console.WriteLine("Lv : {0} \n", player.level);
+
+                if(message != "") Console.WriteLine(message);
+                else Console.WriteLine($"{monster[rand.Next(0, monster.Count)].monsterInfo}");
 
                 List<Option> options = new List<Option>
                 {
@@ -182,14 +187,16 @@ namespace text_together
                             if (success)
                             {
                                 LeaveRaid(player);
+                                return;
 
                             }
                             else
                             {
                                 skip = true;
+                                continue;
                             }
                         }
-                        return;
+                        
                 }
                 Console.WriteLine(message);
             }

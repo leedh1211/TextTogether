@@ -34,9 +34,9 @@ namespace text_together
         public void SelectSkill(List<Monster> monster, Player player, Dungeon dungeon)
         {
             string message = "";
-            List<Option> options = new List<Option>();
             while (true)
             {
+                List<Option> options = new List<Option>();
                 Console.Clear();
                 Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
 
@@ -45,6 +45,8 @@ namespace text_together
                     Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
                     Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                 }
+
+                Console.WriteLine(message);
                 
                 int i = 0;
                 foreach (var skill in skills)
