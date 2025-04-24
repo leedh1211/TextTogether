@@ -133,6 +133,8 @@ namespace text_together
                 }
             }
         }
+
+        // 뽑기 기능
         void ItemGatcha(List<Item> inventory)
         {
             if(player.gold >= 150)
@@ -371,7 +373,7 @@ namespace text_together
                 int success = defaultSuccess -= (upgradeItem.upgradeLevel * penalty);
                 
                 // 최소 10퍼센트 성공률
-                success = Math.Max(defaultSuccess, 10);
+                success = Math.Max(success, 10);
 
 
                 if(upgradeItem.effect.type == "포션")
