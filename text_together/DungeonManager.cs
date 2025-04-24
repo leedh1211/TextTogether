@@ -363,6 +363,8 @@ namespace text_together
         }
         public void OutputMonster(List<Monster> monster)
         {
+
+            // 수정
             foreach (var monsters in monster)
                 {
                     Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
