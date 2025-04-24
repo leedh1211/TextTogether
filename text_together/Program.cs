@@ -16,9 +16,71 @@ class Solution
     // 메인 화면 탭 관리
     static void GameStart(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
     {
-        
-        UIManager.WriteLine(2,"스파르타 마을에 오신 여러분 환영합니다.");
-        UIManager.WriteLine(2,"이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+        int status = 0;
+        while (true)
+        {
+            Console.Clear();
+            View.DrawUIFast();
+            switch (status)
+            {
+                case 0: status = mainMenu(player, items, inventory, dungeon); break;
+                case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
+                case 2: status = InventoryManager.Instance.GoInventory(player); break;
+                case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
+                case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
+                case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
+                // case 6: status = QuestManager.Instance.GoQuest(player); break;
+                case 7: return;
+            }
+        }
+    }
+
+    static void Main()
+    {
+        Player player;
+        // 빈 인벤토리 만들기
+        List<Item> inventory = InventoryManager.Instance.inventory;
+        // 상점에 아이템들 추가
+        List<Item> items = ShopManager.Instance.InitializeStore(); ;
+        // 던전 추가
+        Dungeon dungeon;
+        // 퀘스트 초기화
+        List<Quest> quests;
+
+        if (!GameSaveState.TryLoad(out player, out inventory, out items, out dungeon))
+        {
+            // 초기 설정
+            string playerName = PlayerManager.Instance.CheckName();
+            PlayerManager.Job playerJob = PlayerManager.Instance.SelectJob();
+            player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 100, 1500, 0, 10);
+            items = new List<Item>();
+            dungeon = new Dungeon();
+            quests = QuestManager.Instance.QuestInit();
+
+            inventory = InventoryManager.Instance.inventory;
+
+            // 던전 추가
+            dungeon = new Dungeon("", 0,false, false, 0);
+        }
+        // 게임 시작
+        int startActionResult = title.SelectTitleOption();
+        if (startActionResult == 0)
+        {
+            View.View1();
+            UIManager.UISetup();
+            View.DrawUIFast();
+            _ = UIManager.Call_CheckWindow();
+            GameStart(player, items, inventory, dungeon);    
+        }
+        GameSaveState.Save(player, inventory, items, dungeon);
+    }
+
+    static int mainMenu(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
+    {
+        UIManager.DrawAscii(UIAscii.HomeArt);
+        UIManager.Clear(2);
+        UIManager.WriteLine(2, "스파르타 마을에 오신 여러분 환영합니다.");
+        UIManager.WriteLine(2, "이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
         
         List<Option> options = new List<Option>
         {
@@ -30,57 +92,19 @@ class Solution
             new Option { text = "퀘스트", value = 6 },
             new Option { text = "종료하기", value = 7 },
         };
-        
+
         int selectedValue = UIManager.inputController(options);
+        return selectedValue;
 
-        switch (selectedValue)
-        {
-            case 1: PlayerManager.Instance.PlayerInfo(player); break;
-            case 2: InventoryManager.Instance.GoInventory(player, items, inventory); break;
-            case 3: ShopManager.Instance.GoShop(player, items, inventory); break;
-            case 4: DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
-            case 5: RestManager.Instance.GoRest(player, items, inventory); break;
-            case 6: RestManager.Instance.GoRest(player, items, inventory); break;
-            case 7: return;
-        }
-    }
-    static void Main()
-    {
-        Player player;
-        // 빈 인벤토리 만들기
-        List<Item> inventory;
-        // 상점에 아이템들 추가
-        List<Item> items;
-        // 던전 추가
-        Dungeon dungeon;
-
-        if (!GameSaveState.TryLoad(out player, out inventory, out items, out dungeon))
-        {
-            // 초기 설정
-            string playerName = PlayerManager.Instance.CheckName();
-            PlayerManager.Job playerJob = PlayerManager.Instance.SelectJob();
-            player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 100, 1500, 0, 10);
-            items = new List<Item>();
-            dungeon = new Dungeon();
-            
-            // 인벤토리 초기화
-            inventory = InventoryManager.Instance.inventory;
-
-            // 상점 초기화
-            items = ShopManager.Instance.InitializeStore(player);
-
-            // 던전 추가
-            dungeon = new Dungeon("", 0,false, false, 0);
-        }
-        // 게임 시작
-        int startActionResult = title.SelectTitleOption();
-        if (startActionResult == 0)
-        {
-            View.View1();
-            View.DrawAsciiFrame();
-            _ = UIManager.Call_CheckWindow();
-            GameStart(player, items, inventory, dungeon);    
-        }
-        GameSaveState.Save(player, inventory, items, dungeon);
+        // switch (selectedValue)
+        // {
+        //     case 1: PlayerManager.Instance.PlayerInfo(player); break;
+        //     case 2: InventoryManager.Instance.GoInventory(player); break;
+        //     case 3: ShopManager.Instance.GoShop(player, inventory); break;
+        //     case 4: DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
+        //     case 5: RestManager.Instance.GoRest(player, items, inventory); break;
+        //     case 6: QuestManager.Instance.GoQuest(player); break;
+        //     case 7: return;
+        // }       
     }
 }
