@@ -43,10 +43,8 @@ namespace text_together
         // 퀘스트 성공했을 경우 보상
         public void GiveReward(Quest quest, Player player)
         {
-            // 인벤토리 업데이트
             if (IsCompleted)
             {
-                Console.WriteLine($"'{quest.questName}' 퀘스트 완료! 보상을 받았습니다");
                 foreach (var reward in quest.questRewards) 
                 {
                     if (reward.rewardType == "G")
@@ -63,6 +61,7 @@ namespace text_together
                     }
                 }
             }
+            return;
         }
     }
 }
