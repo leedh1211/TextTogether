@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,14 +12,14 @@ using text_together;
 
 class Solution
 {
-
+    
     // 메인 화면 탭 관리
     static void GameStart(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
     {
-
+        UIManager.DrawAscii(UIAscii.HomeArt);
         UIManager.WriteLine(2, "스파르타 마을에 오신 여러분 환영합니다.");
         UIManager.WriteLine(2, "이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
-
+        
         List<Option> options = new List<Option>
         {
             new Option { text = "상태보기", value = 1 },
@@ -31,7 +32,7 @@ class Solution
         };
 
         int selectedValue = UIManager.inputController(options);
-
+        
         switch (selectedValue)
         {
             case 1: PlayerManager.Instance.PlayerInfo(player); break;
@@ -42,7 +43,9 @@ class Solution
             case 6: RestManager.Instance.GoRest(player, items, inventory); break;
             case 7: return;
         }
+        Console.ReadKey();
     }
+
     static void Main()
     {
         Player player;
@@ -70,7 +73,8 @@ class Solution
         if (startActionResult == 0)
         {
             View.View1();
-            View.DrawAsciiFrame();
+            UIManager.UISetup();
+            View.DrawUIFast();
             _ = UIManager.Call_CheckWindow();
             GameStart(player, items, inventory, dungeon);
         }
