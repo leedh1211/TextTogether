@@ -9,7 +9,7 @@ namespace text_together
     class ShopManager
     {
         private Player player;
-        private List<Item> storeItems;
+        public List<Item> storeItems;
 
         // 싱글톤
         private static ShopManager instance;
@@ -73,7 +73,7 @@ namespace text_together
                     false,
                     false,
                     original.maxQuantity
-                    );
+                );
 
                 updateItem.quantity = 1;
                 storeItems.Add(updateItem);
@@ -97,7 +97,8 @@ namespace text_together
                 
                 UIManager.WriteLine(2,$"{player.gold} G\n");
 
-                ShopInfo(inventory);
+                // ShopInfo(inventory);
+                PrintShopItemInfo();
                 
                 List<Option> options = new List<Option>
                 {
@@ -110,7 +111,7 @@ namespace text_together
                 };
 
                 int selectedValue = UIManager.inputController(options);
-                
+                UIManager.isShopUIList = false;
                 switch (selectedValue)
                 {
                     case 1: ItemBuy(inventory); break;
@@ -265,7 +266,7 @@ namespace text_together
                 List<Option> exitOptions = new List<Option>
                 {
                     new Option { text = "나가기", value = 0}
-                 };
+                };
 
                 UIManager.inputController(exitOptions);
 
@@ -299,24 +300,27 @@ namespace text_together
                 idx++;
             }
 
-            ShopInfo(inventory);
+            // ShopInfo(inventory);
+            PrintShopItemInfo();
             return options;
         }
 
         // 아이템 구매 관리
         void ItemBuy(List<Item> inventory)
         {
+            
             while (true)
             {
                 List<Option> options = UpdateBuyUI(inventory);
                 UIManager.WriteLine(2, "구매하고 싶은 아이템을 선택해 주세요.");
-                int input = UIManager.inputController(options);
+                int input = UIManager.inputController(options, 2, "store");
 
                 UIManager.Clear(2);
                 UIManager.Clear(3);
 
                 if (input == 0)
                 {
+                    UIManager.isShopUIList = false;
                     return;
                 }
 
@@ -340,7 +344,6 @@ namespace text_together
                 }
                 UpdateBuyUI(inventory);
             }
-
         }
 
         void AddItem(Item item, List<Item> inventory, int price)
@@ -490,6 +493,27 @@ namespace text_together
                 };
 
                 UIManager.inputController(exitOption);
+            }
+        }
+        
+        public void PrintShopItemInfo(){
+            UIManager.isShopUIList = true;
+            int idx = 1;
+            // Console.WriteLine("[아이템 목록]");
+            int startY = 3 ;
+            int startX = Console.WindowWidth - 35;
+            List<Item> itemList = InventoryManager.Instance.inventory;
+            foreach (var item in storeItems)
+            {
+                bool isHaved = itemList.Any(x => x.name == item.name);
+                string itemText = "";
+                if (isHaved)
+                    itemText = $"{item.name.PadRight(10)}|보유 중";  
+                else //{item.effect.type} + {item.effect.value} | {item.info} |
+                    itemText = $"{item.name.PadRight(10)} {item.price} G";
+                Console.SetCursorPosition(startX, startY+idx);
+                Console.Write(itemText);
+                idx++;
             }
         }
     }
