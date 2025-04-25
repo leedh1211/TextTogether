@@ -1161,7 +1161,84 @@ public class UIManager
             page      = newPage;
         }
     }
-    
+
+    static public int inputSkillController(List<Option> option, int clearindex)
+    {
+        int index = 0, prevIndex = 0;
+        int page = 0, prevPage = 0;
+        RefreshOptionsPage(option, index, page);
+        currentOptions = option;
+
+        string[] summary = GetText(option, index);
+        foreach (var line in summary)
+        {
+            UIManager.WriteLine(2, line); // 오른쪽 정보 영역에 출력
+        }
+
+        while (true)
+        {
+            if (isResolutionChanged)
+            {
+                return -1; // or 다른 특별한 코드로 루프 탈출
+            }
+
+            var key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Enter)
+            {
+                currentOptions = new List<Option>();
+                return option[index].value;
+            }
+
+            int delta = GetDelta(key);
+            if (delta == 0) continue;
+
+            // 1) 새 인덱스·페이지 계산
+            int unitMax = (int)Math.Ceiling(option.Count / 6.0) * 6;
+            int newIndex = (index + delta + unitMax) % unitMax;
+            if (option.Count % 6 != 0 && newIndex >= option.Count)
+                newIndex = (delta == 1) ? 0 : option.Count - 1;
+            int newPage = newIndex / 6;
+
+            // 2) 페이지가 바뀌었는지 확인
+            if (newPage != page)
+            {
+                RefreshOptionsPage(option, newPage, newIndex);
+            }
+            else
+            {
+                // RefreshOptionsPage(option, newPage, newIndex);
+                // 같은 페이지 내에서만 ▶만 이동
+                int oldLocal = index % 6;
+                int newLocal = newIndex % 6;
+                MoveHighlight(oldLocal, newLocal);
+            }
+
+            // 3) 상태 갱신
+            prevIndex = index;
+            prevPage = page;
+            index = newIndex;
+            page = newPage;
+
+            UIManager.Clear(clearindex);
+            summary = GetText(option, index);
+            foreach (var line in summary)
+            {
+                UIManager.WriteLine(clearindex, line);
+            }
+        }
+    }
+
+    public static string[] GetText(List<Option> options, int index)
+    {
+        int skillIndex = options[index].value;
+        var skill = SkillManager.Instance.skills[skillIndex - 1];
+
+        return new string[]
+        {
+     $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost}",
+     $"{skill.Description}"
+        };
+    }
     static void RefreshOptionsPage(List<Option> option, int page, int selectedIndex)
     {
         Clear(3);
