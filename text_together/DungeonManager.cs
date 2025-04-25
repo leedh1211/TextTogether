@@ -65,14 +65,13 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-                            return 0;
                         }
                         break;
                     case 2:
                         while (dungeon.gameClear == false)
                         {
                             // 몬스터 난이도 설정
-                            dungeon.dungeonLevel = "쉬움";
+                            dungeon.dungeonLevel = "보통";
                             MonsterManager.Instance.FixMonster(dungeon);
 
                             // 몬스터 리스트 리셋
@@ -81,14 +80,13 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-                            return 0;
                         }
                         break;
                     case 3:
                         while (dungeon.gameClear == false)
                         {
                             // 몬스터 난이도 설정
-                            dungeon.dungeonLevel = "쉬움";
+                            dungeon.dungeonLevel = "어려움";
                             MonsterManager.Instance.FixMonster(dungeon);
 
                             // 몬스터 리스트 리셋
@@ -97,18 +95,18 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-                            return 0;
                         }
                         break;
                     case 0: return 0;
                 }
+                return 0;
 
             }
         }
 
         public void BaseDungeon(Player player, Dungeon dungeon, List<Item> items, List<Item> inventory)
         {
-            while (true)
+            while ((dungeon.stage % 5 == 0))
             {
                 UIManager.Clear(2);
                 UIManager.WriteLine(2,"베이스 캠프");
@@ -119,7 +117,8 @@ namespace text_together
                 new Option { text = "나아가기", value = 1 },
                 new Option { text = "휴식하기", value = 2 },
                 new Option { text = "상점", value = 3 },
-                new Option { text = "상태보기", value = 4 },
+                new Option { text = "인벤토리", value = 4 },
+                new Option { text = "상태보기", value = 5 },
                 new Option { text = "나가기", value = 0 },
                 };
 
@@ -128,9 +127,10 @@ namespace text_together
                 switch (selectedValue)
                 {
                     case 1: DungeonRaid(player, dungeon); break;
-                    case 2: break;
+                    case 2: RestManager.Instance.GoRest(player, items, inventory); break;
                     case 3: ShopManager.Instance.GoShop(player, inventory); break;
-                    case 4: PlayerManager.Instance.PlayerInfo(player); break;
+                    case 4: InventoryManager.Instance.GoInventory(player); break;
+                    case 5: PlayerManager.Instance.PlayerInfo(player); break;
                     case 0: return;
                 }
             }
@@ -143,7 +143,7 @@ namespace text_together
             bool skip = false;
             dungeon.dungeonClear = false;
 
-            while (dungeon.dungeonClear == false)
+            while (dungeon.dungeonClear==false)
             {
                 message = "";
                 UIManager.Clear(2);
@@ -160,10 +160,19 @@ namespace text_together
 
                 foreach (var monsters in monster)
                 {
-                    string monsterText = getMonsterInfoText(monsters);
-                    UIManager.WriteLine(2,monsterText);
-                }
+                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
+                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    
+                    StringBuilder sb = new StringBuilder();
 
+                    for(int i = 0; i < monsters.monsterArt.Length; i++)  
+                    {
+                        sb.Append(monsters.monsterArt[i]);
+                        sb.Append("\n");
+                    }
+                    UIManager.DrawAscii(sb.ToString());
+                }
+                
                 UIManager.WriteLine(2,"");
                 UIManager.WriteLine(2,"[플레이어]");
                 UIManager.WriteLine(2,$"체력 : {player.health}" );
@@ -178,7 +187,6 @@ namespace text_together
                 {
                     new Option { text = "공격", value = 1 },
                     new Option { text = "도망가기", value = 0 },
-
                 };
 
                 int selectedValue = UIManager.inputController(options);
@@ -208,7 +216,7 @@ namespace text_together
         }
 
 
-        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monster, Skill skill)
+        public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monsters, Skill skill)
         {
             
             while (dungeon.dungeonClear == false)
@@ -221,16 +229,15 @@ namespace text_together
                 UIManager.WriteLine(2,$"현재 난이도 : {dungeon.dungeonLevel}");
                 UIManager.WriteLine(2,$"현재 스테이지: {dungeon.stage} " );
                 
+                OutputMonster(monsters);
                 int i = 0;
-                foreach (var monsters in monster)
+                foreach (var monster in monsters)
                 {
                     i++;
-                    String monsterinfoText = getMonsterInfoText(monsters);
-                    UIManager.WriteLine(2,monsterinfoText);
+
                     options.Add(new Option
                     {
-                       
-                        text = monsterinfoText , value = i,
+                        text = $"[Lv. {monster.level}] {monster.name} \n", value = i,
                     });
                 }
                     options.Add(new Option{ text = "뒤로가기", value = 0, });
@@ -244,12 +251,12 @@ namespace text_together
                     case 0: return;
                     default:
                         {
-                            if (monster[selectedValue-1].health <= 0)
+                            if (monsters[selectedValue-1].health <= 0)
                             {
                                 message = "대상으로 선택할 수 없습니다.";
                                 continue;
                             }
-                            BattleInfo(monster, monster[selectedValue-1], player, skill, dungeon);
+                            BattleInfo(monsters, monsters[selectedValue-1], player, skill, dungeon);
                             return;
                         }
                 }
@@ -274,11 +281,7 @@ namespace text_together
                     isPlayerAttack = true;
                 }
 
-                for (int i = 0; i < monsters.Count; i++)
-                {
-                    UIManager.Write(2,$"[Lv. {monsters[i].level}] {monsters[i].name}  | ");
-                    UIManager.WriteLine(2,monsters[i].health <= 0 ? "Dead" : $"HP : {monsters[i].health} ");
-                }
+                OutputMonster(monsters);
 
                 UIManager.WriteLine(2,"[플레이어]");
                 UIManager.WriteLine(2,$"체력 : {player.health}" );
@@ -411,7 +414,16 @@ namespace text_together
             }
             return monsterText;
         }
+        public void OutputMonster(List<Monster> monster)
+        {
 
+            // 수정
+            foreach (var monsters in monster)
+                {
+                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
+                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                }
+        }
     }
 
 }
