@@ -62,7 +62,7 @@ class Solution
                 // 초기 설정
                 string playerName = PlayerManager.Instance.CheckName();
                 PlayerManager.Job playerJob = PlayerManager.Instance.SelectJob();
-                player = new Player(playerName, playerJob.ToString(), 1, 10, 5,0, 100,0, 100, 1500, 0, 10);
+                player = new Player(playerName, playerJob.ToString(), 1, 10, 5,100, 100,100, 100, 1500, 0, 10);
                 items = new List<Item>();
                 dungeon = new Dungeon();
                 quests = QuestManager.Instance.QuestInit();
