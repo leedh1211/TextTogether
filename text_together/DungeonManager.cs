@@ -28,6 +28,7 @@ namespace text_together
         }
         public int GoDungeon(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
         {
+            
             while (true)
             {
                 dungeon.gameClear = false;
@@ -49,6 +50,8 @@ namespace text_together
                 new Option { text = "난이도 : 어려움", value = 3 },
                 new Option { text = "나가기", value = 0 },
                 };
+
+
 
                 int selectedValue = UIManager.inputController(options);
 
@@ -140,6 +143,7 @@ namespace text_together
         // 던전 몬스터 조우
         public void DungeonRaid(Player player, Dungeon dungeon)
         {
+            
             UIManager.Clear(1);
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             skip = false;
@@ -228,11 +232,12 @@ namespace text_together
 
         public void MonsterSelect(Player player, Dungeon dungeon, List<Monster> monsters, Skill skill)
         {
+
             
             while (dungeon.dungeonClear == false)
             {
                 List<Option> options = new List<Option>();
-                UIManager.Clear(1);
+                //UIManager.Clear(1);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
 
@@ -254,11 +259,13 @@ namespace text_together
 
                 UIManager.WriteLine(2,message);
 
-                int selectedValue = UIManager.inputController(options);
 
+                UIManager.Change_isTarget();
+                int selectedValue = UIManager.inputController(options);
+                
                 switch (selectedValue)
                 {
-                    case 0: return;
+                    case 0: UIManager.Change_isTarget(); UIManager.ClearTargetBOx(); return;
                     default:
                         {
                             if (monsters[selectedValue-1].health <= 0)
@@ -266,7 +273,13 @@ namespace text_together
                                 message = "대상으로 선택할 수 없습니다.";
                                 continue;
                             }
+                            UIManager.ClearTargetBOx();
+                            UIManager.Change_isTarget();
                             BattleInfo(monsters, monsters[selectedValue-1], player, skill, dungeon);
+                            UIManager.DrawHPBar(selectedValue - 1 , monsters[selectedValue - 1]);
+
+
+
                             return;
                         }
                 }
@@ -280,7 +293,7 @@ namespace text_together
             bool isPlayerAttack = false;
             for (int j = 0; j < monsters.Count + 1; j++)
             {
-                UIManager.Clear(1);
+                //UIManager.Clear(1);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
 

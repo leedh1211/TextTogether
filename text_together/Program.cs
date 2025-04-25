@@ -74,11 +74,6 @@ class Solution
             }
 
             GameStart(player, items, inventory, dungeon, quests);
-            for (int i = 0; i< 3; i++)
-            {
-                QuestManager.Instance.HandleMonsterKill("치킨");
-            }
-            GameStart(player, items, inventory, dungeon, quests);
 
             GameSaveState.Save(player, inventory, items,quests, dungeon, FileName);
         }
