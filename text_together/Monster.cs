@@ -20,18 +20,21 @@ namespace text_together
         public float attack { get; set; }
         public float shield { get; set; }
         public int health { get; set; }
+
+        public int maxHealth { get; set; }
         public int gold { get; set; }
         public MonsterType monsterType {get; set;}
         public string monsterInfo {get; set; }
         public string[] monsterArt { get; set; }
 
         public Monster() { }
-        public Monster(string name, int level, float attack, float shield, int health, int gold, MonsterType type, string monsterInfo, string[] monsterArt)
+        public Monster(string name, int level, float attack, float shield,int maxHealth, int health, int gold, MonsterType type, string monsterInfo, string[] monsterArt)
         {
             this.name = name;
             this.level = level;
             this.attack = attack;
             this.shield = shield;
+            this.maxHealth = health;
             this.health = health;
             this.gold = gold;
             this.monsterType = type;

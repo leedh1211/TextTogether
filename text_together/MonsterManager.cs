@@ -32,14 +32,14 @@ namespace text_together
         {
             monsters = new List<Monster>
         {
-            new Monster("까부냥", 1, 5f, 5f, 12, 100, MonsterType.Unit, "까부냥은 오늘도 까분다.", MonsterAscii.Cat.Art ),
-            new Monster("도로롱", 1, 3f, 7f, 20, 150, MonsterType.Unit, "도로롱의 털이 좋아보인다.", MonsterAscii.Dog.Art),
-            new Monster("치킨", 1, 6f, 4f, 10, 200, MonsterType.Unit, "치킨의 때깔이 좋아보인다.", MonsterAscii.Bat.Art),
-            new Monster("일렉판다", 5, 10f, 10f, 30, 3000, MonsterType.Boss, "판다는 떨고있다.", MonsterAscii.Bat.Art),
-            new Monster("파이리", 5, 3f, 7f, 20, 150, MonsterType.Unit, "파이리의 꼬리가 좋아보인다.", MonsterAscii.Bat.Art),
-            new Monster("꼬부기", 6, 3f, 7f, 20, 150, MonsterType.Unit, "꼬부기의 꼬리가 좋아보인다.", MonsterAscii.Bat.Art),
-            new Monster("이상해씨", 7, 3f, 7f, 20, 150, MonsterType.Unit, "이상해씨의 등?이 좋아보인다.", MonsterAscii.Bat.Art),
-            new Monster("피카츄", 10, 10f, 10f, 30, 3000, MonsterType.Boss, "발전기로 쓰기 좋아보이는 녀석이 있다.", MonsterAscii.Bat.Art)
+            new Monster("까부냥", 1, 5f, 5f,0, 12, 100, MonsterType.Unit, "까부냥은 오늘도 까분다.", MonsterAscii.Cat.Art ),
+            new Monster("도로롱", 1, 3f, 7f,0, 20, 150, MonsterType.Unit, "도로롱의 털이 좋아보인다.", MonsterAscii.Dog.Art),
+            new Monster("치킨", 1, 6f, 4f,0, 10, 200, MonsterType.Unit, "치킨의 때깔이 좋아보인다.", MonsterAscii.Bat.Art),
+            new Monster("일렉판다", 5, 10f, 10f,0, 30, 3000, MonsterType.Boss, "판다는 떨고있다.", MonsterAscii.Bat.Art),
+            new Monster("파이리", 5, 3f, 7f,0, 20, 150, MonsterType.Unit, "파이리의 꼬리가 좋아보인다.", MonsterAscii.Bat.Art),
+            new Monster("꼬부기", 6, 3f, 7f,0, 20, 150, MonsterType.Unit, "꼬부기의 꼬리가 좋아보인다.", MonsterAscii.Bat.Art),
+            new Monster("이상해씨", 7, 3f, 7f,0, 20, 150, MonsterType.Unit, "이상해씨의 등?이 좋아보인다.", MonsterAscii.Bat.Art),
+            new Monster("피카츄", 10, 10f, 10f,0, 30, 3000, MonsterType.Boss, "발전기로 쓰기 좋아보이는 녀석이 있다.", MonsterAscii.Bat.Art)
             
         };
         }
