@@ -140,11 +140,13 @@ namespace text_together
                 {
                     inventory.RemoveAt(input - 1);
                     UIManager.WriteLine(2, "포션을 모두 사용하여 인벤토리에서 제거되었습니다.");
+                    UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
                 }
             }
             else
             {
                 UIManager.WriteLine(2, "해당 아이템은 포션이 아닙니다.");
+                UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
             }
         }
 
@@ -215,12 +217,14 @@ namespace text_together
                     if (item.effect.type == "포션")
                     {
                         UIManager.WriteLine(2, "포션은 장착할 수 없습니다.");
+                        UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
                     }
 
                     // 장착중인 아이템일 경우 장착해제
                     else if (item.isEquipped)
                     {
                         UIManager.WriteLine(2, $"{inventory[input - 1].name}을 장착 해제했습니다.");
+                        UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
                         item.isEquipped = false;
 
                         if (item.effect.type == "방어력")
@@ -246,6 +250,7 @@ namespace text_together
                             player.attack += item.effect.value;
                         }
                         UIManager.WriteLine(2, $"{inventory[index].name}을 장착 해제하고 {item.name} 장착하였습니다.\n");
+                        UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
                     }
                     else
                     {
@@ -259,6 +264,7 @@ namespace text_together
                             player.attack += item.effect.value;
                         }
                         UIManager.WriteLine(2, $"{item.name}을 장착하였습니다.\n");
+                        UIManager.inputController(new List<Option> { new Option { text = "확인", value = 0 } });
                     }
                 }
             }
