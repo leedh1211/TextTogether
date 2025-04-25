@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
+using System.Diagnostics;
 using System.Net.Mime;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace text_together;
 public class UIManager
 {
     static bool isTarget = false;
+    static bool isDungeon = false;
 
     static int optionIndex;
 
@@ -838,191 +840,222 @@ public class UIManager
 
     static public void CheckWindow()
     {
-        lock (_lockObject)
+
+        try
         {
-            if (isChecking)
+            lock (_lockObject)
             {
-                return;
-            }
-            isChecking = true;
-            isChecking = false;
-            // 변경 없으면 아무것도 안 함
-            if (prevWidth == Console.WindowWidth && prevHeight == Console.WindowHeight)
-            {
+                if (isChecking)
+                {
+                    return;
+                }
+                isChecking = true;
                 isChecking = false;
-                return;
-            }
-
-            else
-            {
-                Console.Clear();
-                // 만약 기존크기에셔 변경 될 경우 아래 수행
-                UISetup();
-
-                //UI 뿌리기
-                //View.DrawAsciiFrame();
-                //View.DrawAsciiFrame();
-
-
-
-                //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
-                //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
-                Console.SetBufferSize(Console.WindowWidth, 100);
-                //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
-                View.DrawUIFast();
-
-
-
-                newLineCnt[0] = 0;
-                newLineCnt[1] = 0;
-                newLineCnt[2] = 0;
-
-
-
-                //얘는 새로운 리스트일뿐이야
-                Text.mainTextTemp = new List<string>(Text.mainText);
-                Text.contentTextTemp = new List<string>(Text.contentText);
-                Text.optionTextTemp = new List<string>(Text.optionText);
-
-                Text.mainText.Clear();
-                Text.contentText.Clear();
-                Text.optionText.Clear();
-
-                List<string> test = new List<string>();
-
-                //문자열 합치기
-                StringBuilder temp = new StringBuilder();
-                string[] lines;
-                string fullText;
-
-
-                foreach (var a in Text.mainTextTemp)
+                // 변경 없으면 아무것도 안 함
+                if (prevWidth == Console.WindowWidth && prevHeight == Console.WindowHeight)
                 {
-                    temp.Append(a);
+                    isChecking = false;
+                    return;
                 }
 
-                fullText = temp.ToString();
-                lines = fullText.Split('\0');
-
-                // 줄 단위로 다시 나누기
-                foreach (string line in lines)
+                else
                 {
-                    test.Add(line);
-                }
+                    Console.Clear();
+                    // 만약 기존크기에셔 변경 될 경우 아래 수행
+                    UISetup();
 
-                if (test[test.Count - 1] == "")
-                {
-                    test.RemoveAt(test.Count - 1);
-                }
-
-                //해상도에 맞게 각 UI의 커서위치 초기화
-                SetCursor();
-
-                for (int j = 0; j < test.Count; j++)
-                {
-                    UIManager.WriteLine(1, test[j]);
-                }
-
-                ////////////////////////////////////////////////////
-                //UI2번
-                //
-                //비워줘야함
-                temp.Clear();
-                test.Clear();
-                lines = new string[0];
-                foreach (var a in Text.contentTextTemp)
-                {
-                    temp.Append(a);
-                }
-
-                fullText = temp.ToString();
-                lines = fullText.Split('\0');
+                    //UI 뿌리기
+                    //View.DrawAsciiFrame();
+                    //View.DrawAsciiFrame();
 
 
-                // 줄 단위로 다시 나누기
-                foreach (string line in lines) //이거 크기에 맞게 슬라이스 할 필요가 있음?? 걍 \n만 슬라이스 하는게 맞지않나?
-                {
-                    /*
-                    for (int i = 0; i < line.Length; i += contentSpace_x)
-                    {   
-                        //아 test 이거 리스트 맞는데?
-                        int length = Math.Min(contentSpace_x, line.Length - i);
-                        test.Add(line.Substring(i, length));
+
+                    //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
+                    //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
+                    Console.SetBufferSize(Console.WindowWidth, 100);
+                    //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    View.DrawUIFast();
+
+
+
+                    newLineCnt[0] = 0;
+                    newLineCnt[1] = 0;
+                    newLineCnt[2] = 0;
+
+
+
+                    //얘는 새로운 리스트일뿐이야
+                    Text.mainTextTemp = new List<string>(Text.mainText);
+                    Text.contentTextTemp = new List<string>(Text.contentText);
+                    Text.optionTextTemp = new List<string>(Text.optionText);
+
+                    Text.mainText.Clear();
+                    Text.contentText.Clear();
+                    Text.optionText.Clear();
+
+                    List<string> test = new List<string>();
+
+                    //문자열 합치기
+                    StringBuilder temp = new StringBuilder();
+                    string[] lines;
+                    string fullText;
+
+
+                    foreach (var a in Text.mainTextTemp)
+                    {
+                        temp.Append(a);
                     }
-                    */
 
-                    test.Add(line);
+                    fullText = temp.ToString();
+                    lines = fullText.Split('\0');
+
+                    // 줄 단위로 다시 나누기
+                    foreach (string line in lines)
+                    {
+                        test.Add(line);
+                    }
+
+                    if (test[test.Count - 1] == "")
+                    {
+                        test.RemoveAt(test.Count - 1);
+                    }
+
+                    //해상도에 맞게 각 UI의 커서위치 초기화
+                    SetCursor();
+
+                    for (int j = 0; j < test.Count; j++)
+                    {
+                        UIManager.WriteLine(1, test[j]);
+                    }
+
+                    ////////////////////////////////////////////////////
+                    //UI2번
+                    //
+                    //비워줘야함
+                    temp.Clear();
+                    test.Clear();
+                    lines = new string[0];
+                    foreach (var a in Text.contentTextTemp)
+                    {
+                        temp.Append(a);
+                    }
+
+                    fullText = temp.ToString();
+                    lines = fullText.Split('\0');
+
+
+                    // 줄 단위로 다시 나누기
+                    foreach (string line in lines) //이거 크기에 맞게 슬라이스 할 필요가 있음?? 걍 \n만 슬라이스 하는게 맞지않나?
+                    {
+                        /*
+                        for (int i = 0; i < line.Length; i += contentSpace_x)
+                        {   
+                            //아 test 이거 리스트 맞는데?
+                            int length = Math.Min(contentSpace_x, line.Length - i);
+                            test.Add(line.Substring(i, length));
+                        }
+                        */
+
+                        test.Add(line);
+
+                    }
+
+                    if (test[test.Count - 1] == "")
+                    {
+                        test.RemoveAt(test.Count - 1);
+                    }
+
+                    //해상도에 맞게 각 UI의 커서위치 초기화
+                    SetCursor();
+
+                    for (int j = 0; j < test.Count; j++)
+                    {
+                        UIManager.WriteLine(2, test[j]);
+                    }
+
+                    //////////////////////////////////////////////////////
+                    ////UI 3번
+                    ///
+                    //비워줘야함
+
+
+                    temp.Clear();
+                    test.Clear();
+
+                    foreach (var a in Text.optionTextTemp)
+                    {
+                        temp.Append(a);
+                    }
+
+                    fullText = temp.ToString();
+                    lines = fullText.Split('\0');
+
+                    // 줄 단위로 다시 나누기
+                    foreach (string line in lines)
+                    {
+                        test.Add(line);
+                    }
+
+                    if (test[test.Count - 1] == "")
+                    {
+                        test.RemoveAt(test.Count - 1);
+                    }
+
+                    //해상도에 맞게 각 UI의 커서위치 초기화
+                    SetCursor();
+
+                    for (int j = 0; j < test.Count; j++)
+                    {
+                        UIManager.WriteLine(3, test[j]);
+                    }
+
+
+
+                    isResolutionChanged = true;
+                    inputController(currentOptions);
+                    isResolutionChanged = false;
+
+                    if (isShopUIList)
+                    {
+                        ShopManager.Instance.PrintShopItemInfo();
+                    }
+
+                    if (isDungeon)
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        //플레이어,HP바
+                        //적, HP바
+                        for (int i = 0; i < monster.Count; i++)
+                        {
+                            DrawEnemy(i, monster[i]);
+                            DrawHPBar(i, monster[i]);
+                            DrawEnemyName(i, monster[i]);
+                        }
+                        PlayerHPBar(player1);
+                        DrawPlayer(UIAscii.PlayerBehind);
+                        DrawTargetBox(optionIndex);
+                    }
+
+                    else
+                    {
+                        DrawAscii(currentArt);
+                    }
+
+
+                    Text.mainTextTemp.Clear();
+                    Text.contentTextTemp.Clear();
+                    Text.optionTextTemp.Clear();
+
+                    //Console.CursorVisible = false;// 입력 숨겨주는거 
 
                 }
-
-                if (test[test.Count - 1] == "")
-                {
-                    test.RemoveAt(test.Count - 1);
-                }
-
-                //해상도에 맞게 각 UI의 커서위치 초기화
-                SetCursor();
-
-                for (int j = 0; j < test.Count; j++)
-                {
-                    UIManager.WriteLine(2, test[j]);
-                }
-
-                //////////////////////////////////////////////////////
-                ////UI 3번
-                ///
-                //비워줘야함
-
-
-                temp.Clear();
-                test.Clear();
-
-                foreach (var a in Text.optionTextTemp)
-                {
-                    temp.Append(a);
-                }
-
-                fullText = temp.ToString();
-                lines = fullText.Split('\0');
-
-                // 줄 단위로 다시 나누기
-                foreach (string line in lines)
-                {
-                    test.Add(line);
-                }
-
-                if (test[test.Count - 1] == "")
-                {
-                    test.RemoveAt(test.Count - 1);
-                }
-
-                //해상도에 맞게 각 UI의 커서위치 초기화
-                SetCursor();
-
-                for (int j = 0; j < test.Count; j++)
-                {
-                    UIManager.WriteLine(3, test[j]);
-                }
-
-
-
-                isResolutionChanged = true;
-                inputController(currentOptions);
-                isResolutionChanged = false;
-                DrawAscii(currentArt);
-                if (isShopUIList)
-                {
-                    ShopManager.Instance.PrintShopItemInfo();
-                }
-
-
-                Text.mainTextTemp.Clear();
-                Text.contentTextTemp.Clear();
-                Text.optionTextTemp.Clear();
-
-                //Console.CursorVisible = false;// 입력 숨겨주는거 
-
             }
+        }
+        catch
+        {
+
         }
 
 
@@ -1097,60 +1130,66 @@ public class UIManager
 
     static public int inputController(List<Option> option)
     {
-
-        int index = 0, prevIndex = 0;
-        int page = 0, prevPage = 0;
-        RefreshOptionsPage(option, index, page);
-        currentOptions = option;
-        while (true)
+        try
         {
-            if (UIManager.isTarget == true)
+            int index = 0, prevIndex = 0;
+            int page = 0, prevPage = 0;
+            RefreshOptionsPage(option, index, page);
+            currentOptions = option;
+            while (true)
             {
-                UIManager.DrawTargetBox(index);
+                if (UIManager.isTarget == true)
+                {
+                    UIManager.DrawTargetBox(index);
+                }
+                if (isResolutionChanged)
+                {
+                    return -1; // or 다른 특별한 코드로 루프 탈출
+                }
+
+                var key = Console.ReadKey(intercept: true).Key;
+                if (key == ConsoleKey.Enter)
+                {
+                    currentOptions = new List<Option>();
+                    return option[index].value;
+                }
+
+                int delta = GetDelta(key);
+                if (delta == 0) continue;
+
+                // 1) 새 인덱스·페이지 계산
+                int unitMax = (int)Math.Ceiling(option.Count / 6.0) * 6;
+                int newIndex = (index + delta + unitMax) % unitMax;
+                if (option.Count % 6 != 0 && newIndex >= option.Count)
+                    newIndex = (delta == 1) ? 0 : option.Count - 1;
+                int newPage = newIndex / 6;
+
+                // 2) 페이지가 바뀌었는지 확인
+                if (newPage != page)
+                {
+                    RefreshOptionsPage(option, newPage, newIndex);
+                }
+                else
+                {
+                    // RefreshOptionsPage(option, newPage, newIndex);
+                    // 같은 페이지 내에서만 ▶만 이동
+                    int oldLocal = index % 6;
+                    int newLocal = newIndex % 6;
+                    MoveHighlight(oldLocal, newLocal);
+                }
+
+                // 3) 상태 갱신
+                prevIndex = index;
+                prevPage = page;
+                index = newIndex;
+                page = newPage;
+
+                optionIndex = index;
             }
-            if (isResolutionChanged)
-            {
-                return -1; // or 다른 특별한 코드로 루프 탈출
-            }
-
-            var key = Console.ReadKey(intercept: true).Key;
-            if (key == ConsoleKey.Enter)
-            {
-                currentOptions = new List<Option>();
-                return option[index].value;
-            }
-
-            int delta = GetDelta(key);
-            if (delta == 0) continue;
-
-            // 1) 새 인덱스·페이지 계산
-            int unitMax = (int)Math.Ceiling(option.Count / 6.0) * 6;
-            int newIndex = (index + delta + unitMax) % unitMax;
-            if (option.Count % 6 != 0 && newIndex >= option.Count)
-                newIndex = (delta == 1) ? 0 : option.Count - 1;
-            int newPage = newIndex / 6;
-
-            // 2) 페이지가 바뀌었는지 확인
-            if (newPage != page)
-            {
-                RefreshOptionsPage(option, newPage, newIndex);
-            }
-            else
-            {
-                // RefreshOptionsPage(option, newPage, newIndex);
-                // 같은 페이지 내에서만 ▶만 이동
-                int oldLocal = index % 6;
-                int newLocal = newIndex % 6;
-                MoveHighlight(oldLocal, newLocal);
-            }
-
-            // 3) 상태 갱신
-            prevIndex = index;
-            prevPage = page;
-            index = newIndex;
-            page = newPage;
-
-            optionIndex = index;
+        }
+        catch
+        {
+            return 0;
         }
     }
 
@@ -1247,16 +1286,17 @@ public class UIManager
             return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}"
 
             };
-        }else if (input == "store")
+        }
+        else if (input == "store")
         {
             if (idx == 0)
             {
                 return new string[] { " " };
             }
 
-            var item = ShopManager.Instance.storeItems[idx-1];
-            return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info}"}; 
-            
+            var item = ShopManager.Instance.storeItems[idx - 1];
+            return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info}" };
+
         }
 
         return new string[] { "정보를 불러올 수 없습니다." };
@@ -1270,8 +1310,8 @@ public class UIManager
         int maxOptionLength = optionSpace_x - 2;
         for (int i = 0; i < countOnPage; i++)
         {
-            string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
-            if(i == 0)
+            string prefix = (start + i == selectedIndex) ? "▶" : "  ";
+            if (i == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
@@ -1293,8 +1333,8 @@ public class UIManager
         // 새 ▶ 그리기
         Console.ForegroundColor = ConsoleColor.Red;
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
-        Console.Write("\u25B7");
-         Console.ResetColor(); // 색 초기화
+        Console.Write("▶");
+        Console.ResetColor(); // 색 초기화
     }
 
     static int GetDelta(ConsoleKey key) => key switch
@@ -1369,10 +1409,11 @@ public class UIManager
     static List<int[]> enemyPos = new List<int[]>();
 
 
+    static List<Monster> monster;
     static int monsterCnt = 0;
     public static void EnemySetPosition(List<Monster> monsters)
     {
-
+        monster = monsters;
         monsterCnt = monsters.Count;
 
         enemyPos.Clear();
@@ -1449,12 +1490,17 @@ public class UIManager
         Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
         Console.Write($"                                                 ");
         Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
-        Console.Write($"{monster.health} / {monster.maxHealth}");
+        Console.Write(monster.health <= 0 ? $"0 / {monster.maxHealth}" : $"{monster.health} / {monster.maxHealth}");
+
+
+
     }
 
 
+    static Player player1;
     public static void PlayerHPBar(Player player)
     {
+        player1 = player;
         StringBuilder hpBar = new StringBuilder();
         int hpRatio;
 
@@ -1487,7 +1533,7 @@ public class UIManager
                 hpBar.Append("-");
             }
         }
-
+        
         hpBar.Append("]");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write($"{hpBar.ToString()}");
@@ -1525,10 +1571,14 @@ public class UIManager
             Console.SetCursorPosition(playerStartPos_X, playerStartPos_Y + i);
             Console.Write(line);
         }
-
+        
     }
 
 
+    public static void Change_isDungeon()
+    {
+        isDungeon = !isDungeon;
+    }
     public static void Change_isTarget()
     {
         isTarget = !isTarget;
@@ -1537,21 +1587,25 @@ public class UIManager
 
     public static void ClearTargetBOx()
     {
-        for (int j = 0; j < monsterCnt; j++)
+        try
         {
-            Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] - 1);
-            Console.Write("          ");
-
-            for (int i = 0; i < 5; i++)
+            for (int j = 0; j < monsterCnt; j++)
             {
-                Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + i);
-                Console.Write(" ");
-                Console.SetCursorPosition(enemyPos[j][0] + 8, enemyPos[j][1] + i);
-                Console.Write(" ");
+                Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] - 1);
+                Console.Write("          ");
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + i);
+                    Console.Write(" ");
+                    Console.SetCursorPosition(enemyPos[j][0] + 8, enemyPos[j][1] + i);
+                    Console.Write(" ");
+                }
+                Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + 4);
+                Console.Write("          ");
             }
-            Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + 4);
-            Console.Write("          ");
         }
+        catch { }
     }
     //static 으로 optionIndex
     public static void DrawTargetBox(int index)

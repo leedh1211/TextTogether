@@ -28,7 +28,8 @@ namespace text_together
         }
         public int GoDungeon(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
         {
-            
+            UIManager.Change_isDungeon();
+
             while (true)
             {
                 dungeon.gameClear = false;
@@ -68,11 +69,23 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             else DungeonRaid(player, dungeon);
-                            if(skip)return 0;
+                            if (skip)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
                             // 플레이어 체력 0이하가 되면 처음 페이지로 리턴
-                            if(dungeon.isPlayerDead == true)return 0;
+                            if (dungeon.isPlayerDead == true)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
                             // 엔딩 설정
-                            if(dungeon.stage == 6) EndingCredit(dungeon);
+                            if (dungeon.stage == 6)
+                            {
+                                UIManager.Change_isDungeon();
+                                EndingCredit(dungeon);
+                            }
                         }
                         break;
                     case 2:
@@ -83,9 +96,21 @@ namespace text_together
                         {
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             else DungeonRaid(player, dungeon);
-                            if(skip)return 0;
-                            if(dungeon.isPlayerDead == true) return 0;
-                            if(dungeon.stage == 6) EndingCredit(dungeon);
+                            if (skip)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
+                            if (dungeon.isPlayerDead == true)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
+                            if (dungeon.stage == 6)
+                            {
+                                UIManager.Change_isDungeon();
+                                EndingCredit(dungeon);
+                            }
                         }
                         break;
                     case 3:
@@ -96,9 +121,22 @@ namespace text_together
                         {
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             else DungeonRaid(player, dungeon);
-                            if(skip)return 0;
-                            if(dungeon.isPlayerDead == true) return 0;
-                            if(dungeon.stage == 6) EndingCredit(dungeon);
+                            if (skip)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
+
+                            if (dungeon.isPlayerDead == true)
+                            {
+                                UIManager.Change_isDungeon();
+                                return 0;
+                            }
+                            if (dungeon.stage == 6)
+                            {
+                                UIManager.Change_isDungeon();
+                                EndingCredit(dungeon);
+                            }
                         }
                         break;
                     case 0: return 0;
@@ -213,6 +251,7 @@ namespace text_together
                             if (success)
                             {
                                 LeaveRaid(player);
+                                dungeon.deadCount = 0;
                                 skip = true;
                                 return;
 
@@ -265,7 +304,7 @@ namespace text_together
                 
                 switch (selectedValue)
                 {
-                    case 0: UIManager.Change_isTarget(); UIManager.ClearTargetBOx(); return;
+                    case 0: UIManager.Change_isTarget(); UIManager.ClearTargetBOx(); Console.ForegroundColor = ConsoleColor.White; ; return;
                     default:
                         {
                             if (monsters[selectedValue-1].health <= 0)
