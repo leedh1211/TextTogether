@@ -28,7 +28,7 @@ public class UIManager
     static int optionStartPos_y = 30;
 
     static int typingDelay = 60;
-    
+
     static List<Option> currentOptions = new List<Option>();
     static string currentArt = "";
     static bool isResolutionChanged = false;
@@ -172,7 +172,7 @@ public class UIManager
 
         }
 
-        else if(index +1 == 2)
+        else if (index + 1 == 2)
         {
             for (int i = 0; i < text.Length; i++)
             {
@@ -563,7 +563,7 @@ public class UIManager
             cursors[index][1] = Console.CursorTop;
         }
 
-        
+
 
 
     }
@@ -886,8 +886,8 @@ public class UIManager
                 StringBuilder temp = new StringBuilder();
                 string[] lines;
                 string fullText;
-                
-                
+
+
                 foreach (var a in Text.mainTextTemp)
                 {
                     temp.Append(a);
@@ -914,7 +914,7 @@ public class UIManager
                 {
                     UIManager.WriteLine(1, test[j]);
                 }
-                
+
                 ////////////////////////////////////////////////////
                 //UI2번
                 //
@@ -930,7 +930,7 @@ public class UIManager
                 fullText = temp.ToString();
                 lines = fullText.Split('\0');
 
-                
+
                 // 줄 단위로 다시 나누기
                 foreach (string line in lines) //이거 크기에 맞게 슬라이스 할 필요가 있음?? 걍 \n만 슬라이스 하는게 맞지않나?
                 {
@@ -944,7 +944,7 @@ public class UIManager
                     */
 
                     test.Add(line);
-                    
+
                 }
 
                 if (test[test.Count - 1] == "")
@@ -965,7 +965,7 @@ public class UIManager
                 ///
                 //비워줘야함
 
-                
+
                 temp.Clear();
                 test.Clear();
 
@@ -1013,7 +1013,7 @@ public class UIManager
             }
         }
 
-        
+
     }
 
 
@@ -1076,38 +1076,14 @@ public class UIManager
             Console.Write("A");
         }
 
+
+
         Console.ReadKey();
 
+
+
     }
 
-    public static void DrawHPBar(Monster monster)
-    {
-        StringBuilder hpBar = new StringBuilder();
-
-        int hpRatio;
-
-        //비율을 10칸으로 나눠줌
-        hpRatio = (int)Math.Round((float)monster.health / monster.maxHealth * 100f);
-
-
-
-        //10칸임 보고 수정해도 될듯?
-        hpBar.Append("[");
-        for (int i = 0; i < 10; i++)
-        {
-            if (hpRatio > i)
-            {
-                hpBar.Append("█");
-            }
-            else
-            {
-                hpBar.Append("-");
-            }
-        }
-        hpBar.Append("]");
-
-        Console.WriteLine(hpBar.ToString());
-    }
 
 
     static public int inputController(List<Option> option)
@@ -1122,7 +1098,7 @@ public class UIManager
             {
                 return -1; // or 다른 특별한 코드로 루프 탈출
             }
-            
+
             var key = Console.ReadKey(intercept: true).Key;
             if (key == ConsoleKey.Enter)
             {
@@ -1156,27 +1132,25 @@ public class UIManager
 
             // 3) 상태 갱신
             prevIndex = index;
-            prevPage  = page;
-            index     = newIndex;
-            page      = newPage;
+            prevPage = page;
+            index = newIndex;
+            page = newPage;
         }
     }
-    
+
     static void RefreshOptionsPage(List<Option> option, int page, int selectedIndex)
     {
         Clear(3);
         int start = page * 6;
         int countOnPage = Math.Min(6, option.Count - start);
-        int maxOptionLength = optionSpace_x - 2;
         for (int i = 0; i < countOnPage; i++)
         {
             string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
             Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + i);
-            string displayText = TextCutingKorean(option[start + i].text, maxOptionLength);
-            Console.Write(prefix + displayText);
+            Console.Write(prefix + option[start + i].text);
         }
     }
-    
+
     static void MoveHighlight(int oldLocal, int newLocal)
     {
         // 이전 ▶ 지우기
@@ -1186,16 +1160,16 @@ public class UIManager
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
         Console.Write("\u25B7");
     }
-    
+
     static int GetDelta(ConsoleKey key) => key switch
     {
-        ConsoleKey.W or ConsoleKey.UpArrow   => -1,
+        ConsoleKey.W or ConsoleKey.UpArrow => -1,
         ConsoleKey.S or ConsoleKey.DownArrow => +1,
-        ConsoleKey.A or ConsoleKey.LeftArrow   => -6,
+        ConsoleKey.A or ConsoleKey.LeftArrow => -6,
         ConsoleKey.D or ConsoleKey.RightArrow => +6,
-        _                                    => 0
+        _ => 0
     };
-    
+
     public static void DrawAscii(string asciiArt)
     {
         currentArt = asciiArt;
@@ -1211,6 +1185,7 @@ public class UIManager
 
         for (int i = 0; i < lines.Length; i++)
         {
+
             string line = lines[i];
             int lineLength = line.Length;
 
@@ -1218,40 +1193,7 @@ public class UIManager
             startX = UIManager.mainStartPos_x + (sectorWidth - lineLength) / 2;
 
             Console.SetCursorPosition(startX, startY + i);
-            Console.Write(line);
+            Console.Write(lines[i]);
         }
-    }
-    
-    public static string TextCutingKorean(string text, int maxWidth)
-    {
-        StringBuilder sb = new StringBuilder();
-        int width = 0;
-        foreach (char c in text)
-        {
-            int charWidth = IsWideChar(c) ? 2 : 1;
-            if (width + charWidth > maxWidth)
-            {
-                if (charWidth == 2)
-                {
-                    sb.Remove(sb.Length - 2, 2);
-                    sb.Append("...");
-                }
-                else
-                {
-                    sb.Remove(sb.Length - 3, 3);
-                    sb.Append("...");
-                }
-                break;
-            }
-            sb.Append(c);
-            width += charWidth;
-        }
-        return sb.ToString();
-    }
-
-    public static bool IsWideChar(char c)
-    {
-        return (c >= 0xAC00 && c <= 0xD7AF) || // 한글
-               (c >= 0x1100 && c <= 0x11FF); // 초성
     }
 }
