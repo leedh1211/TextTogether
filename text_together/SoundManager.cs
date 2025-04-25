@@ -11,10 +11,11 @@ namespace text_together
     
     internal class SoundManager
     {
-        static string filePath = "../../../../Resources/voice_sans.wav";
+        static string filePath = "../../../../Resources/VoiceSans.wav";
 
         static public void sound()
         {
+
             // AudioFileReader를 사용하여 파일 읽기
             using (var audioFile = new AudioFileReader(filePath))
             {

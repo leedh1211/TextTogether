@@ -62,9 +62,9 @@ namespace text_together
             if(rand.Next(100) < 15)
             {
                damage *= 1.6f;
-               message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 치명적인 데미지!";
+               message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 치명적인 데미지!\n";
             }
-            else message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 데미지!";
+            else message=$"{monster.name} 에게 {skill.Name}을 사용하여 {(int)damage} 의 데미지!\n";
 
             monster.health -= (int)damage;
             player.mana -= skill.Cost;
@@ -72,13 +72,13 @@ namespace text_together
             // 쓰려트렸을 때
             if(monster.health <= 0)
             {
-                message+=$"{monster.name}을 쓰러트렸다!";
+                message+=$"{monster.name}을 쓰러트렸다!\n";
                 QuestManager.Instance.HandleMonsterKill(monster.name);
 
                 // 경험치 획득
                 int plusExp = (int)(monster.gold * 0.02);
                 player.exp += plusExp;
-                message+=$"{plusExp}의 경험치를 획득했다.";
+                message+=$"{plusExp}의 경험치를 획득했다.\n";
 
                 // 경험치 최대치 이상 획득시 레밸업
                 while (player.exp >= player.maxEXP)
@@ -86,7 +86,7 @@ namespace text_together
                     player.LevelUp(player);
                     player.exp -= player.maxEXP;
                     player.maxEXP = (int)(player.maxEXP * 1.5f);
-                    message+=$"Lv 가 {player.level}로 올랐다.";
+                    message+=$"Lv 가 {player.level}로 올랐다.\n";
                 }
                 dungeon.deadCount++;
             }

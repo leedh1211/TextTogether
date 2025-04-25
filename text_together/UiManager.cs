@@ -41,7 +41,7 @@ public class UIManager
     public static bool isShopUIList = false;
 
     //음원 경로
-    static string filePath = "../../../../Resources/voice_sans.wav";
+    static string filePath = "../../../../Resources/Voice_sans.wav";
 
 
     static int[] newLineCnt = new int[] { 0, 0, 0 };
@@ -513,15 +513,268 @@ public class UIManager
 
     }
 
-    static public void BackUPWriteLine(int index, string text)
+
+    static public void Typing(int index, string text)
     {
         index -= 1;
         // 해당 UI의 마지막 커서위치 설정
         Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
+        // 상단 UI (index + 1 == 1)
+        if (index + 1 == 1)
+        {
+            if (Text.mainText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.mainText.RemoveAt(Text.mainText.Count - 1);
+            }
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= mainStartPos_x + mainSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                    Text.mainText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
+            }
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+        }
 
         // 하단 좌측 UI (index + 1 == 2)
-        if (index + 1 == 2)
+        else if (index + 1 == 2)
+        {
+            if (Text.contentText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.contentText[Text.contentText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.contentText.RemoveAt(Text.contentText.Count - 1);
+            }
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= contentStartPos_x + contentSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                    Text.contentText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
+            }
+
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+        }
+
+        // 하단 우측 UI (index + 1 == 3)
+        else if (index + 1 == 3)
+        {
+            if (Text.optionText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
+
+                // 기존 버퍼 내용 제거
+                Text.optionText.RemoveAt(Text.optionText.Count - 1);
+            }
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI3의 범위를 벗어나면 줄 바꿈 (UI3는 optionStartPos_x부터 시작)
+                if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                    Text.optionText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
+            }
+            // 마지막에 남은 텍스트를 추가
+            if (textTemp.Length > 0)
+            {
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+        }
+
+        // 커서위치 반환 (마지막 위치 기억용)
+        cursors[index][0] = Console.CursorLeft; // x축
+        cursors[index][1] = Console.CursorTop;  // y축
+    }
+
+
+    static public void TypingLine(int index, string text)
+    {
+        index -= 1;
+        // 해당 UI의 마지막 커서위치 설정
+        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+        // 상단 UI (index + 1 == 1)
+        if (index + 1 == 1)
+        {
+            if (Text.mainText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.mainText[Text.mainText.Count - 1].ToString());
+                Text.mainText.RemoveAt(Text.mainText.Count - 1);
+            }
+
+            //글자를 출력함
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= mainSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                    Text.mainText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
+            }
+
+
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.mainText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
+        }
+
+        // 하단 좌측 UI (index + 1 == 2)
+        else if (index + 1 == 2)
         {
             if (Text.contentText.Count > 0)
             {
@@ -547,6 +800,23 @@ public class UIManager
                     Text.contentText.Add(textTemp.ToString());
                     textTemp.Clear(); // 버퍼를 클리어
                 }
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
 
                 //안넘어가면 아무것도 안하긴해
                 //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
@@ -557,13 +827,97 @@ public class UIManager
             {
                 newLineCnt[index]++;
                 Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
-                //textTemp.Append("\n"); 얘는 안넣어주는거지
+                textTemp.Append("\0");
                 Text.contentText.Add(textTemp.ToString());
                 textTemp.Clear(); // 버퍼 클리어
             }
 
             else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
             {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.contentText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
+                cursors[index][0] = Console.CursorLeft;
+                cursors[index][1] = Console.CursorTop;
+            }
+
+
+            cursors[index][0] = Console.CursorLeft;
+            cursors[index][1] = Console.CursorTop;
+        }
+
+        // 하단 우측 UI (index + 1 == 3)
+        else if (index + 1 == 3)
+        {
+            if (Text.optionText.Count > 0)
+            {
+                // 최근 문자열 가져오기
+                textTemp.Append(Text.optionText[Text.optionText.Count - 1].ToString());
+                Text.optionText.RemoveAt(Text.optionText.Count - 1);
+            }
+
+            //글자를 출력함
+            for (int i = 0; i < text.Length; i++)
+            {
+                textTemp.Append(text[i]);
+                Console.Write(text[i]);
+
+                // 현재 커서 위치 확인
+                int currentCursorLeft = Console.CursorLeft;
+
+                // 커서가 UI 범위를 벗어나면 줄 바꿈
+                if (currentCursorLeft >= optionStartPos_x + optionSpace_x)
+                {
+                    newLineCnt[index]++;
+                    Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                    Text.optionText.Add(textTemp.ToString());
+                    textTemp.Clear(); // 버퍼를 클리어
+                }
+                //해당 문자 표현시 소리재생 X
+                if (text[i] == ' ' || text[i] == '.')
+                {
+
+                }
+
+                else
+                {
+                    if (filePath != null)
+                    {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
+                        Thread thread = new Thread(SoundManager.sound);
+                        thread.Start();
+                    }
+                }
+
+
+                Thread.Sleep(typingDelay);
+
+                //안넘어가면 아무것도 안하긴해
+                //그러면 textTemp => 버퍼인데 남아있곘지?? 넣기 전이니까
+            }
+
+
+            if (textTemp.Length > 0)
+            {
+                newLineCnt[index]++;
+                Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+            }
+
+            else //이미 줄바꿈을 했는데 글자가 없어서 첫 시작점인경우 
+            {
+                //해당 내용 임시임 특정조건 만족시 문제 가능성 있음
+                newLineCnt[index]++;
+                Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
+                textTemp.Append("\0");
+                Text.optionText.Add(textTemp.ToString());
+                textTemp.Clear(); // 버퍼 클리어
+
                 cursors[index][0] = Console.CursorLeft;
                 cursors[index][1] = Console.CursorTop;
             }
@@ -574,116 +928,11 @@ public class UIManager
         }
 
 
-
-
     }
 
 
-    static public void Typing(int index, string text)
-    {
-        index -= 1;
-        //해당 UI의 마지막 커서위치 설정
-        Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
 
-        //상단 UI
-        if (index + 1 == 1)
-        {
-            for (int i = 0; i < text.Length; i++)
-            {
-                Console.Write(text[i]);
-                if (i % mainSpace_x == 0 && i != 0)
-                {
-                    newLineCnt[index]++;
-                    Console.SetCursorPosition(mainStartPos_x, mainStartPos_y + newLineCnt[index]);
-
-                    //해당 문자 표현시 소리재생 X
-                    if (text[i] == ' ' || text[i] == '.')
-                    {
-
-                    }
-
-                    else
-                    {
-                        if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
-                            Thread thread = new Thread(SoundManager.sound);
-                            thread.Start();
-                        }
-                    }
-                }
-
-                Thread.Sleep(typingDelay);
-            }
-        }
-
-        //하단 좌측 UI
-        else if (index + 1 == 2)
-        {
-            for (int i = 0; i < text.Length; i++)
-            {
-                Console.Write(text[i]);
-                if (i > contentSpace_x)
-                {
-                    newLineCnt[index]++;
-                    Console.SetCursorPosition(contentStartPos_x, contentStartPos_y + newLineCnt[index]);
-
-                    //해당 문자 표현시 소리재생 X
-                    if (text[i] == ' ' || text[i] == '.')
-                    {
-
-                    }
-
-                    else
-                    {
-                        if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
-                            Thread thread = new Thread(SoundManager.sound);
-                            thread.Start();
-                        }
-                    }
-                }
-                Thread.Sleep(typingDelay);
-            }
-        }
-
-        //하단 우측 UI
-        else if (index + 1 == 3)
-        {
-            for (int i = 0; i < text.Length; i++)
-            {
-                Console.Write(text[i]);
-                if (i > optionSpace_x)
-                {
-                    newLineCnt[index]++;
-                    Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLineCnt[index]);
-
-                    //해당 문자 표현시 소리재생 X
-                    if (text[i] == ' ' || text[i] == '.')
-                    {
-
-                    }
-
-                    else
-                    {
-                        if (filePath != null)
-                        {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
-                            Thread thread = new Thread(SoundManager.sound);
-                            thread.Start();
-                        }
-                    }
-                }
-                Thread.Sleep(typingDelay);
-            }
-        }
-
-
-        //커서위치 반환 (마지막 위치 기억용)
-        cursors[index][0] = Console.CursorLeft; //x축
-        cursors[index][1] = Console.CursorTop;  //y축
-
-    }
-
-    static public void TypingLine(int index, string text)
+    static public void TypingLine1(int index, string text)
     {
         index -= 1;
         //해당 UI의 마지막 커서위치 설정

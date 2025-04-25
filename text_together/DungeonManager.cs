@@ -232,7 +232,7 @@ namespace text_together
                 
 
                 if(message != "") UIManager.WriteLine(2,message);
-                else UIManager.WriteLine(2,$"{monster[rand.Next(0, monster.Count)].monsterInfo}");
+                else UIManager.TypingLine(2,$"{monster[rand.Next(0, monster.Count)].monsterInfo}");
 
                 List<Option> options = new List<Option>
                 {
@@ -345,12 +345,15 @@ namespace text_together
 
                 OutputMonster(monsters);
 
-                UIManager.WriteLine(2,"[플레이어]");
-                UIManager.WriteLine(2,$"체력 : {player.health}" );
-                UIManager.WriteLine(2,$"마나 : {player.mana}" );
-                UIManager.WriteLine(2,$"Exp : {player.exp} / {player.maxEXP}");
-                UIManager.WriteLine(2,$"Lv: {player.level}" );
-                UIManager.WriteLine(2,message);
+                List<string> messages = new List<string>();
+                string[] massageTemp = message.Split('\n');
+
+                
+
+
+                for(int i = 0; i < massageTemp.Length; i++) { 
+                    UIManager.TypingLine(2, massageTemp[i]);
+                }
                 
                 NextEnter();
 
@@ -475,8 +478,8 @@ namespace text_together
             // 수정
             foreach (var monsters in monster)
                 {
-                    UIManager.Write(2,$"[Lv. {monsters.level}] {monsters.name}  | ");
-                    UIManager.WriteLine(2,monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    //UIManager.Write(2,$"[Lv. {monsters.level}] {monsters.name}  | ");
+                    //UIManager.WriteLine(2,monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                 }
         }
 
