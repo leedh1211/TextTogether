@@ -1162,14 +1162,14 @@ public class UIManager
         }
     }
 
-    static public int inputSkillController(List<Option> option, int clearindex)
+    static public int inputController(List<Option> option, int clearindex, string text)
     {
         int index = 0, prevIndex = 0;
         int page = 0, prevPage = 0;
         RefreshOptionsPage(option, index, page);
         currentOptions = option;
 
-        string[] summary = GetText(option, index);
+        string[] summary = GetText(option, index,text);
         foreach (var line in summary)
         {
             UIManager.WriteLine(2, line); // 오른쪽 정보 영역에 출력
@@ -1219,8 +1219,9 @@ public class UIManager
             index = newIndex;
             page = newPage;
 
+            // 4) 커서 바뀔때마다 글자 갱신
             UIManager.Clear(clearindex);
-            summary = GetText(option, index);
+            summary = GetText(option, index, text);
             foreach (var line in summary)
             {
                 UIManager.WriteLine(clearindex, line);
@@ -1228,17 +1229,30 @@ public class UIManager
         }
     }
 
-    public static string[] GetText(List<Option> options, int index)
+    // 각각의 커서에 들어갈 내용 가져오기
+    public static string[] GetText(List<Option> options, int index, string input)
     {
-        int skillIndex = options[index].value;
-        var skill = SkillManager.Instance.skills[skillIndex - 1];
+        int idx = options[index].value;
 
-        return new string[]
+        if (input == "skill")
         {
+            var skill = SkillManager.Instance.skills[idx - 1];
+
+            return new string[]
+            {
      $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost}",
      $"{skill.Description}"
-        };
+            };
+        }
+        else if(input == "inventory")
+        {
+            var item = InventoryManager.Instance.inventory[idx - 1];
+            return new string[] {
+            };
+        }
+        return new string[] { "정보를 불러올 수 없습니다." };
     }
+
     static void RefreshOptionsPage(List<Option> option, int page, int selectedIndex)
     {
         Clear(3);

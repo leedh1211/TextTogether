@@ -60,7 +60,7 @@ namespace text_together
                     });
                 }
                 UIManager.Clear(2);
-                int selectedValue = UIManager.inputSkillController(options,2);
+                int selectedValue = UIManager.inputController(options,2,"skill");
                     
 
                 switch (selectedValue)
