@@ -86,6 +86,7 @@ namespace text_together
                     selectMonster.attack,
                     selectMonster.shield,
                     selectMonster.health,
+                    selectMonster.maxHealth,
                     selectMonster.gold,
                     selectMonster.monsterType,
                     selectMonster.monsterInfo,

@@ -1169,6 +1169,8 @@ public class UIManager
         RefreshOptionsPage(option, index, page);
         currentOptions = option;
 
+        // UIManager.Clear(2);
+
         string[] summary = GetText(option, index,text);
         foreach (var line in summary)
         {
@@ -1240,14 +1242,18 @@ public class UIManager
 
             return new string[]
             {
-     $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost}",
-     $"{skill.Description}"
+                $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost}",
+                 $"{skill.Description}"
             };
         }
         else if(input == "inventory")
         {
+            if(idx == 0)
+            {
+                return new string[] { " " };
+            }
             var item = InventoryManager.Instance.inventory[idx - 1];
-            return new string[] {
+            return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}" 
             };
         }
         return new string[] { "정보를 불러올 수 없습니다." };
