@@ -8,12 +8,12 @@ namespace text_together
 {
     class QuestReward
     {
-        public string rewardName;
-        public int rewardPrice;
-        public string rewardInfo;
-        public string rewardType;
-        public int rewardEffect;
-        public int rewardCount;
+        public string rewardName { get; set; }
+        public int rewardPrice { get; set; }
+        public string rewardInfo { get; set; }
+        public string rewardType { get; set; }
+        public int rewardEffect { get; set; }
+        public int rewardCount { get; set; }
         public QuestReward(string rewardName, int rewardPrice, string rewardInfo, string rewardType, int rewardEffect = 0, int rewardCount = 0)
         {
             this.rewardName = rewardName;

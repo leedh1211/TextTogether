@@ -25,7 +25,7 @@ namespace text_together
                 return instance;
             }
         }
-        private List<Quest> quests = new List<Quest>();
+        public List<Quest> quests = new List<Quest>();
         // 보상 프리셋 정의
         QuestReward Gold(int amount = 50) =>
             new QuestReward("골드", amount, "다양한 물품을 구매할 수 있는 골드이다.", "G");
@@ -73,7 +73,7 @@ namespace text_together
             return quests;
         }
 
-        public int GoQuest(Player player)
+        public int GoQuest(Player player, List<Quest> quests, List<Item> inventory)
         {
             while (true)
             {
@@ -96,7 +96,7 @@ namespace text_together
                 {
                     var quest = availableQuests[i];
                     string status = quest.isRewarded ? "[완료]" :
-                                    quest.isAccepted && quest.questGoals.All(g => g.IsComplete) ? "[완료 대기]" :
+                                    quest.isAccepted && quest.questGoals.All(g => g.IsComplete()) ? "[완료 대기]" :
                                     quest.isAccepted ? "[진행 중]" : "[미수락]";
                     options.Add(new Option { text = $"{quest.questName} ", value = i + 1, });
                     UIManager.WriteLine(2, $"{quest.questName} {quest.questInfo} {status}");
@@ -115,13 +115,13 @@ namespace text_together
                 }
                 else
                 {
-                    QuestUI(availableQuests[selectedValue - 1], player);
+                    QuestUI(availableQuests[selectedValue - 1], player, inventory);
                 }
             }
         }
 
         // 퀘스트 수락 여부 체크
-        void QuestUI(Quest quest, Player player)
+        void QuestUI(Quest quest, Player player, List<Item> inventory)
         {
             UIManager.Clear(1);
             UIManager.Clear(2);
@@ -157,17 +157,18 @@ namespace text_together
             {
                 options.Add(new Option { text = "퀘스트 수락", value = 1, });
             }
-            else if (quest.questGoals.All(g => g.IsComplete) && !quest.isRewarded)
+            else if (quest.questGoals.All(g => g.IsComplete()) && !quest.isRewarded)
             {
+                quest.isCompleted = true;
                 options.Add(new Option { text = "보상 받기", value = 1, });
             }
             int selectedValue = UIManager.inputController(options);
-            if (quest.IsCompleted && selectedValue == 1)
+            if (quest.isCompleted&& selectedValue == 1)
             {
-                quest.GiveReward(quest, player);
+                quest.GiveReward(quest, player,inventory);
                 quest.isRewarded = true;
             }
-            else if(!quest.IsCompleted && selectedValue == 1)
+            else if(!quest.isCompleted && selectedValue == 1)
             {
                 quest.isAccepted = true;
                 return;
@@ -191,7 +192,7 @@ namespace text_together
             {
                 foreach (var goal in quest.questGoals)
                 {
-                    if (!goal.IsComplete && goal.questTarget == monsterName)
+                    if (!goal.IsComplete() && goal.questTarget == monsterName)
                     {
                         goal.AddProgress();
                         UIManager.WriteLine(2,$"[퀘스트 진행] {quest.questName} - {goal.questTarget}: {goal.currentCount}/{goal.requiredCount}");

@@ -11,7 +11,7 @@ namespace text_together
         public string questTarget { get; set; }
         public int requiredCount { get; set; }
         public int currentCount { get;  set; }
-
+        public bool isQuestGoalCompleted { get; set; }
         public QuestGoal(string questTarget, int requiredCount, int currentCount)
         {
             this.questTarget = questTarget;
@@ -22,11 +22,20 @@ namespace text_together
         // 퀘스트 진행 중 체크
         public void AddProgress()
         {
-            if (!IsComplete)
+            if (!this.isQuestGoalCompleted)
                 currentCount++;
         }
 
         // 퀘스트 성공 여부 체크
-        public bool IsComplete => currentCount >= requiredCount;
+        public bool IsComplete()
+        {
+            if (currentCount < requiredCount)
+            {
+                isQuestGoalCompleted = true;
+            }
+            else
+                isQuestGoalCompleted = false;
+            return isQuestGoalCompleted;
+        }
     }
 }

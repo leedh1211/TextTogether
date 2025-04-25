@@ -14,7 +14,7 @@ class Solution
 {
     
     // 메인 화면 탭 관리
-    static void GameStart(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
+    static void GameStart(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon, List<Quest> quests)
     {
         int status = 0;
         while (true)
@@ -23,13 +23,13 @@ class Solution
             View.DrawUIFast();
             switch (status)
             {
-                case 0: status = mainMenu(player, items, inventory, dungeon); break;
+                case 0: status = mainMenu(); break;
                 case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
                 case 2: status = InventoryManager.Instance.GoInventory(player, inventory); break;
                 case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
                 case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
                 case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
-                case 6: status = QuestManager.Instance.GoQuest(player); break;
+                case 6: status = QuestManager.Instance.GoQuest(player,quests, inventory); break;
                 case 7: return;
             }
         }
@@ -43,9 +43,9 @@ class Solution
         // 상점에 아이템들 추가
         List<Item> items = ShopManager.Instance.InitializeStore(); ;
         // 던전 추가
-        Dungeon dungeon;
+        Dungeon dungeon; 
         // 퀘스트 초기화
-        List<Quest> quests;
+        List<Quest> quests = QuestManager.Instance.quests;
         // 게임 시작
         int startActionResult = title.SelectTitleOption();
         _ = UIManager.Call_CheckWindow();
@@ -57,7 +57,7 @@ class Solution
             UIManager.UISetup();
             View.DrawUIFast();
             String FileName = "slot"+selectFile+".json";
-            if (!GameSaveState.TryLoad(out player, out inventory, out items, out dungeon, FileName))
+            if (!GameSaveState.TryLoad(out player, out inventory, out items,out quests, out dungeon, FileName))
             {
                 // 초기 설정
                 string playerName = PlayerManager.Instance.CheckName();
@@ -72,8 +72,15 @@ class Solution
                 // 던전 추가
                 dungeon = new Dungeon("", 1,false, false, 0, false);
             }
-            GameStart(player, items, inventory, dungeon);
-            GameSaveState.Save(player, inventory, items, dungeon, FileName);
+
+            GameStart(player, items, inventory, dungeon, quests);
+            for (int i = 0; i< 3; i++)
+            {
+                QuestManager.Instance.HandleMonsterKill("치킨");
+            }
+            GameStart(player, items, inventory, dungeon, quests);
+
+            GameSaveState.Save(player, inventory, items,quests, dungeon, FileName);
         }
         else
         {
@@ -81,7 +88,7 @@ class Solution
         }
     }
 
-    static int mainMenu(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
+    static int mainMenu()
     {
         UIManager.DrawAscii(UIAscii.HomeArt);
         UIManager.Clear(2);
