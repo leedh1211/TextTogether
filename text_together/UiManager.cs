@@ -1076,16 +1076,40 @@ public class UIManager
             Console.Write("A");
         }
 
-
-
         Console.ReadKey();
-
-
 
     }
 
+    public static void DrawHPBar(Monster monster)
+    {
+        StringBuilder hpBar = new StringBuilder();
 
-    
+        int hpRatio;
+
+        //비율을 10칸으로 나눠줌
+        hpRatio = (int)Math.Round((float)monster.health / monster.maxHealth * 100f);
+
+
+
+        //10칸임 보고 수정해도 될듯?
+        hpBar.Append("[");
+        for (int i = 0; i < 10; i++)
+        {
+            if (hpRatio > i)
+            {
+                hpBar.Append("█");
+            }
+            else
+            {
+                hpBar.Append("-");
+            }
+        }
+        hpBar.Append("]");
+
+        Console.WriteLine(hpBar.ToString());
+    }
+
+
     static public int inputController(List<Option> option)
     {
         int index = 0, prevIndex = 0;
