@@ -37,7 +37,7 @@ namespace text_together
             while (true)
             {
                 List<Option> options = new List<Option>();
-                UIManager.Clear(1);
+                //UIManager.Clear(1);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
                 UIManager.WriteLine(2,$"현재 스테이지1 : {dungeon.stage}" );
