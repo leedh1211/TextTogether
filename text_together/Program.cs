@@ -70,7 +70,7 @@ class Solution
                 inventory = InventoryManager.Instance.inventory;
         
                 // 던전 추가
-                dungeon = new Dungeon("", 1,false, false, 0);
+                dungeon = new Dungeon("", 1,false, false, 0, false);
             }
             GameStart(player, items, inventory, dungeon);
             GameSaveState.Save(player, inventory, items, dungeon, FileName);

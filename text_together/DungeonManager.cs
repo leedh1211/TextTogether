@@ -30,6 +30,8 @@ namespace text_together
         {
             while (true)
             {
+                dungeon.gameClear = false;
+
                 UIManager.Clear(1);
                 UIManager.Clear(2);
                 UIManager.Clear(3);
@@ -53,48 +55,44 @@ namespace text_together
                 switch (selectedValue)
                 {
                     case 1:
+                        // 몬스터 리스트 리셋
+                        MonsterManager.Instance.ResetMonsters();
+                        // 몬스터 난이도 설정
+                        dungeon.dungeonLevel = "쉬움";
+                        MonsterManager.Instance.FixMonster(dungeon);
                         while (dungeon.gameClear == false)
                         {
-                            // 몬스터 난이도 설정
-                            dungeon.dungeonLevel = "쉬움";
-                            MonsterManager.Instance.FixMonster(dungeon);
-
-                            // 몬스터 리스트 리셋
-                            MonsterManager.Instance.ResetMonsters();
-
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                            DungeonRaid(player, dungeon);
+                            else DungeonRaid(player, dungeon);
+                            // 플레이어 체력 0이하가 되면 처음 페이지로 리턴
+                            if(dungeon.isPlayerDead == true)return 0;
+                            // 엔딩 설정
+                            if(dungeon.stage == 6) EndingCredit(dungeon);
                         }
                         break;
                     case 2:
+                        MonsterManager.Instance.ResetMonsters();
+                        dungeon.dungeonLevel = "보통";
+                        MonsterManager.Instance.FixMonster(dungeon);
                         while (dungeon.gameClear == false)
                         {
-                            // 몬스터 난이도 설정
-                            dungeon.dungeonLevel = "보통";
-                            MonsterManager.Instance.FixMonster(dungeon);
-
-                            // 몬스터 리스트 리셋
-                            MonsterManager.Instance.ResetMonsters();
-
-                            // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
+                            if(dungeon.isPlayerDead == true) return 0;
+                            if(dungeon.stage == 6) EndingCredit(dungeon);
                         }
                         break;
                     case 3:
+                        MonsterManager.Instance.ResetMonsters();
+                        dungeon.dungeonLevel = "어려움";
+                        MonsterManager.Instance.FixMonster(dungeon);
                         while (dungeon.gameClear == false)
                         {
-                            // 몬스터 난이도 설정
-                            dungeon.dungeonLevel = "어려움";
-                            MonsterManager.Instance.FixMonster(dungeon);
-
-                            // 몬스터 리스트 리셋
-                            MonsterManager.Instance.ResetMonsters();
-
-                            // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
+                            if(dungeon.isPlayerDead == true) return 0;
+                            if(dungeon.stage == 6) EndingCredit(dungeon);
                         }
                         break;
                     case 0: return 0;
@@ -106,7 +104,7 @@ namespace text_together
 
         public void BaseDungeon(Player player, Dungeon dungeon, List<Item> items, List<Item> inventory)
         {
-            while ((dungeon.stage % 5 == 0))
+            while (dungeon.stage % 5 == 0 && dungeon.isPlayerDead == false)
             {
                 UIManager.Clear(2);
                 UIManager.WriteLine(2,"베이스 캠프");
@@ -142,6 +140,7 @@ namespace text_together
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             bool skip = false;
             dungeon.dungeonClear = false;
+            dungeon.isPlayerDead = false;
 
             while (dungeon.dungeonClear==false)
             {
@@ -152,6 +151,14 @@ namespace text_together
                     message = "도망치기에 실패하였다!!  도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.";
                     player.health -= 5;
                     skip=false;
+                }
+
+                if(player.health <= 0 )
+                {
+                    DeathPenalty(player, dungeon);
+                    dungeon.dungeonClear=true;
+                    player.health = 100;
+                    break;
                 }
 
                 UIManager.WriteLine(2,$"현재 난이도 : {dungeon.dungeonLevel}");
@@ -290,11 +297,7 @@ namespace text_together
                 UIManager.WriteLine(2,$"Lv: {player.level}" );
                 UIManager.WriteLine(2,message);
                 
-                List<Option> options = new List<Option>
-                {
-                    new Option { text = "확인", value = 0 },
-                };
-                UIManager.inputController(options);
+                NextEnter();
 
                 // 전부 다 처치 시 보상
                 if (dungeon.deadCount == monsters.Count)
@@ -333,12 +336,7 @@ namespace text_together
             UIManager.WriteLine(2,"[탐험 결과]");
             UIManager.WriteLine(2,$"{resultGold} Gold 획득");
 
-
-            List<Option> options = new List<Option>
-            {
-                new Option { text = "확인", value = 0 },
-            };
-            UIManager.inputController(options);
+            NextEnter();
 
             message = "";
             dungeons.deadCount = 0;
@@ -373,11 +371,15 @@ namespace text_together
         }
 
         // 사망 페널티
-        public void DeathPenalty(Player player)
+        public void DeathPenalty(Player player, Dungeon dungeon)
         {
-            UIManager.WriteLine(2,"플레이어가 사망하였습니다.");
+            UIManager.WriteLine(2,"당신의 눈앞이 어두워졌다... ");
             int randExp = RandomNumber(10);
             int randCoin = RandomNumber(10);
+
+            dungeon.deadCount = 0;
+            dungeon.stage = 1;
+            dungeon.isPlayerDead = true;
 
             player.exp -= randExp;
             player.gold -= randCoin;
@@ -385,20 +387,17 @@ namespace text_together
             UIManager.WriteLine(2,$"경험치가 {player.exp}만큼 소실되었습니다.");
             UIManager.WriteLine(2,$"금화가 {player.gold}만큼 소실되었습니다.");
 
-            bool isSteal = rand.Next(0, 100) < 50;
+            // bool isSteal = rand.Next(0, 100) < 50;
 
-            // 인벤토리에서 가져가게끔
-            if (isSteal)
-            {
-                // develop 브런치에서 pull해오면 추가 작성 예정
-            }
+            // // 인벤토리에서 가져가게끔
+            // if (isSteal)
+            // {
+            //     // develop 브런치에서 pull해오면 추가 작성 예정
+            // }
 
             UIManager.WriteLine(2,"아무키나 누르시면 던전입구로 갑니다.");
-            List<Option> options = new List<Option>
-            {
-                new Option { text = "확인", value = 0 },
-            };
-            UIManager.inputController(options);
+            NextEnter();
+            return;
         }
 
         public static String getMonsterInfoText(Monster monster)
@@ -414,6 +413,7 @@ namespace text_together
             }
             return monsterText;
         }
+        
         public void OutputMonster(List<Monster> monster)
         {
 
@@ -423,6 +423,27 @@ namespace text_together
                     Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
                     Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                 }
+        }
+
+        public void EndingCredit(Dungeon dungeon)
+        {
+            Console.Clear();
+            Console.WriteLine($"축하합니다. {dungeon.dungeonLevel} 난이도를 클리어 하셨습니다.");
+            Console.WriteLine("만든이 주루룩");
+            NextEnter();
+
+            dungeon.stage = 1;
+            dungeon.gameClear = true;
+        }
+
+
+        public void NextEnter()
+        {
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "확인", value = 0 },
+            };
+            UIManager.inputController(options);
         }
     }
 
