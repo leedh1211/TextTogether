@@ -106,7 +106,7 @@ namespace text_together
 
         public void BaseDungeon(Player player, Dungeon dungeon, List<Item> items, List<Item> inventory)
         {
-            while (true)
+            while ((dungeon.stage % 5 == 0))
             {
                 UIManager.Clear(2);
                 UIManager.WriteLine(2,"베이스 캠프");
@@ -117,7 +117,8 @@ namespace text_together
                 new Option { text = "나아가기", value = 1 },
                 new Option { text = "휴식하기", value = 2 },
                 new Option { text = "상점", value = 3 },
-                new Option { text = "상태보기", value = 4 },
+                new Option { text = "인벤토리", value = 4 },
+                new Option { text = "상태보기", value = 5 },
                 new Option { text = "나가기", value = 0 },
                 };
 
@@ -126,9 +127,10 @@ namespace text_together
                 switch (selectedValue)
                 {
                     case 1: DungeonRaid(player, dungeon); break;
-                    case 2: break;
+                    case 2: RestManager.Instance.GoRest(player, items, inventory); break;
                     case 3: ShopManager.Instance.GoShop(player, inventory); break;
-                    case 4: PlayerManager.Instance.PlayerInfo(player); break;
+                    case 4: InventoryManager.Instance.GoInventory(player); break;
+                    case 5: PlayerManager.Instance.PlayerInfo(player); break;
                     case 0: return;
                 }
             }
@@ -160,8 +162,17 @@ namespace text_together
                 {
                     Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
                     Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
-                }
+                    
+                    StringBuilder sb = new StringBuilder();
 
+                    for(int i = 0; i < monsters.monsterArt.Length; i++)  
+                    {
+                        sb.Append(monsters.monsterArt[i]);
+                        sb.Append("\n");
+                    }
+                    UIManager.DrawAscii(sb.ToString());
+                }
+                
                 UIManager.WriteLine(2,"");
                 UIManager.WriteLine(2,"[플레이어]");
                 UIManager.WriteLine(2,$"체력 : {player.health}" );
