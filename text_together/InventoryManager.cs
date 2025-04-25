@@ -35,9 +35,9 @@ namespace text_together
             foreach (var item in inventory)
             {
                 if (item.isEquipped)
-                    UIManager.WriteLine(2, $"[E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"[E]{item.name.PadRight(10)}");
                 else
-                    UIManager.WriteLine(2, $"{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}");
+                    UIManager.WriteLine(2, $"{item.name.PadRight(10)}");
             }
         }
 
@@ -77,9 +77,9 @@ namespace text_together
                 string equipText;
 
                 if (item.isEquipped)
-                    equipText = $"- {idx} [E]{item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}";
+                    equipText = $"- {idx} [E]{item.name.PadRight(10)}";
                 else
-                    equipText = $"- {idx} {item.name.PadRight(10)}| {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}";
+                    equipText = $"- {idx} {item.name.PadRight(10)}";
 
                 UIManager.WriteLine(2, equipText);
 
@@ -207,7 +207,7 @@ namespace text_together
                 List<Option> options = EquippedInfo();
 
                 UIManager.WriteLine(2, "원하시는 행동을 입력해주세요.");
-                int input = UIManager.inputController(options);
+                int input = UIManager.inputController(options, 2, "inventory");
 
                 if (input == 0)
                 {
