@@ -98,8 +98,28 @@ namespace text_together
                     string status = quest.isRewarded ? "[완료]" :
                                     quest.isAccepted && quest.questGoals.All(g => g.IsComplete()) ? "[완료 대기]" :
                                     quest.isAccepted ? "[진행 중]" : "[미수락]";
-                    options.Add(new Option { text = $"{quest.questName} ", value = i + 1, });
-                    UIManager.WriteLine(2, $"{quest.questName} {quest.questInfo} {status}");
+                    options.Add(new Option { text = $"{quest.questName} ", value = i + 1 });
+                    UIManager.WriteLine(2,$"{quest.questName} {quest.questInfo} ");
+
+                    // 상태만 색 다르게 출력
+                    switch (status)
+                    {
+                        case "[완료]":
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            break;
+                        case "[완료 대기]":
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            break;
+                        case "[진행 중]":
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            break;
+                        case "[미수락]":
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            break;
+                    }
+
+                    Console.WriteLine(status);
+                    Console.ResetColor(); // 색 초기화
                 }
 
                 int selectedValue = UIManager.inputController(options);
