@@ -1751,10 +1751,13 @@ public class UIManager
     {
         player1 = player;
         StringBuilder hpBar = new StringBuilder();
+        StringBuilder mpBar = new StringBuilder();
         int hpRatio;
+        int mpRatio;
 
         //비율을 10칸으로 나눠줌
         hpRatio = (int)Math.Round(((float)player.health / (player.maxHealth)) * 10);
+        mpRatio = (int)Math.Round(((float)player.mana / (player.maxMana)) * 10);
 
 
         //귀찮다
@@ -1765,7 +1768,7 @@ public class UIManager
         Console.Write("Lv. " + player.level);
 
 
-        Console.SetCursorPosition(10, 17);
+        
         hpBar.Append("[");
 
         for (int i = 0; i < 10; i++)
@@ -1782,15 +1785,51 @@ public class UIManager
                 hpBar.Append("-");
             }
         }
-        
+
         hpBar.Append("]");
+
+
+        ///////////MP//////////////////////
+        
+        mpBar.Append("[");
+
+        for (int i = 0; i < 10; i++)
+        {
+
+            if (mpRatio > i)
+            {//█
+
+                mpBar.Append("█");
+            }
+            else
+            {
+
+                mpBar.Append("-");
+            }
+        }
+
+        mpBar.Append("]");
+
+
+
+        Console.SetCursorPosition(6, 17);
+        Console.Write("HP  ");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write($"{hpBar.ToString()}");
+
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(12, 18);
+        Console.SetCursorPosition(6, 18);
+        Console.Write("MP  ");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"{mpBar.ToString()}");
+
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.SetCursorPosition(22, 17);
         Console.Write($"{player.health} / {player.maxHealth}        ");
 
-        Console.WriteLine($"마나 : {player.mana} ");
+        Console.SetCursorPosition(22, 18);
+        Console.Write($"{player.mana} / {player.maxMana}        ");
+
 
 
     }
