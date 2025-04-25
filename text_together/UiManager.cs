@@ -1271,20 +1271,30 @@ public class UIManager
         for (int i = 0; i < countOnPage; i++)
         {
             string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
+            if(i == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
             Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + i);
             string displayText = TextCutingKorean(option[start + i].text, maxOptionLength);
-            Console.Write(prefix + displayText);
+            Console.Write(prefix);
+            Console.ResetColor();
+            Console.Write(displayText);
         }
     }
 
     static void MoveHighlight(int oldLocal, int newLocal)
     {
+
         // 이전 ▶ 지우기
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + oldLocal);
+        Console.ResetColor(); // 색 초기화
         Console.Write(" ");
         // 새 ▶ 그리기
+        Console.ForegroundColor = ConsoleColor.Red;
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
         Console.Write("\u25B7");
+         Console.ResetColor(); // 색 초기화
     }
 
     static int GetDelta(ConsoleKey key) => key switch
