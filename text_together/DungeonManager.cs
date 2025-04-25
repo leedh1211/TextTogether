@@ -137,12 +137,25 @@ namespace text_together
         // 던전 몬스터 조우
         public void DungeonRaid(Player player, Dungeon dungeon)
         {
+            UIManager.Clear(1);
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             bool skip = false;
             dungeon.dungeonClear = false;
             dungeon.isPlayerDead = false;
 
-            while (dungeon.dungeonClear==false)
+            UIManager.EnemySetPosition(monster);
+
+            for (int i = 0; i < monster.Count; i++)
+            {
+                UIManager.DrawEnemy(i, monster[i]);
+                UIManager.DrawEnemyName(i, monster[i]);
+                monster[i].maxHealth = monster[i].health;
+            }
+
+
+            UIManager.DrawPlayer(UIAscii.PlayerBehind);
+
+                while (dungeon.dungeonClear==false)
             {
                 message = "";
                 UIManager.Clear(2);
@@ -168,15 +181,10 @@ namespace text_together
 
                 for(int i = 0; i< monster.Count; i++)
                 {
-
+                    UIManager.DrawHPBar(i, monster[i]);
+                    UIManager.PlayerHPBar(player);
                 }
                 
-                UIManager.WriteLine(2,"");
-                UIManager.WriteLine(2,"[플레이어]");
-                UIManager.WriteLine(2,$"체력 : {player.health}" );
-                UIManager.WriteLine(2,$"마나 : {player.mana}" );
-                UIManager.WriteLine(2,$"Lv : {player.level} " );
-                UIManager.WriteLine(2,"");
 
                 if(message != "") UIManager.WriteLine(2,message);
                 else UIManager.WriteLine(2,$"{monster[rand.Next(0, monster.Count)].monsterInfo}");

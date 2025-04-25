@@ -1415,10 +1415,69 @@ public class UIManager
 
     public static void PlayerHPBar(Player player)
     {
-        Console.SetCursorPosition(1, 28);
-        Console.WriteLine(player.health);
-        Console.WriteLine(player.mana);
-        Console.WriteLine("Lv. " + player.level);
+        StringBuilder hpBar = new StringBuilder();
+        int hpRatio;
+
+        //비율을 10칸으로 나눠줌
+        hpRatio = (int)Math.Round(((float)player.health / (player.maxHealth)) * 10);
+
+
+        //귀찮다
+        //int x = playerStartPos_X + (sectorWidth - lineLength) / 2;
+
+
+        Console.SetCursorPosition(13, 16);
+        Console.Write("Lv. " + player.level);
+
+
+        Console.SetCursorPosition(10, 17);
+        hpBar.Append("[");
+        for (int i = 0; i < 10; i++)
+        {
+            if (hpRatio > i)
+            {//█
+                hpBar.Append("█");
+            }
+            else
+            {
+                hpBar.Append("-");
+            }
+        }
+        hpBar.Append("]");
+        Console.Write($"{hpBar.ToString()}");
+        Console.SetCursorPosition(12, 18);
+        Console.Write($"{player.health} / {player.maxHealth}        ");
+
+        Console.WriteLine($"마나 : {player.mana} ");
+
+
+    }
+    static int playerStartPos_X, playerStartPos_Y;
+
+    public static void DrawPlayer(string asciiArt)
+    {
+        currentArt = asciiArt;
+        string[] lines = asciiArt.Split('\n');
+
+        int sectorWidth = UIManager.mainSpace_x;
+        int sectorHeight = UIManager.mainSpace_y;
+
+
+        // 하단 정렬
+        playerStartPos_Y = UIManager.mainStartPos_y + sectorHeight - lines.Length;
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            int lineLength = line.Length;
+
+            // 가운데 정렬
+            //startX = UIManager.mainStartPos_x + (sectorWidth - lineLength) / 2;
+            playerStartPos_X = 5;
+
+            Console.SetCursorPosition(playerStartPos_X, playerStartPos_Y + i);
+            Console.Write(line);
+        }
 
     }
 
