@@ -158,19 +158,10 @@ namespace text_together
                 UIManager.WriteLine(2,$"현재 스테이지 : {dungeon.stage} ");
                 UIManager.WriteLine(2,"");
 
-                foreach (var monsters in monster)
-                {
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
-                    
-                    StringBuilder sb = new StringBuilder();
 
-                    for(int i = 0; i < monsters.monsterArt.Length; i++)  
-                    {
-                        sb.Append(monsters.monsterArt[i]);
-                        sb.Append("\n");
-                    }
-                    UIManager.DrawAscii(sb.ToString());
+                for(int i = 0; i< monster.Count; i++)
+                {
+
                 }
                 
                 UIManager.WriteLine(2,"");

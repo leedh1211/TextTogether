@@ -28,7 +28,7 @@ public class UIManager
     static int optionStartPos_y = 30;
 
     static int typingDelay = 60;
-    
+
     static List<Option> currentOptions = new List<Option>();
     static string currentArt = "";
     static bool isResolutionChanged = false;
@@ -172,7 +172,7 @@ public class UIManager
 
         }
 
-        else if(index +1 == 2)
+        else if (index + 1 == 2)
         {
             for (int i = 0; i < text.Length; i++)
             {
@@ -563,7 +563,7 @@ public class UIManager
             cursors[index][1] = Console.CursorTop;
         }
 
-        
+
 
 
     }
@@ -886,8 +886,8 @@ public class UIManager
                 StringBuilder temp = new StringBuilder();
                 string[] lines;
                 string fullText;
-                
-                
+
+
                 foreach (var a in Text.mainTextTemp)
                 {
                     temp.Append(a);
@@ -914,7 +914,7 @@ public class UIManager
                 {
                     UIManager.WriteLine(1, test[j]);
                 }
-                
+
                 ////////////////////////////////////////////////////
                 //UI2번
                 //
@@ -930,7 +930,7 @@ public class UIManager
                 fullText = temp.ToString();
                 lines = fullText.Split('\0');
 
-                
+
                 // 줄 단위로 다시 나누기
                 foreach (string line in lines) //이거 크기에 맞게 슬라이스 할 필요가 있음?? 걍 \n만 슬라이스 하는게 맞지않나?
                 {
@@ -944,7 +944,7 @@ public class UIManager
                     */
 
                     test.Add(line);
-                    
+
                 }
 
                 if (test[test.Count - 1] == "")
@@ -965,7 +965,7 @@ public class UIManager
                 ///
                 //비워줘야함
 
-                
+
                 temp.Clear();
                 test.Clear();
 
@@ -1013,7 +1013,7 @@ public class UIManager
             }
         }
 
-        
+
     }
 
 
@@ -1080,34 +1080,7 @@ public class UIManager
 
     }
 
-    public static void DrawHPBar(Monster monster)
-    {
-        StringBuilder hpBar = new StringBuilder();
 
-        int hpRatio;
-
-        //비율을 10칸으로 나눠줌
-        hpRatio = (int)Math.Round((float)monster.health / monster.maxHealth * 100f);
-
-
-
-        //10칸임 보고 수정해도 될듯?
-        hpBar.Append("[");
-        for (int i = 0; i < 10; i++)
-        {
-            if (hpRatio > i)
-            {
-                hpBar.Append("█");
-            }
-            else
-            {
-                hpBar.Append("-");
-            }
-        }
-        hpBar.Append("]");
-
-        Console.WriteLine(hpBar.ToString());
-    }
 
 
     static public int inputController(List<Option> option)
@@ -1122,7 +1095,7 @@ public class UIManager
             {
                 return -1; // or 다른 특별한 코드로 루프 탈출
             }
-            
+
             var key = Console.ReadKey(intercept: true).Key;
             if (key == ConsoleKey.Enter)
             {
@@ -1156,9 +1129,9 @@ public class UIManager
 
             // 3) 상태 갱신
             prevIndex = index;
-            prevPage  = page;
-            index     = newIndex;
-            page      = newPage;
+            prevPage = page;
+            index = newIndex;
+            page = newPage;
         }
     }
 
@@ -1267,7 +1240,7 @@ public class UIManager
             Console.Write(prefix + displayText);
         }
     }
-    
+
     static void MoveHighlight(int oldLocal, int newLocal)
     {
         // 이전 ▶ 지우기
@@ -1277,16 +1250,16 @@ public class UIManager
         Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + newLocal);
         Console.Write("\u25B7");
     }
-    
+
     static int GetDelta(ConsoleKey key) => key switch
     {
-        ConsoleKey.W or ConsoleKey.UpArrow   => -1,
+        ConsoleKey.W or ConsoleKey.UpArrow => -1,
         ConsoleKey.S or ConsoleKey.DownArrow => +1,
-        ConsoleKey.A or ConsoleKey.LeftArrow   => -6,
+        ConsoleKey.A or ConsoleKey.LeftArrow => -6,
         ConsoleKey.D or ConsoleKey.RightArrow => +6,
-        _                                    => 0
+        _ => 0
     };
-    
+
     public static void DrawAscii(string asciiArt)
     {
         currentArt = asciiArt;
@@ -1312,7 +1285,7 @@ public class UIManager
             Console.Write(line);
         }
     }
-    
+
     public static string TextCutingKorean(string text, int maxWidth)
     {
         StringBuilder sb = new StringBuilder();
@@ -1345,4 +1318,99 @@ public class UIManager
         return (c >= 0xAC00 && c <= 0xD7AF) || // 한글
                (c >= 0x1100 && c <= 0x11FF); // 초성
     }
+
+
+    static List<int[]> enemyPos = new List<int[]>();
+
+
+
+    public static void EnemySetPosition(List<Monster> monsters)
+    {
+        enemyPos.Clear();
+        int tempX;
+        int tempY;
+
+        for (int i = 0; i < monsters.Count; i++)
+        {   //       (   가로        /        마릿수 +1 )   -     그림 가로 길이 / 2
+            tempX = (int)Math.Round((Console.WindowWidth / (monsters.Count + 1f) - (monsters[i].monsterArt[0].Length / 2f)) * (i + 1));
+            tempY = (int)Math.Round(Console.WindowHeight * 0.1f);
+
+
+            enemyPos.Add(new int[] { tempX, tempY });
+
+        }
+
+    }
+
+    static public void DrawEnemyName(int index, Monster monster)
+    {
+
+        Console.SetCursorPosition(enemyPos[index][0] - 1, enemyPos[index][1] - 2);
+        Console.Write("Lv. " + monster.level);
+        Console.Write(" " + monster.name);
+
+    }
+    static public void DrawEnemy(int index, Monster monster1)
+    {
+        int artX;
+        int artY;
+
+        artX = enemyPos[index][0];
+        artY = enemyPos[index][1];
+
+        for (int i = 0; i < monster1.monsterArt.Length; i++)
+        {
+            Console.SetCursorPosition(artX, artY + i);
+            Console.Write(monster1.monsterArt[i]);
+
+        }
+
+    }
+
+    public static void DrawHPBar(int index, Monster monster)
+    {
+        StringBuilder hpBar = new StringBuilder();
+
+        int hpRatio;
+
+        //비율을 10칸으로 나눠줌
+        hpRatio = (int)Math.Round(((float)monster.health / (monster.maxHealth)) * 10);
+
+        //hpRatio = hpRatio * 10;
+
+
+
+        //10칸임 보고 수정해도 될듯?
+        hpBar.Append("[");
+        for (int i = 0; i < 10; i++)
+        {
+            if (hpRatio > i)
+            {//█
+                hpBar.Append("█");
+            }
+            else
+            {
+                hpBar.Append("-");
+            }
+        }
+        hpBar.Append("]");
+
+        Console.SetCursorPosition(enemyPos[index][0] - 2, enemyPos[index][1] + monster.monsterArt.Length + 1);
+        Console.Write(hpBar.ToString());
+        Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
+        Console.Write($"                                                 ");
+        Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
+        Console.Write($"{monster.health} / {monster.maxHealth}");
+    }
+
+
+    public static void PlayerHPBar(Player player)
+    {
+        Console.SetCursorPosition(1, 28);
+        Console.WriteLine(player.health);
+        Console.WriteLine(player.mana);
+        Console.WriteLine("Lv. " + player.level);
+
+    }
+
 }
