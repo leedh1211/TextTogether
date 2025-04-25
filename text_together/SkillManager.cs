@@ -56,10 +56,11 @@ namespace text_together
                     i++;
                     options.Add(new Option
                     {
-                        text = $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost} | {skill.Description} ", value = i,
+                        text = $" {skill.Name}  | 데미지 + {skill.Attack} | 코스트 : {skill.Cost}", value = i,
                     });
                 }
-                int selectedValue = UIManager.inputController(options);
+                UIManager.Clear(2);
+                int selectedValue = UIManager.inputController(options,2,"skill");
                     
 
                 switch (selectedValue)
@@ -90,30 +91,6 @@ namespace text_together
                 }
 
                 UIManager.WriteLine(2,"원하시는 행동을 입력해주세요.");
-
-                Console.Write(">>");
-
-                int input = int.Parse(Console.ReadLine());
-                if (input == 0)
-                    return;
-                else if (input >= 1 && input <= skills.Count)
-                {
-                    if (skills[input - 1].Cost > player.mana)
-                    {
-                        message = "마나가 부족합니다.";
-                        continue;
-                    }
-                    else
-                    {
-                        message = "대상을 선택하세요.";
-                        DungeonManager.Instance.MonsterSelect(player, dungeon, monster, skills[input - 1]);
-                        return;
-                    }
-                }
-                else
-                {
-                    continue;
-                }
             }
         }
     }
