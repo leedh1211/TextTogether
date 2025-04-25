@@ -7,13 +7,13 @@ using System.Text.Json;
 namespace text_together
 {
 
-    enum MonsterType
+    public enum MonsterType
     {
         Unit,
         Boss
     }
     // 몬스터 설정
-    class Monster
+    public class Monster
     {
         public string name { get; set; }
         public int level { get; set; }

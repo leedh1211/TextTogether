@@ -5,7 +5,7 @@ using System.Text;
 namespace text_together
 {
     // 플레이어 정보 클래스
-    class Player
+    public class Player
     {
         public string name { get; set; }
         public string job { get; set; }

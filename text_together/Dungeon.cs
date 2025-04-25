@@ -4,7 +4,7 @@ using System.Text;
 
 namespace text_together
 {
-    class Dungeon
+    public class Dungeon
     {
         public string dungeonLevel { get; set; }
         public int stage {get; set;}
