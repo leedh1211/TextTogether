@@ -64,7 +64,7 @@ namespace text_together
         // 직업 선택 정보 enum
         public enum Job
         {
-            전사 = 1, 도적 = 2
+            전사 = 1, 도적 = 2, 가지지못한자 = 3, 포켓몬마스터 = 4, 마법사 = 5, 궁수 = 6,
         }
 
         public Job SelectJob()
