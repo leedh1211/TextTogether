@@ -24,11 +24,17 @@ namespace text_together
         // 이름 입력 
         public string WriteName()
         {
-            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
-            Console.WriteLine("원하시는 이름을 설정해주세요 : \n");
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.DrawAscii(UIAscii.HomeArt);
+            UIManager.WriteLine(2,"스파르타 던전에 오신 여러분 환영합니다.");
+            UIManager.WriteLine(2,"");
+            UIManager.WriteLine(2,"원하시는 이름을 작성해주세요.");
+            UIManager.WriteLine(3,"");
             string s = Console.ReadLine();
             Console.WriteLine();
-            Console.WriteLine("입력하신 이름은 : " + s + " 입니다.\n");
+            UIManager.WriteLine(2,"입력하신 이름은 : " + s + " 입니다.");
             return s;
         }
 
@@ -37,23 +43,21 @@ namespace text_together
         {
             while (true)
             {
-                Console.Clear();
                 string name = WriteName();
-                Console.WriteLine("1. 저장 \n2. 취소 \n");
-                Console.WriteLine("원하시는 행동을 입력해주세요");
-                int n = int.Parse(Console.ReadLine());
-
+                List<Option> options = new List<Option>
+                {
+                    new Option { text = "확인", value = 1 },
+                    new Option { text = "취소", value = 2 },
+                };
+                int n = UIManager.inputController(options);
                 if (n == 1)
                 {
-                    Console.Clear();
                     return name;
                 }
                 else if (n == 2)
                 {
                     Console.WriteLine();
-                    continue;
                 }
-                Console.WriteLine("1과 2 중 하나를 입력해주세요.\n");
             }
         }
 
@@ -65,28 +69,41 @@ namespace text_together
 
         public Job SelectJob()
         {
-            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
-            while (true)
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.DrawAscii(UIAscii.HomeArt);
+            UIManager.WriteLine(2,"스파르타 던전에 오신 여러분 환영합니다.");
+            UIManager.WriteLine(2,"");
+            UIManager.WriteLine(2,"원하시는 직업을 선택해주세요.");
+            List<Option> options = new List<Option>
             {
-                Console.WriteLine("원하시는 직업을 선택해주세요.");
-                Console.WriteLine();
-
-                Console.WriteLine("1. 전사");
-                Console.WriteLine("2. 도적");
-                Console.WriteLine();
-                Console.WriteLine("원하시는 행동을 입력해주세요");
-                int n = int.Parse(Console.ReadLine());
-
-                if (n == 1 || n == 2)
-                    return (Job)n;
-                Console.WriteLine("1과 2 중 하나를 입력해주세요.");
-                Console.WriteLine();
-            }
+                new Option { text = "전사", value = 1 },
+                new Option { text = "도적", value = 2 },
+            };
+            int selectedValue = UIManager.inputController(options);
+            return (Job) selectedValue;
+            // while (true)
+            // {
+            //     Console.WriteLine("원하시는 직업을 선택해주세요.");
+            //     Console.WriteLine();
+            //
+            //     Console.WriteLine("1. 전사");
+            //     Console.WriteLine("2. 도적");
+            //     Console.WriteLine();
+            //     Console.WriteLine("원하시는 행동을 입력해주세요");
+            //     int n = int.Parse(Console.ReadLine());
+            //
+            //     if (n == 1 || n == 2)
+            //         return (Job)n;
+            //     Console.WriteLine("1과 2 중 하나를 입력해주세요.");
+            //     Console.WriteLine();
+            // }
         }
         // 플레이어 상태탭 관리
         public int PlayerInfo(Player player)
         {
-            
+            UIManager.DrawAscii(UIAscii.StatusArt);
             UIManager.WriteLine(2, "캐릭터의 정보가 표시됩니다.\n");
             UIManager.WriteLine(2,$"Lv. {player.level}");
             UIManager.WriteLine(2,$"{player.name} ( {player.job} )");

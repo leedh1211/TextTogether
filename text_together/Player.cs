@@ -69,6 +69,7 @@ namespace text_together
             if(monster.health <= 0)
             {
                 message+=$"\n{monster.name}을 쓰러트렸다!";
+                QuestManager.Instance.HandleMonsterKill(monster.name);
 
                 // 경험치 획득
                 int plusExp = (int)(monster.gold * 0.02);

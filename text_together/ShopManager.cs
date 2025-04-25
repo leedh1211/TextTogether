@@ -59,8 +59,8 @@ namespace text_together
 
             storeItems.Clear();
 
-            // 5개로 개수제한
-            for(int i = 0; i < 5; i++)
+            // 6개로 개수제한
+            for(int i = 0; i < 6; i++)
             {
                 Item original = shuffle[i];
 
@@ -88,6 +88,8 @@ namespace text_together
             this.player = player;
             while (true)
             {
+                UIManager.Clear(1);
+                UIManager.DrawAscii(UIAscii.ShopArt);
                 UIManager.Clear(2);   
                 UIManager.WriteLine(2,"[상점]");
                 UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있는 상점입니다.");
@@ -287,12 +289,9 @@ namespace text_together
             int idx = 1;
             foreach (var item in storeItems)
             {
-                bool isHaved = inventory.Any(x => x.name == item.name);
-                if (!isHaved)
-                {
-                    Option targetOption = new Option { text = item.name, value = idx };
-                    options.Add(targetOption);
-                }
+                Option targetOption = new Option { text = item.name, value = idx };
+                options.Add(targetOption);
+                
                 idx++;
             }
             ShopInfo(inventory);
