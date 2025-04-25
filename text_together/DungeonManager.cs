@@ -7,7 +7,7 @@ namespace text_together
 {
     class DungeonManager
     {
-
+        bool skip = false;
         public string message = "";
         public MonsterManager enemy = new MonsterManager();
         public SkillManager skill = new SkillManager();
@@ -65,6 +65,7 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             else DungeonRaid(player, dungeon);
+                            if(skip)return 0;
                             // 플레이어 체력 0이하가 되면 처음 페이지로 리턴
                             if(dungeon.isPlayerDead == true)return 0;
                             // 엔딩 설정
@@ -78,7 +79,8 @@ namespace text_together
                         while (dungeon.gameClear == false)
                         {
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                            DungeonRaid(player, dungeon);
+                            else DungeonRaid(player, dungeon);
+                            if(skip)return 0;
                             if(dungeon.isPlayerDead == true) return 0;
                             if(dungeon.stage == 6) EndingCredit(dungeon);
                         }
@@ -90,7 +92,8 @@ namespace text_together
                         while (dungeon.gameClear == false)
                         {
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
-                            DungeonRaid(player, dungeon);
+                            else DungeonRaid(player, dungeon);
+                            if(skip)return 0;
                             if(dungeon.isPlayerDead == true) return 0;
                             if(dungeon.stage == 6) EndingCredit(dungeon);
                         }
@@ -139,7 +142,7 @@ namespace text_together
         {
             UIManager.Clear(1);
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
-            bool skip = false;
+            skip = false;
             dungeon.dungeonClear = false;
             dungeon.isPlayerDead = false;
 
@@ -206,6 +209,7 @@ namespace text_together
                             if (success)
                             {
                                 LeaveRaid(player);
+                                skip = true;
                                 return;
 
                             }
