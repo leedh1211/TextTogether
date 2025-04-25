@@ -25,7 +25,7 @@ class Solution
             {
                 case 0: status = mainMenu(player, items, inventory, dungeon); break;
                 case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
-                case 2: status = InventoryManager.Instance.GoInventory(player); break;
+                case 2: status = InventoryManager.Instance.GoInventory(player, inventory); break;
                 case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
                 case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
                 case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;

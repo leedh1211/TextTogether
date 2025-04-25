@@ -151,12 +151,16 @@ namespace text_together
         }
 
         // 인벤토리탭 관리
-        public int GoInventory(Player player)
+        public int GoInventory(Player player, List<Item> inventory)
         {
             // inventory가 null인 경우 초기화
             if (inventory == null)
             {
                 inventory = new List<Item>(); // 인벤토리 초기화
+            }
+            else
+            {
+                this.inventory = inventory;
             }
 
             while (true)

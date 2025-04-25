@@ -127,7 +127,7 @@ namespace text_together
                     case 1: DungeonRaid(player, dungeon); break;
                     case 2: RestManager.Instance.GoRest(player, items, inventory); break;
                     case 3: ShopManager.Instance.GoShop(player, inventory); break;
-                    case 4: InventoryManager.Instance.GoInventory(player); break;
+                    case 4: InventoryManager.Instance.GoInventory(player,inventory); break;
                     case 5: PlayerManager.Instance.PlayerInfo(player); break;
                     case 0: return;
                 }
@@ -411,8 +411,8 @@ namespace text_together
             // 수정
             foreach (var monsters in monster)
                 {
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    UIManager.Write(2,$"[Lv. {monsters.level}] {monsters.name}  | ");
+                    UIManager.WriteLine(2,monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
                 }
         }
 
