@@ -8,6 +8,9 @@ namespace text_together;
 
 public class UIManager
 {
+    static bool isTarget = false;
+
+    static int optionIndex;
 
     static int prevWidth = Console.WindowWidth;
     static int prevHeight = Console.WindowHeight;
@@ -31,9 +34,7 @@ public class UIManager
 
     static List<Option> currentOptions = new List<Option>();
     static string currentArt = "";
-    static string currentUIList = "";
     static bool isResolutionChanged = false;
-    public static bool isShopUIList = false;
 
     //음원 경로
     static string filePath = "../../../../Resources/voice_sans.wav";
@@ -1007,10 +1008,7 @@ public class UIManager
                 inputController(currentOptions);
                 isResolutionChanged = false;
                 DrawAscii(currentArt);
-                if (isShopUIList)
-                {
-                    ShopManager.Instance.PrintShopItemInfo();
-                }
+
 
                 Text.mainTextTemp.Clear();
                 Text.contentTextTemp.Clear();
@@ -1093,12 +1091,17 @@ public class UIManager
 
     static public int inputController(List<Option> option)
     {
+
         int index = 0, prevIndex = 0;
         int page = 0, prevPage = 0;
         RefreshOptionsPage(option, index, page);
         currentOptions = option;
         while (true)
         {
+            if (UIManager.isTarget == true)
+            {
+                UIManager.DrawTargetBox(index);
+            }
             if (isResolutionChanged)
             {
                 return -1; // or 다른 특별한 코드로 루프 탈출
@@ -1140,6 +1143,8 @@ public class UIManager
             prevPage = page;
             index = newIndex;
             page = newPage;
+
+            optionIndex = index;
         }
     }
 
@@ -1150,7 +1155,7 @@ public class UIManager
         RefreshOptionsPage(option, index, page);
         currentOptions = option;
 
-        string[] summary = GetText(option, index,text);
+        string[] summary = GetText(option, index, text);
         foreach (var line in summary)
         {
             UIManager.WriteLine(2, line); // 오른쪽 정보 영역에 출력
@@ -1225,7 +1230,7 @@ public class UIManager
                 $"{skill.Description}"
             };
         }
-        else if(input == "inventory")
+        else if (input == "inventory")
         {
             if (idx == 0)
             {
@@ -1236,17 +1241,8 @@ public class UIManager
             return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}"
 
             };
-        }else if (input == "store")
-        {
-            if (idx == 0)
-            {
-                return new string[] { " " };
-            }
-
-            var item = ShopManager.Instance.storeItems[idx-1];
-            return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info}"}; 
-            
         }
+
         return new string[] { "정보를 불러올 수 없습니다." };
     }
 
@@ -1347,9 +1343,12 @@ public class UIManager
     static List<int[]> enemyPos = new List<int[]>();
 
 
-
+    static int monsterCnt = 0;
     public static void EnemySetPosition(List<Monster> monsters)
     {
+
+        monsterCnt = monsters.Count;
+
         enemyPos.Clear();
         int tempX;
         int tempY;
@@ -1447,19 +1446,26 @@ public class UIManager
 
         Console.SetCursorPosition(10, 17);
         hpBar.Append("[");
+
         for (int i = 0; i < 10; i++)
         {
+
             if (hpRatio > i)
             {//█
+
                 hpBar.Append("█");
             }
             else
             {
+
                 hpBar.Append("-");
             }
         }
+
         hpBar.Append("]");
+        Console.ForegroundColor = ConsoleColor.Red;
         Console.Write($"{hpBar.ToString()}");
+        Console.ForegroundColor = ConsoleColor.White;
         Console.SetCursorPosition(12, 18);
         Console.Write($"{player.health} / {player.maxHealth}        ");
 
@@ -1493,6 +1499,70 @@ public class UIManager
             Console.SetCursorPosition(playerStartPos_X, playerStartPos_Y + i);
             Console.Write(line);
         }
+
+    }
+
+
+    public static void Change_isTarget()
+    {
+        isTarget = !isTarget;
+    }
+
+
+    public static void ClearTargetBOx()
+    {
+        for (int j = 0; j < monsterCnt; j++)
+        {
+            Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] - 1);
+            Console.Write("          ");
+
+            for (int i = 0; i < 5; i++)
+            {
+                Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + i);
+                Console.Write(" ");
+                Console.SetCursorPosition(enemyPos[j][0] + 8, enemyPos[j][1] + i);
+                Console.Write(" ");
+            }
+            Console.SetCursorPosition(enemyPos[j][0] - 1, enemyPos[j][1] + 4);
+            Console.Write("          ");
+        }
+    }
+    //static 으로 optionIndex
+    public static void DrawTargetBox(int index)
+    {
+
+        if (true)
+        //if (optionIndex =)
+        {
+            try
+            {
+
+
+                ClearTargetBOx();
+
+
+                ////////////////////////////////////////////////////////////////////////////
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.SetCursorPosition(enemyPos[index][0] - 1, enemyPos[index][1] - 1);
+                Console.Write("┏━━━━━━━━┓");
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.SetCursorPosition(enemyPos[index][0] - 1, enemyPos[index][1] + i);
+                    Console.Write("┃");
+                    Console.SetCursorPosition(enemyPos[index][0] + 8, enemyPos[index][1] + i);
+                    Console.Write("┃");
+                }
+                Console.SetCursorPosition(enemyPos[index][0] - 1, enemyPos[index][1] + 4);
+                Console.Write("┗━━━━━━━━┛");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch
+            {
+            }
+        }
+
 
     }
 
