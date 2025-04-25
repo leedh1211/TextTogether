@@ -113,19 +113,19 @@ namespace text_together
                 
                 switch (selectedValue)
                 {
-                    case 1: selectedValue = ItemBuy(inventory); break;
-                    case 2: selectedValue = ItemSell(inventory); break;
-                    case 3: selectedValue = ItemGatcha(inventory); break;
-                    case 4: selectedValue = EnforceItem(inventory); break;
-                    case 5: selectedValue = UpdateShop(); break;
-                    case 6: selectedValue = GoShop(player, inventory); break;
+                    case 1: ItemBuy(inventory); break;
+                    case 2: ItemSell(inventory); break;
+                    case 3: ItemGatcha(inventory); break;
+                    case 4: EnforceItem(inventory); break;
+                    case 5: UpdateShop(); break;
+                    case 6: GoShop(player, inventory); break;
                     case 0: return 0;
                 }
             }
         }
 
         // 뽑기 기능
-        int ItemGatcha(List<Item> inventory)
+        void ItemGatcha(List<Item> inventory)
         {
             UIManager.Clear(2);
             UIManager.Clear(3);
@@ -154,7 +154,6 @@ namespace text_together
             };
 
             UIManager.inputController(options);
-            return 3;
         }
 
 
@@ -199,7 +198,7 @@ namespace text_together
             UIManager.Clear(2);
             UIManager.Clear(3);
             UIManager.WriteLine(2,"[상점 - 아이템 판매]");
-            UIManager.WriteLine(2,"필요한 아이템을 판매할 수 있는 상점입니다.");
+            UIManager.WriteLine(2,"필요 없는 아이템을 판매할 수 있습니다.");
 
             UIManager.WriteLine(2,"[보유 골드]");
             UIManager.WriteLine(2,$"{player.gold} G");
@@ -220,67 +219,72 @@ namespace text_together
 
             return options;
         }
+
         // 아이템 판매 관리
-        int ItemSell(List<Item> inventory)
+        void ItemSell(List<Item> inventory)
         {
-            double sellPrice = 0;
-
-            List<Option> options = UpdateSellUI(inventory);
-            UIManager.WriteLine(2,"판매하고 싶은 아이템을 선택해주세요.");
-
-            int input = UIManager.inputController(options);
-
-            UIManager.Clear(2);
-            UIManager.Clear(3);
-
-            if (input == 0)
+            while (true)
             {
-                return 6;
+                double sellPrice = 0;
+
+                List<Option> options = UpdateSellUI(inventory);
+                UIManager.WriteLine(2, "판매하고 싶은 아이템을 선택해주세요.");
+
+                int input = UIManager.inputController(options);
+
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+
+                if (input == 0)
+                {
+                    return;
+                }
+                else if (inventory[input - 1].quantity > 1)
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    UIManager.WriteLine(2, $"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].quantity -= 1;
+
+                }
+                else if (inventory[input - 1].isEquipped)
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    UIManager.WriteLine(2, $"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory[input - 1].isEquipped = false;
+                    inventory.RemoveAt(input - 1);
+                }
+                else
+                {
+                    sellPrice = inventory[input - 1].price * 0.85;
+                    UIManager.WriteLine(2, $"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
+                    inventory.RemoveAt(input - 1);
+                }
+
+                player.gold += (int)sellPrice;
+
+                List<Option> exitOptions = new List<Option>
+                {
+                    new Option { text = "나가기", value = 0}
+                 };
+
+                UIManager.inputController(exitOptions);
+
+                UpdateSellUI(inventory);
             }
-            else if (inventory[input -1].quantity > 1)
-            {
-                sellPrice = inventory[input - 1].price * 0.85;
-                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                inventory[input - 1].quantity -= 1;
 
-            }
-            else if (inventory[input - 1].isEquipped)
-            {
-                sellPrice = inventory[input - 1].price * 0.85;
-                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                inventory[input - 1].isEquipped = false;
-                inventory.RemoveAt(input - 1);
-            }
-            else
-            {
-                sellPrice = inventory[input - 1].price * 0.85;
-                UIManager.WriteLine(2,$"{inventory[input - 1].name}이 {sellPrice:n1}가격에 팔렸습니다.");
-                inventory.RemoveAt(input - 1);
-            }
-                
-            player.gold += (int)sellPrice;
-
-            List<Option> exitOptions = new List<Option>
-            {
-                new Option { text = "나가기", value = 0}
-            };
-
-            UIManager.inputController(exitOptions);
-
-            UpdateSellUI(inventory);
-
-            return 1;
         }
+
         // 아이템 구매할때 UI 갱신
         List<Option> UpdateBuyUI(List<Item> inventory)
         {
             UIManager.Clear(2);
             UIManager.Clear(3);
             UIManager.WriteLine(2,"상점 - 아이템 구매");
-            UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있는 상점입니다.\n");
+            UIManager.WriteLine(2,"필요한 아이템을 얻을 수 있습니다.\n");
 
             UIManager.WriteLine(2,"[보유 골드]");
-            UIManager.WriteLine(2,$"{player.gold} G\n");
+            UIManager.WriteLine(2,$"{player.gold} G");
+
             List<Option> options = new List<Option>
             {
                 new Option { text = "나가기", value = 0 },
@@ -294,42 +298,49 @@ namespace text_together
                 
                 idx++;
             }
+
             ShopInfo(inventory);
             return options;
         }
 
         // 아이템 구매 관리
-        int ItemBuy(List<Item> inventory)
+        void ItemBuy(List<Item> inventory)
         {
-            List<Option> options = UpdateBuyUI(inventory);
-            UIManager.WriteLine(2,"구매하고 싶은 아이템 번호를 입력해주세요.");
-            int input = UIManager.inputController(options);
-
-            UIManager.Clear(2);
-            UIManager.Clear(3);
-
-            if (input == 0)
+            while (true)
             {
-                return 6;
-            }else{
-                if (storeItems[input - 1].price > player.gold)
+                List<Option> options = UpdateBuyUI(inventory);
+                UIManager.WriteLine(2, "구매하고 싶은 아이템을 선택해 주세요.");
+                int input = UIManager.inputController(options);
+
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+
+                if (input == 0)
                 {
-                    UIManager.WriteLine(2,"Gold가 부족합니다.");
+                    return;
                 }
+
                 else
                 {
-                    AddItem(storeItems[input-1], inventory, storeItems[input - 1].price);
+                    if (storeItems[input - 1].price > player.gold)
+                    {
+                        UIManager.WriteLine(2, "Gold가 부족합니다.");
+                    }
+                    else
+                    {
+                        AddItem(storeItems[input - 1], inventory, storeItems[input - 1].price);
+                    }
+
+                    List<Option> exitOptions = new List<Option>
+                    {
+                        new Option { text = "나가기", value = 0}
+                    };
+
+                    UIManager.inputController(exitOptions);
                 }
-
-                List<Option> exitOptions = new List<Option>
-                {
-                new Option { text = "나가기", value = 0}
-                };
-
-                UIManager.inputController(exitOptions);
+                UpdateBuyUI(inventory);
             }
-            UpdateBuyUI(inventory);
-            return 1;
+
         }
 
         void AddItem(Item item, List<Item> inventory, int price)
@@ -360,7 +371,7 @@ namespace text_together
         }
 
         // 아이템 강화
-        int EnforceItem(List<Item> inventory)
+        void EnforceItem(List<Item> inventory)
         {
             while(true)
             {
@@ -384,7 +395,7 @@ namespace text_together
 
                 if (input == 0)
                 {
-                    return 4;
+                    return;
                 }
 
                 Item upgradeItem = inventory[input - 1];
@@ -435,7 +446,7 @@ namespace text_together
 
                 if (confirmInput == 2)
                 {
-                    return 4;
+                    continue;
                 }
 
                 player.gold -= 100;
@@ -479,9 +490,7 @@ namespace text_together
                 };
 
                 UIManager.inputController(exitOption);
-
             }
-            return 4;
         }
     }
 }
