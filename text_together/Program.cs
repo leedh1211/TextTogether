@@ -103,16 +103,5 @@ class Solution
 
         int selectedValue = UIManager.inputController(options);
         return selectedValue;
-
-        // switch (selectedValue)
-        // {
-        //     case 1: PlayerManager.Instance.PlayerInfo(player); break;
-        //     case 2: InventoryManager.Instance.GoInventory(player); break;
-        //     case 3: ShopManager.Instance.GoShop(player, inventory); break;
-        //     case 4: DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
-        //     case 5: RestManager.Instance.GoRest(player, items, inventory); break;
-        //     case 6: QuestManager.Instance.GoQuest(player); break;
-        //     case 7: return;
-        // }       
     }
 }

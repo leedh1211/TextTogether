@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Net.Mime;
 using System.Text;
 
@@ -35,6 +36,7 @@ public class UIManager
     static List<Option> currentOptions = new List<Option>();
     static string currentArt = "";
     static bool isResolutionChanged = false;
+    public static bool isShopUIList = false;
 
     //음원 경로
     static string filePath = "../../../../Resources/voice_sans.wav";
@@ -1008,6 +1010,10 @@ public class UIManager
                 inputController(currentOptions);
                 isResolutionChanged = false;
                 DrawAscii(currentArt);
+                if (isShopUIList)
+                {
+                    ShopManager.Instance.PrintShopItemInfo();
+                }
 
 
                 Text.mainTextTemp.Clear();
@@ -1241,6 +1247,16 @@ public class UIManager
             return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info} | {item.quantity}"
 
             };
+        }else if (input == "store")
+        {
+            if (idx == 0)
+            {
+                return new string[] { " " };
+            }
+
+            var item = ShopManager.Instance.storeItems[idx-1];
+            return new string[] { $"{item.name} | {item.effect.type} + {item.effect.value} | {item.info}"}; 
+            
         }
 
         return new string[] { "정보를 불러올 수 없습니다." };
