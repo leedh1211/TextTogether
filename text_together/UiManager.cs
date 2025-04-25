@@ -1076,13 +1076,10 @@ public class UIManager
             Console.Write("A");
         }
 
-
-
         Console.ReadKey();
 
-
-
     }
+
 
 
 
@@ -1143,11 +1140,13 @@ public class UIManager
         Clear(3);
         int start = page * 6;
         int countOnPage = Math.Min(6, option.Count - start);
+        int maxOptionLength = optionSpace_x - 2;
         for (int i = 0; i < countOnPage; i++)
         {
             string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
             Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + i);
-            Console.Write(prefix + option[start + i].text);
+            string displayText = TextCutingKorean(option[start + i].text, maxOptionLength);
+            Console.Write(prefix + displayText);
         }
     }
 
@@ -1185,7 +1184,6 @@ public class UIManager
 
         for (int i = 0; i < lines.Length; i++)
         {
-
             string line = lines[i];
             int lineLength = line.Length;
 
@@ -1193,7 +1191,135 @@ public class UIManager
             startX = UIManager.mainStartPos_x + (sectorWidth - lineLength) / 2;
 
             Console.SetCursorPosition(startX, startY + i);
-            Console.Write(lines[i]);
+            Console.Write(line);
         }
     }
+
+    public static string TextCutingKorean(string text, int maxWidth)
+    {
+        StringBuilder sb = new StringBuilder();
+        int width = 0;
+        foreach (char c in text)
+        {
+            int charWidth = IsWideChar(c) ? 2 : 1;
+            if (width + charWidth > maxWidth)
+            {
+                if (charWidth == 2)
+                {
+                    sb.Remove(sb.Length - 2, 2);
+                    sb.Append("...");
+                }
+                else
+                {
+                    sb.Remove(sb.Length - 3, 3);
+                    sb.Append("...");
+                }
+                break;
+            }
+            sb.Append(c);
+            width += charWidth;
+        }
+        return sb.ToString();
+    }
+
+    public static bool IsWideChar(char c)
+    {
+        return (c >= 0xAC00 && c <= 0xD7AF) || // 한글
+               (c >= 0x1100 && c <= 0x11FF); // 초성
+    }
+
+
+    static List<int[]> enemyPos = new List<int[]>();
+
+
+
+    public static void EnemySetPosition(List<Monster> monsters)
+    {
+        enemyPos.Clear();
+        int tempX;
+        int tempY;
+
+        for (int i = 0; i < monsters.Count; i++)
+        {   //       (   가로        /        마릿수 +1 )   -     그림 가로 길이 / 2
+            tempX = (int)Math.Round((Console.WindowWidth / (monsters.Count + 1f) - (monsters[i].monsterArt[0].Length / 2f)) * (i + 1));
+            tempY = (int)Math.Round(Console.WindowHeight * 0.1f);
+
+
+            enemyPos.Add(new int[] { tempX, tempY });
+
+        }
+
+    }
+
+    static public void DrawEnemyName(int index, Monster monster)
+    {
+
+        Console.SetCursorPosition(enemyPos[index][0] - 1, enemyPos[index][1] - 2);
+        Console.Write("Lv. " + monster.level);
+        Console.Write(" " + monster.name);
+
+    }
+    static public void DrawEnemy(int index, Monster monster1)
+    {
+        int artX;
+        int artY;
+
+        artX = enemyPos[index][0];
+        artY = enemyPos[index][1];
+
+        for (int i = 0; i < monster1.monsterArt.Length; i++)
+        {
+            Console.SetCursorPosition(artX, artY + i);
+            Console.Write(monster1.monsterArt[i]);
+
+        }
+
+    }
+
+    public static void DrawHPBar(int index, Monster monster)
+    {
+        StringBuilder hpBar = new StringBuilder();
+
+        int hpRatio;
+
+        //비율을 10칸으로 나눠줌
+        hpRatio = (int)Math.Round(((float)monster.health / (monster.maxHealth)) * 10);
+
+        //hpRatio = hpRatio * 10;
+
+
+
+        //10칸임 보고 수정해도 될듯?
+        hpBar.Append("[");
+        for (int i = 0; i < 10; i++)
+        {
+            if (hpRatio > i)
+            {//█
+                hpBar.Append("█");
+            }
+            else
+            {
+                hpBar.Append("-");
+            }
+        }
+        hpBar.Append("]");
+
+        Console.SetCursorPosition(enemyPos[index][0] - 2, enemyPos[index][1] + monster.monsterArt.Length + 1);
+        Console.Write(hpBar.ToString());
+        Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
+        Console.Write($"                                                 ");
+        Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
+        Console.Write($"{monster.health} / {monster.maxHealth}");
+    }
+
+
+    public static void PlayerHPBar(Player player)
+    {
+        Console.SetCursorPosition(1, 28);
+        Console.WriteLine(player.health);
+        Console.WriteLine(player.mana);
+        Console.WriteLine("Lv. " + player.level);
+
+    }
+
 }

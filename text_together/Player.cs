@@ -13,13 +13,15 @@ namespace text_together
         public float attack { get; set; }
         public int shield { get; set; }
         public int health { get; set; }
+        public int maxHealth { get; set; }
         public int mana { get; set; }
+        public int maxMana {  get; set; }
         public int gold { get; set; }
         public int exp { get; set; }
         public int maxEXP {get; set; }
 
         public Player() { }
-        public Player(string name, string job, int level, float attack, int shield, int health, int mana, int gold, int exp, int maxEXP)
+        public Player(string name, string job, int level, float attack, int shield, int health, int maxHealth, int mana, int maxMana, int gold, int exp, int maxEXP)
         {
             this.name = name;
             this.job = job;
@@ -27,7 +29,9 @@ namespace text_together
             this.attack = attack;
             this.shield = shield;
             this.health = health;
+            this.maxHealth = health;
             this.mana = mana;
+            this.maxMana = mana;
             this.gold = gold;
             this.exp = exp;
             this.maxEXP = maxEXP;
@@ -68,13 +72,13 @@ namespace text_together
             // 쓰려트렸을 때
             if(monster.health <= 0)
             {
-                message+=$"\n{monster.name}을 쓰러트렸다!";
+                message+=$"{monster.name}을 쓰러트렸다!";
                 QuestManager.Instance.HandleMonsterKill(monster.name);
 
                 // 경험치 획득
                 int plusExp = (int)(monster.gold * 0.02);
                 player.exp += plusExp;
-                message+=$"\n{plusExp}의 경험치를 획득했다.";
+                message+=$"{plusExp}의 경험치를 획득했다.";
 
                 // 경험치 최대치 이상 획득시 레밸업
                 while (player.exp >= player.maxEXP)
@@ -82,7 +86,7 @@ namespace text_together
                     player.LevelUp(player);
                     player.exp -= player.maxEXP;
                     player.maxEXP = (int)(player.maxEXP * 1.5f);
-                    message+=$"\nLv 가 {player.level}로 올랐다.";
+                    message+=$"Lv 가 {player.level}로 올랐다.";
                 }
                 dungeon.deadCount++;
             }
