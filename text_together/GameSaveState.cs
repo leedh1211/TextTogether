@@ -13,7 +13,12 @@ namespace text_together
         public List<Item> inventory { get; set; }
         public List<Item> items { get; set; }
         public Dungeon dungeon { get; set; }
-        public GameSaveState() { }
+
+        public static String savePath { get; set; }
+
+        public GameSaveState()
+        {
+        }
 
         public GameSaveState(Player player, List<Item> inventory, List<Item> items, Dungeon dungeon = null)
         {
@@ -23,16 +28,17 @@ namespace text_together
             this.dungeon = dungeon;
         }
 
-        private const string DefaultSaveFile = "player.json";
+        private const string DefaultSaveFile = "saveFile/slot1.json";
 
         // 저장 기능
-        public static void Save(Player player, List<Item> inventory, List<Item> items, Dungeon dungeon = null, string fileName = null)
+        public static void Save(Player player, List<Item> inventory, List<Item> items, Dungeon dungeon = null,
+            string fileName = null)
         {
             try
             {
                 var saveState = new GameSaveState(player, inventory, items, dungeon);
                 string json = JsonSerializer.Serialize(saveState, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(fileName ?? DefaultSaveFile, json, Encoding.UTF8);
+                File.WriteAllText(savePath ?? DefaultSaveFile, json, Encoding.UTF8);
                 Console.WriteLine($"[저장 완료] {fileName ?? DefaultSaveFile}");
             }
             catch (Exception ex)
@@ -51,12 +57,21 @@ namespace text_together
 
             string path = fileName ?? DefaultSaveFile;
 
-            if (!File.Exists(path))
-                return false;
 
+            string folderPath = "saveFile";
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            savePath = folderPath + "/" + path;
+
+            if (!File.Exists(folderPath + "/" + path))
+                return false;
             try
             {
-                string json = File.ReadAllText(path, Encoding.UTF8);
+                string json = File.ReadAllText(savePath, Encoding.UTF8);
                 GameSaveState saveState = JsonSerializer.Deserialize<GameSaveState>(json);
 
 

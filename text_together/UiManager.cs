@@ -1143,11 +1143,13 @@ public class UIManager
         Clear(3);
         int start = page * 6;
         int countOnPage = Math.Min(6, option.Count - start);
+        int maxOptionLength = optionSpace_x - 2;
         for (int i = 0; i < countOnPage; i++)
         {
             string prefix = (start + i == selectedIndex) ? "\u25B7" : "  ";
             Console.SetCursorPosition(optionStartPos_x, optionStartPos_y + i);
-            Console.Write(prefix + option[start + i].text);
+            string displayText = TextCutingKorean(option[start + i].text, maxOptionLength);
+            Console.Write(prefix + displayText);
         }
     }
     
@@ -1194,5 +1196,38 @@ public class UIManager
             Console.SetCursorPosition(startX, startY + i);
             Console.Write(line);
         }
+    }
+    
+    public static string TextCutingKorean(string text, int maxWidth)
+    {
+        StringBuilder sb = new StringBuilder();
+        int width = 0;
+        foreach (char c in text)
+        {
+            int charWidth = IsWideChar(c) ? 2 : 1;
+            if (width + charWidth > maxWidth)
+            {
+                if (charWidth == 2)
+                {
+                    sb.Remove(sb.Length - 2, 2);
+                    sb.Append("...");
+                }
+                else
+                {
+                    sb.Remove(sb.Length - 3, 3);
+                    sb.Append("...");
+                }
+                break;
+            }
+            sb.Append(c);
+            width += charWidth;
+        }
+        return sb.ToString();
+    }
+
+    public static bool IsWideChar(char c)
+    {
+        return (c >= 0xAC00 && c <= 0xD7AF) || // 한글
+               (c >= 0x1100 && c <= 0x11FF); // 초성
     }
 }

@@ -30,9 +30,12 @@ namespace text_together
         {
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("던전입장");
-                Console.WriteLine("이곳에서 던전으로 들어가기전 난이도를 설정 할 수 있습니다.\n");
+                UIManager.Clear(1);
+                UIManager.Clear(2);
+                UIManager.Clear(3);
+                UIManager.DrawAscii(UIAscii.DungeonArt);
+                UIManager.WriteLine(2,"던전입장");
+                UIManager.WriteLine(2,"이곳에서 던전으로 들어가기전 난이도를 설정 할 수 있습니다.");
 
                 int orgGold = player.gold;
                 int orgHealth = player.health;
@@ -62,7 +65,7 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-
+                            return 0;
                         }
                         break;
                     case 2:
@@ -78,7 +81,7 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-
+                            return 0;
                         }
                         break;
                     case 3:
@@ -94,7 +97,7 @@ namespace text_together
                             // 보스 스테이지 도달 전 및 시작 전 베이스 캠프
                             if (dungeon.stage % 5 == 0) BaseDungeon(player, dungeon, items, inventory);
                             DungeonRaid(player, dungeon);
-
+                            return 0;
                         }
                         break;
                     case 0: return 0;
@@ -107,9 +110,9 @@ namespace text_together
         {
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("베이스 캠프");
-                Console.WriteLine("이곳에서 나아가기 전 활동을 할 수 있습니다.\n");
+                UIManager.Clear(2);
+                UIManager.WriteLine(2,"베이스 캠프");
+                UIManager.WriteLine(2,"이곳에서 나아가기 전 활동을 할 수 있습니다.");
 
                 List<Option> options = new List<Option>
                 {
@@ -143,31 +146,33 @@ namespace text_together
             while (dungeon.dungeonClear == false)
             {
                 message = "";
-                Console.Clear();
+                UIManager.Clear(2);
                 if (skip)
                 {
-                    message = "도망치기에 실패하였다!! \n 도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.";
+                    message = "도망치기에 실패하였다!!  도망치다가 몬스터에게 한 방 맞아서 체력이 5 줄어들었다.";
                     player.health -= 5;
                     skip=false;
                 }
 
-                Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
-                Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
+                UIManager.WriteLine(2,$"현재 난이도 : {dungeon.dungeonLevel}");
+                UIManager.WriteLine(2,$"현재 스테이지 : {dungeon.stage} ");
+                UIManager.WriteLine(2,"");
 
                 foreach (var monsters in monster)
                 {
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    string monsterText = getMonsterInfoText(monsters);
+                    UIManager.WriteLine(2,monsterText);
                 }
 
-                Console.WriteLine("");
-                Console.WriteLine("[플레이어]");
-                Console.WriteLine("체력 : {0}", player.health);
-                Console.WriteLine("마나 : {0}", player.mana);
-                Console.WriteLine("Lv : {0} \n", player.level);
+                UIManager.WriteLine(2,"");
+                UIManager.WriteLine(2,"[플레이어]");
+                UIManager.WriteLine(2,$"체력 : {player.health}" );
+                UIManager.WriteLine(2,$"마나 : {player.mana}" );
+                UIManager.WriteLine(2,$"Lv : {player.level} " );
+                UIManager.WriteLine(2,"");
 
-                if(message != "") Console.WriteLine(message);
-                else Console.WriteLine($"{monster[rand.Next(0, monster.Count)].monsterInfo}");
+                if(message != "") UIManager.WriteLine(2,message);
+                else UIManager.WriteLine(2,$"{monster[rand.Next(0, monster.Count)].monsterInfo}");
 
                 List<Option> options = new List<Option>
                 {
@@ -198,7 +203,7 @@ namespace text_together
                         }
                         
                 }
-                Console.WriteLine(message);
+                UIManager.WriteLine(2,message);
             }
         }
 
@@ -209,26 +214,28 @@ namespace text_together
             while (dungeon.dungeonClear == false)
             {
                 List<Option> options = new List<Option>();
-                Console.Clear();
+                UIManager.Clear(1);
+                UIManager.Clear(2);
+                UIManager.Clear(3);
 
-                Console.WriteLine($"현재 난이도 : {dungeon.dungeonLevel}");
-                Console.WriteLine("현재 스테이지 : {0} \n", dungeon.stage);
+                UIManager.WriteLine(2,$"현재 난이도 : {dungeon.dungeonLevel}");
+                UIManager.WriteLine(2,$"현재 스테이지: {dungeon.stage} " );
                 
                 int i = 0;
                 foreach (var monsters in monster)
                 {
                     i++;
-                    Console.Write($"[Lv. {monsters.level}] {monsters.name}  | ");
-                    Console.WriteLine(monsters.health <= 0 ? "Dead" : $"HP : {monsters.health} ");
+                    String monsterinfoText = getMonsterInfoText(monsters);
+                    UIManager.WriteLine(2,monsterinfoText);
                     options.Add(new Option
                     {
                        
-                        text = $"[Lv. {monsters.level}] {monsters.name} \n", value = i,
+                        text = monsterinfoText , value = i,
                     });
                 }
                     options.Add(new Option{ text = "뒤로가기", value = 0, });
 
-                Console.WriteLine(message);
+                UIManager.WriteLine(2,message);
 
                 int selectedValue = UIManager.inputController(options);
 
@@ -246,8 +253,8 @@ namespace text_together
                             return;
                         }
                 }
-                Console.WriteLine($"\n[플레이어]");
-                Console.WriteLine($"체력 : {player.health}");
+                UIManager.WriteLine(2,$"[플레이어]");
+                UIManager.WriteLine(2,$"체력 : {player.health}");
             }
         }
 
@@ -256,7 +263,9 @@ namespace text_together
             bool isPlayerAttack = false;
             for (int j = 0; j < monsters.Count + 1; j++)
             {
-                Console.Clear();
+                UIManager.Clear(1);
+                UIManager.Clear(2);
+                UIManager.Clear(3);
 
                 // 플레이어의 공격 (1회)
                 if (!isPlayerAttack)
@@ -267,19 +276,22 @@ namespace text_together
 
                 for (int i = 0; i < monsters.Count; i++)
                 {
-                    Console.Write($"[Lv. {monsters[i].level}] {monsters[i].name}  | ");
-                    Console.WriteLine(monsters[i].health <= 0 ? "Dead" : $"HP : {monsters[i].health} ");
+                    UIManager.Write(2,$"[Lv. {monsters[i].level}] {monsters[i].name}  | ");
+                    UIManager.WriteLine(2,monsters[i].health <= 0 ? "Dead" : $"HP : {monsters[i].health} ");
                 }
 
-                Console.WriteLine("\n[플레이어]");
-                Console.WriteLine("체력 : {0}", player.health);
-                Console.WriteLine("마나 : {0}", player.mana);
-                Console.WriteLine($"Exp : {player.exp} / {player.maxEXP}");
-                Console.WriteLine("Lv: {0}", player.level);
-
-                Console.WriteLine();
-                Console.WriteLine(message);
-                Console.ReadLine();
+                UIManager.WriteLine(2,"[플레이어]");
+                UIManager.WriteLine(2,$"체력 : {player.health}" );
+                UIManager.WriteLine(2,$"마나 : {player.mana}" );
+                UIManager.WriteLine(2,$"Exp : {player.exp} / {player.maxEXP}");
+                UIManager.WriteLine(2,$"Lv: {player.level}" );
+                UIManager.WriteLine(2,message);
+                
+                List<Option> options = new List<Option>
+                {
+                    new Option { text = "확인", value = 0 },
+                };
+                UIManager.inputController(options);
 
                 // 전부 다 처치 시 보상
                 if (dungeon.deadCount == monsters.Count)
@@ -307,17 +319,23 @@ namespace text_together
             }
             player.gold += resultGold;
 
-            Console.Clear();
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            
+            UIManager.WriteLine(2,"클리어!");
 
-            Console.WriteLine("클리어!");
+            UIManager.WriteLine(2,$"스테이지 - {dungeons.stage} 을 클리어 하였습니다.");
 
-            Console.WriteLine($"스테이지 - {dungeons.stage} 을 클리어 하였습니다.\n");
-
-            Console.WriteLine("[탐험 결과]");
-            Console.WriteLine($"{resultGold} Gold 획득");
+            UIManager.WriteLine(2,"[탐험 결과]");
+            UIManager.WriteLine(2,$"{resultGold} Gold 획득");
 
 
-            Console.ReadLine();
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "확인", value = 0 },
+            };
+            UIManager.inputController(options);
 
             message = "";
             dungeons.deadCount = 0;
@@ -328,13 +346,18 @@ namespace text_together
         // 레이드에서 도망
         public void LeaveRaid(Player player)
         {
-            Console.Clear();
-            Console.WriteLine("당신은 재빨리 던전을 빠져나왔습니다.\n");
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.WriteLine(2,"당신은 재빨리 던전을 빠져나왔습니다.");
             int lostCoin = RandomNumber(50);
-            Console.Write($"\n도망가는 동안 {lostCoin} Gold 잃었습니다!      \n");
+            UIManager.Write(2,$"도망가는 동안 {lostCoin} Gold 잃었습니다!      ");
             player.gold -= lostCoin;
-            Console.WriteLine("\n아무키나 누르시면 던전입구로 갑니다.");
-            Console.ReadLine();
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "확인", value = 0 },
+            };
+            UIManager.inputController(options);
         }
 
         // 숫자 랜덤
@@ -349,15 +372,15 @@ namespace text_together
         // 사망 페널티
         public void DeathPenalty(Player player)
         {
-            Console.WriteLine("플레이어가 사망하였습니다.");
+            UIManager.WriteLine(2,"플레이어가 사망하였습니다.");
             int randExp = RandomNumber(10);
             int randCoin = RandomNumber(10);
 
             player.exp -= randExp;
             player.gold -= randCoin;
 
-            Console.WriteLine($"경험치가 {player.exp}만큼 소실되었습니다.");
-            Console.WriteLine($"금화가 {player.gold}만큼 소실되었습니다.");
+            UIManager.WriteLine(2,$"경험치가 {player.exp}만큼 소실되었습니다.");
+            UIManager.WriteLine(2,$"금화가 {player.gold}만큼 소실되었습니다.");
 
             bool isSteal = rand.Next(0, 100) < 50;
 
@@ -367,8 +390,26 @@ namespace text_together
                 // develop 브런치에서 pull해오면 추가 작성 예정
             }
 
-            Console.WriteLine("\n아무키나 누르시면 던전입구로 갑니다.");
-            Console.ReadLine();
+            UIManager.WriteLine(2,"아무키나 누르시면 던전입구로 갑니다.");
+            List<Option> options = new List<Option>
+            {
+                new Option { text = "확인", value = 0 },
+            };
+            UIManager.inputController(options);
+        }
+
+        public static String getMonsterInfoText(Monster monster)
+        {
+            string monsterText = "[Lv." + monster.level + "]"+monster.name;
+            if (monster.health <= 0)
+            {
+                monsterText += "Dead";
+            }
+            else
+            {
+                monsterText += "HP : "+monster.health;
+            }
+            return monsterText;
         }
 
     }

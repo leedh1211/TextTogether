@@ -22,6 +22,16 @@ public class title
     public static String SelectArrow =
         "\n\u2588\u2588\u2557  \n\u255a\u2588\u2588\u2557 \n \u255a\u2588\u2588\u2557\n \u2588\u2588\u2554\u255d\n\u2588\u2588\u2554\u255d \n\u255a\u2550\u255d  \n     \n";
 
+    public static String Slot1 =
+        "\n   _______  ___      _______  _______    ____  \n  |       ||   |    |       ||       |  |    | \n  |  _____||   |    |   _   ||_     _|   |   | \n  | |_____ |   |    |  | |  |  |   |     |   | \n  |_____  ||   |___ |  |_|  |  |   |     |   | \n   _____| ||       ||       |  |   |     |   | \n  |_______||_______||_______|  |___|     |___| \n";
+
+    public static String Slot2 = "\n   _______  ___      _______  _______    _______ \n  |       ||   |    |       ||       |  |       |\n  |  _____||   |    |   _   ||_     _|  |____   |\n  | |_____ |   |    |  | |  |  |   |     ____|  |\n  |_____  ||   |___ |  |_|  |  |   |    | ______|\n   _____| ||       ||       |  |   |    | |_____ \n  |_______||_______||_______|  |___|    |_______|\n";
+
+    public static String Slot3 =
+        "\n   _______  ___      _______  _______    _______ \n  |       ||   |    |       ||       |  |       |\n  |  _____||   |    |   _   ||_     _|  |___    |\n  | |_____ |   |    |  | |  |  |   |     ___|   |\n  |_____  ||   |___ |  |_|  |  |   |    |___    |\n   _____| ||       ||       |  |   |     ___|   |\n  |_______||_______||_______|  |___|    |_______|\n";
+
+    public static String EmptySlot =
+        "\n _______  __   __  _______  _______  __   __ \n|       ||  |_|  ||       ||       ||  | |  |\n|    ___||       ||    _  ||_     _||  |_|  |\n|   |___ |       ||   |_| |  |   |  |       |\n|    ___||       ||    ___|  |   |  |_     _|\n|   |___ | ||_|| ||   |      |   |    |   |  \n|_______||_|   |_||___|      |___|    |___|  \n";
 
     public static int SelectTitleOption()
     {
@@ -115,6 +125,108 @@ public class title
             }
         }
     }
+
+public static int SelectSaveFile()
+{
+    Console.Clear();
+    Console.OutputEncoding = Encoding.UTF8;
+    Console.CursorVisible = false;
+    string[] saveSlotsAscii = { EmptySlot,EmptySlot,EmptySlot }; // 나중에 조건부로 EmptySlot 교체 가능
+    if (Directory.Exists("saveFile"))
+    {
+        if (File.Exists("saveFile/slot1.json"))
+        {
+            saveSlotsAscii[0] = Slot1;
+        }
+        if (File.Exists("saveFile/slot2.json"))
+        {
+            saveSlotsAscii[1] = Slot2;   
+        }
+        if (File.Exists("saveFile/slot3.json"))
+        {
+            saveSlotsAscii[2] = Slot3;
+        }
+    };
+    int originPadding = 40;
+    int arrowPadding = originPadding - 8;
+    int startYIndex = 17;
+    int[] slotYPositions = new int[saveSlotsAscii.Length];
+    Console.Write(titleAsciiArt);
+    // 아스키 아트 슬롯 출력
+    for (int i = 0; i < saveSlotsAscii.Length; i++)
+    {
+        int padding = originPadding;
+        int y = startYIndex;
+        slotYPositions[i] = y;
+
+        foreach (var ch in saveSlotsAscii[i])
+        {
+            if (ch == '\n')
+            {
+                y++;
+                padding = originPadding;
+            }
+            else
+            {
+                Console.SetCursorPosition(padding, y);
+                Console.Write(ch);
+                padding++;
+            }
+        }
+
+        startYIndex = y + 1; // 다음 슬롯 간격 띄우기
+    }
+
+    int selectedIndex = 0;
+
+    void DrawArrow()
+    {
+        string[] arrowLines = SelectArrow.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < arrowLines.Length; i++)
+        {
+            Console.SetCursorPosition(arrowPadding, slotYPositions[selectedIndex] + i + 2);
+            Console.Write(arrowLines[i].PadRight(8));
+        }
+    }
+
+    void EraseArrow()
+    {
+        string[] arrowLines = SelectArrow.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < arrowLines.Length; i++)
+        {
+            Console.SetCursorPosition(arrowPadding, slotYPositions[selectedIndex] + i + 2);
+            Console.Write("        ");
+        }
+    }
+
+    DrawArrow();
+
+    while (true)
+    {
+        var key = Console.ReadKey(intercept: true).Key;
+
+        if (key == ConsoleKey.Enter)
+        {
+            return selectedIndex+1; // 1, 2, 3
+        }
+
+        int delta = key switch
+        {
+            ConsoleKey.W or ConsoleKey.UpArrow => -1,
+            ConsoleKey.S or ConsoleKey.DownArrow => 1,
+            _ => 0
+        };
+
+        if (delta != 0)
+        {
+            EraseArrow();
+            selectedIndex = (selectedIndex + delta + saveSlotsAscii.Length) % saveSlotsAscii.Length;
+            DrawArrow();
+        }
+    }
+}
+
+
 }
 
 

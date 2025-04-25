@@ -29,7 +29,7 @@ class Solution
                 case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
                 case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
                 case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
-                // case 6: status = QuestManager.Instance.GoQuest(player); break;
+                case 6: status = QuestManager.Instance.GoQuest(player); break;
                 case 7: return;
             }
         }
@@ -46,33 +46,39 @@ class Solution
         Dungeon dungeon;
         // 퀘스트 초기화
         List<Quest> quests;
-
-        if (!GameSaveState.TryLoad(out player, out inventory, out items, out dungeon))
-        {
-            // 초기 설정
-            string playerName = PlayerManager.Instance.CheckName();
-            PlayerManager.Job playerJob = PlayerManager.Instance.SelectJob();
-            player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 100, 1500, 0, 10);
-            items = new List<Item>();
-            dungeon = new Dungeon();
-            quests = QuestManager.Instance.QuestInit();
-
-            inventory = InventoryManager.Instance.inventory;
-
-            // 던전 추가
-            dungeon = new Dungeon("", 0,false, false, 0);
-        }
         // 게임 시작
         int startActionResult = title.SelectTitleOption();
+        _ = UIManager.Call_CheckWindow();
         if (startActionResult == 0)
         {
+            int selectFile = title.SelectSaveFile();
+            Console.Clear();
             View.View1();
             UIManager.UISetup();
             View.DrawUIFast();
-            _ = UIManager.Call_CheckWindow();
-            GameStart(player, items, inventory, dungeon);    
+            String FileName = "slot"+selectFile+".json";
+            if (!GameSaveState.TryLoad(out player, out inventory, out items, out dungeon, FileName))
+            {
+                // 초기 설정
+                string playerName = PlayerManager.Instance.CheckName();
+                PlayerManager.Job playerJob = PlayerManager.Instance.SelectJob();
+                player = new Player(playerName, playerJob.ToString(), 1, 10, 5, 100, 100, 1500, 0, 10);
+                items = new List<Item>();
+                dungeon = new Dungeon();
+                quests = QuestManager.Instance.QuestInit();
+        
+                inventory = InventoryManager.Instance.inventory;
+        
+                // 던전 추가
+                dungeon = new Dungeon("", 1,false, false, 0);
+            }
+            GameStart(player, items, inventory, dungeon);
+            GameSaveState.Save(player, inventory, items, dungeon, FileName);
         }
-        GameSaveState.Save(player, inventory, items, dungeon);
+        else
+        {
+            return;
+        }
     }
 
     static int mainMenu(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon)
