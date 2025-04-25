@@ -104,6 +104,7 @@ namespace text_together
         public int PlayerInfo(Player player)
         {
             UIManager.DrawAscii(UIAscii.StatusArt);
+            UIManager.Clear(2);
             UIManager.WriteLine(2, "캐릭터의 정보가 표시됩니다.\n");
             UIManager.WriteLine(2,$"Lv. {player.level}");
             UIManager.WriteLine(2,$"{player.name} ( {player.job} )");

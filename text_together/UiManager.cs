@@ -116,6 +116,7 @@ public class UIManager
                 }
                 Console.WriteLine();
             }
+            Text.mainText.Clear();
         }
 
         //하단 좌측 UI
@@ -136,6 +137,7 @@ public class UIManager
                 }
                 Console.WriteLine();
             }
+            Text.contentText.Clear();
         }
 
         //하단 우측 UI
@@ -156,6 +158,7 @@ public class UIManager
                 }
                 Console.WriteLine();
             }
+            Text.optionText.Clear();
         }
     }
 
