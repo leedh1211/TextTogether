@@ -106,7 +106,7 @@ namespace text_together
             UIManager.DrawAscii(UIAscii.StatusArt);
             UIManager.Clear(2);
             UIManager.WriteLine(2, "캐릭터의 정보가 표시됩니다.\n");
-            UIManager.WriteLine(2,$"Lv. {player.level}");
+            UIManager.WriteLine(2,$"Lv. {player.level}  | Exp {player.exp} / {player.maxEXP}");
             UIManager.WriteLine(2,$"{player.name} ( {player.job} )");
             UIManager.WriteLine(2,$"공격력 : {player.attack}");
             UIManager.WriteLine(2,$"방어력 : {player.shield}");

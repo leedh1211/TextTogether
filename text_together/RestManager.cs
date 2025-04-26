@@ -32,9 +32,10 @@ namespace text_together
                 UIManager.Clear(3);
                 UIManager.DrawAscii(UIAscii.RestArt);
                 UIManager.WriteLine(2,"휴식하기");
-                UIManager.WriteLine(2,$"500G를 내면 체력을 회복할 수 있습니다. ( 보유 골드 : {player.gold} )");
+                UIManager.WriteLine(2,$"500G를 내면 체력과 마나를 회복할 수 있습니다. ( 보유 골드 : {player.gold} )");
                 UIManager.WriteLine(2,$" [보유 골드 : {player.gold} ]");
                 UIManager.WriteLine(2,$" [현재 체력 : {player.health}/100 ]");
+                UIManager.WriteLine(2,$" [현재 마나 : {player.mana}/100 ]");
                 UIManager.WriteLine(2,"원하시는 행동을 입력해주세요.");
                 
                 List<Option> options = new List<Option>
@@ -57,6 +58,7 @@ namespace text_together
                     if (player.gold > 500)
                     {
                         player.health = 100;
+                        player.mana = 100;
                         player.gold -= 500;
                         UIManager.WriteLine(2,"휴식을 완료했습니다.\n");
                     }

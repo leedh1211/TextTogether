@@ -116,6 +116,7 @@ namespace text_together
                 {
                     ManagePotion(player,input);
                 }
+                else return;
             }
         }
 

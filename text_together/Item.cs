@@ -48,7 +48,9 @@ namespace text_together
             new Item("감성 기타", new Effect("공격력", 4), "잔잔한 멜로디로 적의 심장을 후벼판다.", 1600, false, false),
             new Item("고대의 슬리퍼", new Effect("공격력", 6), "집안에서 가장 강력한 무기. 맞으면 정신적 데미지 +999.", 2000, false, false),
             new Item("치즈 방패", new Effect("방어력", 5), "말랑하지만 단단한 수수께끼의 방어구. 고양이들이 좋아한다.", 1900, false, false),
-            new Item("생명력 포션", new Effect("포션",3), "생명력을 올리는 포션이다",500,false,false)
+            new Item("생명력 포션", new Effect("포션",10), "생명력을 올리는 포션이다",500,false,false),
+            new Item("마스터 볼", new Effect("공격력", 55), "포획할 수는 없지만 강력하다.", 25000, false, false),
+            new Item("플라스틸 갑옷", new Effect("방어력", 55), "가장 최신형 갑옷인 것 같다.", 25000, false, false)
         };
     }
 }
