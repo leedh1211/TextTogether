@@ -81,7 +81,7 @@ namespace text_together
                                 return 0;
                             }
                             // 엔딩 설정
-                            if (dungeon.stage == 31)
+                            if (dungeon.stage == 6)
                             {
                                 UIManager.Change_isDungeon();
                                 EndingCredit(dungeon);
@@ -148,8 +148,12 @@ namespace text_together
 
         public void BaseDungeon(Player player, Dungeon dungeon, List<Item> items, List<Item> inventory)
         {
+            SoundManager.Stop_BGM();
+            Thread thread = new Thread(() => SoundManager.BGM(rand.Next(9, 16)));
+            thread.Start();
             while (dungeon.stage % 5 == 0 && dungeon.isPlayerDead == false)
             {
+                UIManager.Clear(1);
                 UIManager.Clear(2);
                 UIManager.WriteLine(2,"베이스 캠프");
                 UIManager.WriteLine(2,"이곳에서 나아가기 전 활동을 할 수 있습니다.");
@@ -491,9 +495,30 @@ namespace text_together
 
         public void EndingCredit(Dungeon dungeon)
         {
-            Console.Clear();
-            Console.WriteLine($"축하합니다. {dungeon.dungeonLevel} 난이도를 클리어 하셨습니다.");
-            Console.WriteLine("만든이 주루룩");
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.CenterTypingLine(1,$"축하합니다. {dungeon.dungeonLevel} 난이도를 클리어 하셨습니다.");
+            UIManager.CenterTypingLine(1,"만든이들 : 민심돌리기 들어가는 12조");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "UI프레임 제작, 아스키 아트 제작");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "-김건휘-");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "퀘스트, 저장기능 제작");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "-김예지-");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "상점, 아이템, 인벤토리 제작");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "-소윤진-");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "UI제작, UI유틸리티 제작, UI반응형 구현");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "-송준호, 이동헌-");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "전투 시스템 구현, 던전 난이도 구현");
+            UIManager.WriteLine(1,"");
+            UIManager.CenterTypingLine(1, "-이시율-");
             NextEnter();
 
             dungeon.stage = 1;

@@ -25,7 +25,7 @@ class Solution
                 View.DrawUIFast();
                 switch (status)
                 {
-                    case 0: status = mainMenu(); break;
+                    case 0: status = mainMenu(dungeon); break;
                     case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
                     case 2: status = InventoryManager.Instance.GoInventory(player, inventory); break;
                     case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
@@ -92,12 +92,20 @@ class Solution
         }
     }
 
-    static int mainMenu()
+    static int mainMenu(Dungeon dungeon)
     {
+
+        
         UIManager.DrawAscii(UIAscii.HomeArt);
         UIManager.Clear(2);
         UIManager.WriteLine(2, "스파르타 마을에 오신 여러분 환영합니다.");
         UIManager.WriteLine(2, "이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+        
+        Random rand = new Random();
+        
+        SoundManager.Stop_BGM();
+        Thread thread = new Thread(() => SoundManager.BGM(rand.Next(9, 16)));
+        thread.Start();
         
         List<Option> options = new List<Option>
         {

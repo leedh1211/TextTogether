@@ -29,7 +29,7 @@ namespace text_together
         // 퀘스트 성공 여부 체크
         public bool IsComplete()
         {
-            if (currentCount < requiredCount)
+            if (currentCount >= requiredCount)
             {
                 isQuestGoalCompleted = true;
             }

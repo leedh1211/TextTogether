@@ -1958,5 +1958,107 @@ public class UIManager
 
 
     }
+    
+static public void CenterTypingLine(int index, string text)
+{
+    index -= 1;
+    Console.SetCursorPosition(cursors[index][0], cursors[index][1]);
+
+    int spaceWidth = 0;
+    int startPosX = 0;
+    int startPosY = 0;
+    List<string> targetTextList = null;
+
+    if (index + 1 == 1)
+    {
+        spaceWidth = mainSpace_x;
+        startPosX = mainStartPos_x;
+        startPosY = mainStartPos_y;
+        targetTextList = Text.mainText;
+    }
+    else if (index + 1 == 2)
+    {
+        spaceWidth = contentSpace_x;
+        startPosX = contentStartPos_x;
+        startPosY = contentStartPos_y;
+        targetTextList = Text.contentText;
+    }
+    else if (index + 1 == 3)
+    {
+        spaceWidth = optionSpace_x;
+        startPosX = optionStartPos_x;
+        startPosY = optionStartPos_y;
+        targetTextList = Text.optionText;
+    }
+
+    if (targetTextList.Count > 0)
+    {
+        textTemp.Append(targetTextList[targetTextList.Count - 1]);
+        targetTextList.RemoveAt(targetTextList.Count - 1);
+    }
+
+    int textVisualWidth = GetVisualWidth(text);
+    int cursorX = startPosX + (spaceWidth - textVisualWidth) / 2;
+    int cursorY = startPosY + newLineCnt[index];
+    Console.SetCursorPosition(cursorX, cursorY);
+
+    int currentLineVisualWidth = 0; // 현재 줄에서 출력한 시각적 폭
+
+    for (int i = 0; i < text.Length; i++)
+    {
+        int charWidth = GetCharVisualWidth(text[i]);
+        textTemp.Append(text[i]);
+        Console.Write(text[i]);
+        currentLineVisualWidth += charWidth;
+
+        if (currentLineVisualWidth >= spaceWidth)
+        {
+            newLineCnt[index]++;
+            currentLineVisualWidth = 0;
+            string remainingText = text.Substring(i + 1);
+            int remainingWidth = GetVisualWidth(remainingText);
+
+            cursorX = startPosX + (spaceWidth - remainingWidth) / 2;
+            cursorY = startPosY + newLineCnt[index];
+            Console.SetCursorPosition(cursorX, cursorY);
+
+            targetTextList.Add(textTemp.ToString());
+            textTemp.Clear();
+        }
+
+        if (text[i] != ' ' && text[i] != '.')
+        {
+            if (filePath != null)
+            {
+                Thread thread = new Thread(SoundManager.sound);
+                thread.Start();
+            }
+        }
+
+        Thread.Sleep(typingDelay);
+    }
+
+    newLineCnt[index]++;
+}
+
+static int GetCharVisualWidth(char c)
+{
+    if (c >= 0xAC00 && c <= 0xD7A3) // 한글 (가-힣)
+        return 2;
+    else
+        return 1;
+}
+
+static int GetVisualWidth(string text)
+{
+    int width = 0;
+    foreach (char c in text)
+    {
+        width += GetCharVisualWidth(c);
+    }
+    return width;
+}
+
+
 
 }
