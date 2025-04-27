@@ -181,7 +181,10 @@ namespace text_together
         // 던전 몬스터 조우
         public void DungeonRaid(Player player, Dungeon dungeon)
         {
-            
+            SoundManager.Stop_BGM();
+            Thread thread = new Thread(() => SoundManager.BGM(rand.Next(0, SoundManager.BGM_List.Count)));
+            thread.Start();
+
             UIManager.Clear(1);
             List<Monster> monster = enemy.RandomMonster(dungeon.stage);
             skip = false;
@@ -407,6 +410,7 @@ namespace text_together
         // 레이드에서 도망
         public void LeaveRaid(Player player)
         {
+            SoundManager.Stop_BGM();
             UIManager.Clear(1);
             UIManager.Clear(2);
             UIManager.Clear(3);

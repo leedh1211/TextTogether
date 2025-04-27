@@ -1375,6 +1375,8 @@ public class UIManager
     }
 
 
+    static Thread thread;
+
 
 
     static public int inputController(List<Option> option)
@@ -1399,10 +1401,15 @@ public class UIManager
                 var key = Console.ReadKey(intercept: true).Key;
                 if (key == ConsoleKey.Enter)
                 {
+                    thread = new Thread(SoundManager.EffectPlay);
+                    thread.Start();
+
                     currentOptions = new List<Option>();
                     return option[index].value;
                 }
 
+                thread = new Thread(SoundManager.EffectPlay);
+                thread.Start();
                 int delta = GetDelta(key);
                 if (delta == 0) continue;
 
@@ -1465,10 +1472,14 @@ public class UIManager
             var key = Console.ReadKey(intercept: true).Key;
             if (key == ConsoleKey.Enter)
             {
+                thread = new Thread(SoundManager.EffectPlay);
+                thread.Start();
                 currentOptions = new List<Option>();
                 return option[index].value;
             }
 
+            thread = new Thread(SoundManager.EffectPlay);
+            thread.Start();
             int delta = GetDelta(key);
             if (delta == 0) continue;
 

@@ -37,6 +37,7 @@ class Solution
 
     static void Main()
     {
+        SoundManager.Sound_Init();
         Player player;
         // 빈 인벤토리 만들기
         List<Item> inventory = InventoryManager.Instance.inventory;
