@@ -4,38 +4,53 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace textRPG
+namespace text_together
 {
 
+    public enum MonsterType
+    {
+        Unit,
+        Boss
+    }
     // 몬스터 설정
-    class Monster
+    public class Monster
     {
         public string name { get; set; }
         public int level { get; set; }
         public float attack { get; set; }
         public float shield { get; set; }
         public int health { get; set; }
+
+        public int maxHealth { get; set; }
         public int gold { get; set; }
+        public MonsterType monsterType {get; set;}
+        public string monsterInfo {get; set; }
+        public string[] monsterArt { get; set; }
 
         public Monster() { }
-        public Monster(string name, int level, float attack, float shield, int health, int gold)
+        public Monster(string name, int level, float attack, float shield,int maxHealth, int health, int gold, MonsterType type, string monsterInfo, string[] monsterArt)
         {
             this.name = name;
             this.level = level;
             this.attack = attack;
             this.shield = shield;
+            this.maxHealth = health;
             this.health = health;
             this.gold = gold;
+            this.monsterType = type;
+            this.monsterInfo = monsterInfo;
+            this.monsterArt = monsterArt;
         }
 
-        public void MonsterAttack(Monster monster, Player player)
+        public string MonsterAttack(Monster monster, Player player)
         {
             Random rand = new Random();
+            string message="";
 
-            // 몬스터 피가 0 이하면 데미지 없이 리턴
-            if(monster.health <= 0)
+            if (monster.health <= 0)
             {
-                return;
+                message = $"{monster.name}은 쓰러져서 움직일 수 없다.";
+                return message;
             }
 
             // 0.5 오차 반올림 
@@ -45,6 +60,9 @@ namespace textRPG
             int damage = (int)(rand.Next((int)monster.attack - round, (int)monster.attack + round)) - (int)(player.shield * 0.7f );
             if(damage <= 0) damage=1;  
             player.health -= damage;
+            message=$"{monster.name}으로부터 {damage}의 데미지를 입었다.";
+
+            return message;
         }
     }
 

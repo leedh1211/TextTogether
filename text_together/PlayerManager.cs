@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace textRPG
+namespace text_together
 {
     class PlayerManager
     {
@@ -24,11 +24,17 @@ namespace textRPG
         // 이름 입력 
         public string WriteName()
         {
-            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
-            Console.WriteLine("원하시는 이름을 설정해주세요 : \n");
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.DrawAscii(UIAscii.HomeArt);
+            UIManager.WriteLine(2,"스파르타 던전에 오신 여러분 환영합니다.");
+            UIManager.WriteLine(2,"");
+            UIManager.WriteLine(2,"원하시는 이름을 작성해주세요.");
+            UIManager.WriteLine(3,"");
             string s = Console.ReadLine();
             Console.WriteLine();
-            Console.WriteLine("입력하신 이름은 : " + s + " 입니다.\n");
+            UIManager.WriteLine(2,"입력하신 이름은 : " + s + " 입니다.");
             return s;
         }
 
@@ -37,79 +43,66 @@ namespace textRPG
         {
             while (true)
             {
-                Console.Clear();
                 string name = WriteName();
-                Console.WriteLine("1. 저장 \n2. 취소 \n");
-                Console.WriteLine("원하시는 행동을 입력해주세요");
-                int n = int.Parse(Console.ReadLine());
-
+                List<Option> options = new List<Option>
+                {
+                    new Option { text = "확인", value = 1 },
+                    new Option { text = "취소", value = 2 },
+                };
+                int n = UIManager.inputController(options);
                 if (n == 1)
                 {
-                    Console.Clear();
                     return name;
                 }
                 else if (n == 2)
                 {
                     Console.WriteLine();
-                    continue;
                 }
-                Console.WriteLine("1과 2 중 하나를 입력해주세요.\n");
             }
         }
 
         // 직업 선택 정보 enum
         public enum Job
         {
-            전사 = 1, 도적 = 2
+            전사 = 1, 도적 = 2, 가지지못한자 = 3, 포켓몬마스터 = 4, 마법사 = 5, 궁수 = 6,
         }
 
         public Job SelectJob()
         {
-            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
-            while (true)
+            UIManager.Clear(1);
+            UIManager.Clear(2);
+            UIManager.Clear(3);
+            UIManager.DrawAscii(UIAscii.HomeArt);
+            UIManager.WriteLine(2,"스파르타 던전에 오신 여러분 환영합니다.");
+            UIManager.WriteLine(2,"");
+            UIManager.WriteLine(2,"원하시는 직업을 선택해주세요.");
+            List<Option> options = new List<Option>{};
+            foreach (Job job in Enum.GetValues(typeof(Job)))
             {
-                Console.WriteLine("원하시는 직업을 선택해주세요.");
-                Console.WriteLine();
-
-                Console.WriteLine("1. 전사");
-                Console.WriteLine("2. 도적");
-                Console.WriteLine();
-                Console.WriteLine("원하시는 행동을 입력해주세요");
-                int n = int.Parse(Console.ReadLine());
-
-                if (n == 1 || n == 2)
-                    return (Job)n;
-                Console.WriteLine("1과 2 중 하나를 입력해주세요.");
-                Console.WriteLine();
+                options.Add(new Option { text = $"{job}", value = (int)job });
             }
+            int selectedValue = UIManager.inputController(options);
+            return (Job) selectedValue;
         }
         // 플레이어 상태탭 관리
-        public void PlayerInfo(Player player)
+        public int PlayerInfo(Player player)
         {
-            Console.Clear();
-            Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
-
-            Console.WriteLine($"Lv. {player.level}");
-            Console.WriteLine($"{player.name} ( {player.job} )");
-            Console.WriteLine($"공격력 : {player.attack}");
-            Console.WriteLine($"방어력 : {player.shield}");
-            Console.WriteLine($"체 력 : {player.health}");
-            Console.WriteLine($"Gold : {player.gold}G\n");
-
-            Console.WriteLine($"0. 나가기\n");
-            while (true)
+            UIManager.DrawAscii(UIAscii.StatusArt);
+            UIManager.Clear(2);
+            UIManager.WriteLine(2, "캐릭터의 정보가 표시됩니다.\n");
+            UIManager.WriteLine(2,$"Lv. {player.level}  | Exp {player.exp} / {player.maxEXP}");
+            UIManager.WriteLine(2,$"{player.name} ( {player.job} )");
+            UIManager.WriteLine(2,$"공격력 : {player.attack}");
+            UIManager.WriteLine(2,$"방어력 : {player.shield}");
+            UIManager.WriteLine(2,$"체 력 : {player.health}");
+            UIManager.WriteLine(2,$"Gold : {player.gold}G\n");
+            
+            List<Option> options = new List<Option>
             {
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-                int n = int.Parse(Console.ReadLine());
-                if (n == 0)
-                {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("0을 입력하셔야 나가실 수 있습니다.");
-                }
-            }
+                new Option { text = "나가기", value = 0 },
+            };
+            int selectedValue = UIManager.inputController(options);
+            return selectedValue;
         }
     }
 }
