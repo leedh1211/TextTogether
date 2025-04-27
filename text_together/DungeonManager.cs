@@ -182,7 +182,7 @@ namespace text_together
         public void DungeonRaid(Player player, Dungeon dungeon)
         {
             SoundManager.Stop_BGM();
-            Thread thread = new Thread(() => SoundManager.BGM(rand.Next(0, SoundManager.BGM_List.Count)));
+            Thread thread = new Thread(() => SoundManager.BGM(rand.Next(0, 9)));
             thread.Start();
 
             UIManager.Clear(1);

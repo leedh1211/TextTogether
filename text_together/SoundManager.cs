@@ -11,17 +11,29 @@ namespace text_together
     
     internal class SoundManager
     {
-        static string filePath = "../../../../Resources/UnderTail/VoiceSans.wav";
-        static string sans_Sound = "../../../../Resources/UnderTail/VoiceSans.wav";
-        static string Pokemon_BW_Elite_Four_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Elite_Four_Battle.mp3";
-        static string Pokemon_BW_Reshiram_Zekrom = "../../../../Resources/Pokemon/Pokemon_BW_Reshiram_Zekrom.mp3";
-        static string Pokemon_BW_Rival_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Rival_Battle.mp3";
-        static string Pokemon_BW_Trainer_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Trainer_Battle.mp3";
-        static string Undertale_Megalovania = "../../../../Resources/UnderTail/Undertale_Megalovania.mp3";
-        static string Undertale_Spear_of_Justice = "../../../../Resources/UnderTail/Undertale_Spear_of_Justice.mp3";
-        static string Blue_Archive_OperationD = "../../../../Resources/Other/Blue_Archive_OperationD.mp3";
-        static string ChronoArk_Sir_Dorchi = "../../../../Resources/Other/ChronoArk_Sir_Dorchi.mp3";
-        static string HealingSong_Remix = "../../../../Resources/Other/HealingSong_Remix.mp3";
+        static string filePath = "../../../../Resources/UnderTail/VoiceSans.wav";//
+        static string sans_Sound = "../../../../Resources/UnderTail/VoiceSans.wav";//
+
+
+        static string Pokemon_BW_Elite_Four_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Elite_Four_Battle.mp3";//0
+        static string Pokemon_BW_Reshiram_Zekrom = "../../../../Resources/Pokemon/Pokemon_BW_Reshiram_Zekrom.mp3";//1
+        static string Pokemon_BW_Rival_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Rival_Battle.mp3";//2
+        static string Pokemon_BW_Trainer_Battle = "../../../../Resources/Pokemon/Pokemon_BW_Trainer_Battle.mp3";//3
+        static string Undertale_Megalovania = "../../../../Resources/UnderTail/Undertale_Megalovania.mp3";//4
+        static string Undertale_Spear_of_Justice = "../../../../Resources/UnderTail/Undertale_Spear_of_Justice.mp3";//5
+        static string Blue_Archive_OperationD = "../../../../Resources/Other/Blue_Archive_OperationD.mp3";//6
+        static string ChronoArk_Sir_Dorchi = "../../../../Resources/Other/ChronoArk_Sir_Dorchi.mp3";//7
+        static string HealingSong_Remix = "../../../../Resources/Other/HealingSong_Remix.mp3";//8
+
+
+        static string UnderTail_Shop = "../../../../Resources/UnderTail/UnderTail_Shop.mp3";//9
+        static string Undertail_Lancer = "../../../../Resources/UnderTail/Undertail_Lancer.mp3"; //10
+        static string Maple_Sleepywood = "../../../../Resources/Other/Maple_Sleepywood.mp3";  //11
+        static string Maple_elnas = "../../../../Resources/Other/Maple_elnas.mp3";  //12
+        static string Maple_Temple_of_time = "../../../../Resources/Other/Maple_Temple_of_time.mp3"; //13
+        static string Maple_orbis = "../../../../Resources/Other/Maple_orbis.mp3"; //14
+        static string Maple_henesis = "../../../../Resources/Other/Maple_henesis.mp3"; //15
+
 
         static string Pokemon_A_Button_Sound_Effect = "../../../../Resources/Effect/Pokemon_A_Button_Sound_Effect.mp3";
 
@@ -32,17 +44,27 @@ namespace text_together
 
         static public void Sound_Init()
         {
-            BGM_List.Add(Pokemon_BW_Elite_Four_Battle);
-            BGM_List.Add(Pokemon_BW_Reshiram_Zekrom);
-            BGM_List.Add(Pokemon_BW_Rival_Battle);
-            BGM_List.Add(Pokemon_BW_Trainer_Battle);
-            BGM_List.Add(Undertale_Megalovania);
-            BGM_List.Add(Undertale_Spear_of_Justice);
-            BGM_List.Add(Blue_Archive_OperationD);
-            BGM_List.Add(ChronoArk_Sir_Dorchi);
-            BGM_List.Add(HealingSong_Remix);
+            BGM_List.Add(Pokemon_BW_Elite_Four_Battle); //0
+            BGM_List.Add(Pokemon_BW_Reshiram_Zekrom);   //1
+            BGM_List.Add(Pokemon_BW_Rival_Battle);      //2
+            BGM_List.Add(Pokemon_BW_Trainer_Battle);    //3
+            BGM_List.Add(Undertale_Megalovania);        //4
+            BGM_List.Add(Undertale_Spear_of_Justice);   //5
+            BGM_List.Add(Blue_Archive_OperationD);      //6
+            BGM_List.Add(ChronoArk_Sir_Dorchi);         //7
+            BGM_List.Add(HealingSong_Remix);            //8
+            BGM_List.Add(UnderTail_Shop);               //9
+            BGM_List.Add(Undertail_Lancer);             //10
+            BGM_List.Add(Maple_Sleepywood);             //11
+            BGM_List.Add(Maple_elnas);                  //12
+            BGM_List.Add(Maple_Temple_of_time);         //13
+            BGM_List.Add(Maple_orbis);                  //14
+            BGM_List.Add(Maple_henesis);                //15
+
+
 
             Effect_List.Add(Pokemon_A_Button_Sound_Effect);
+
         }
 
         
@@ -111,7 +133,6 @@ namespace text_together
                 {
                     isSoundPlay = true;
                 }
-
 
 
 

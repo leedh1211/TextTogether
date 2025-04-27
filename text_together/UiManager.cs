@@ -107,7 +107,6 @@ public class UIManager
         //상단 UI
         if (index + 1 == 1)
         {
-
             //커서 위치 초기화
             cursors[index][0] = mainStartPos_x;
             cursors[index][1] = mainStartPos_y;
@@ -1124,7 +1123,7 @@ public class UIManager
 
                     //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
                     //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
-                    Console.SetBufferSize(Console.WindowWidth, 20000);
+                    Console.SetBufferSize(Console.WindowWidth, 10000);
                     //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
 
                     Console.ForegroundColor = ConsoleColor.White;
