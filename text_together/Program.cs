@@ -17,21 +17,29 @@ class Solution
     static void GameStart(Player player, List<Item> items, List<Item> inventory, Dungeon dungeon, List<Quest> quests)
     {
         int status = 0;
-        while (true)
+        try
         {
-            Console.Clear();
-            View.DrawUIFast();
-            switch (status)
+            while (true)
             {
-                case 0: status = mainMenu(); break;
-                case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
-                case 2: status = InventoryManager.Instance.GoInventory(player, inventory); break;
-                case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
-                case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
-                case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
-                case 6: status = QuestManager.Instance.GoQuest(player,quests, inventory); break;
-                case 7: return;
+                Console.Clear();
+                View.DrawUIFast();
+                switch (status)
+                {
+                    case 0: status = mainMenu(); break;
+                    case 1: status = PlayerManager.Instance.PlayerInfo(player); break;
+                    case 2: status = InventoryManager.Instance.GoInventory(player, inventory); break;
+                    case 3: status = ShopManager.Instance.GoShop(player, inventory); break;
+                    case 4: status = DungeonManager.Instance.GoDungeon(player, items, inventory, dungeon); break;
+                    case 5: status = RestManager.Instance.GoRest(player, items, inventory); break;
+                    case 6: status = QuestManager.Instance.GoQuest(player, quests, inventory); break;
+                    case 7: return;
+                }
             }
+        }
+
+        catch
+        {
+
         }
     }
 

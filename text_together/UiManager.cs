@@ -103,7 +103,7 @@ public class UIManager
         //줄넘김 초기화
         newLineCnt[index] = 0;
 
-
+        
         //상단 UI
         if (index + 1 == 1)
         {
@@ -1109,6 +1109,9 @@ public class UIManager
 
                 else
                 {
+                    
+                    
+
                     Console.Clear();
                     // 만약 기존크기에셔 변경 될 경우 아래 수행
                     UISetup();
@@ -1121,7 +1124,7 @@ public class UIManager
 
                     //해당부분에서 문제가 좀 생기긴하는데 나중에 조건을 걸어야할듯? 예외처리좀 해야할듯
                     //Console.SetBufferSize(Console.WindowWidth + 1 , Console.WindowHeight);
-                    Console.SetBufferSize(Console.WindowWidth, 100);
+                    Console.SetBufferSize(Console.WindowWidth, 20000);
                     //Console.SetWindowSize(Console.WindowWidth , Console.WindowHeight);
 
                     Console.ForegroundColor = ConsoleColor.White;
@@ -1273,18 +1276,29 @@ public class UIManager
 
                     if (isDungeon)
                     {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        //플레이어,HP바
-                        //적, HP바
-                        for (int i = 0; i < monster.Count; i++)
+                        //몬스터 포지션 재설정
+                        if (monster != null)
                         {
-                            DrawEnemy(i, monster[i]);
-                            DrawHPBar(i, monster[i]);
-                            DrawEnemyName(i, monster[i]);
+                            EnemySetPosition(monster);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+                            //플레이어,HP바
+                            //적, HP바
+                            for (int i = 0; i < monster.Count; i++)
+                            {
+                                DrawEnemy(i, monster[i]);
+                                DrawHPBar(i, monster[i]);
+                                DrawEnemyName(i, monster[i]);
+                            }
+                            PlayerHPBar(player1);
+                            DrawPlayer(UIAscii.PlayerBehind);
+
+                            DrawTargetBox(optionIndex);
                         }
-                        PlayerHPBar(player1);
-                        DrawPlayer(UIAscii.PlayerBehind);
-                        DrawTargetBox(optionIndex);
+                        else
+                        {
+                            DrawAscii(currentArt);
+                        }
                     }
 
                     else
@@ -1297,7 +1311,7 @@ public class UIManager
                     Text.contentTextTemp.Clear();
                     Text.optionTextTemp.Clear();
 
-                    //Console.CursorVisible = false;// 입력 숨겨주는거 
+                    Console.CursorVisible = false;// 입력 숨겨주는거 
 
                 }
             }
@@ -1748,7 +1762,7 @@ public class UIManager
         Console.SetCursorPosition(enemyPos[index][0] - 2, enemyPos[index][1] + monster.monsterArt.Length + 1);
         Console.Write(hpBar.ToString());
         Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
-        Console.Write($"                                                 ");
+        Console.Write($"             ");
         Console.SetCursorPosition(enemyPos[index][0] + 1, enemyPos[index][1] + monster.monsterArt.Length + 2);
         Console.Write(monster.health <= 0 ? $"0 / {monster.maxHealth}" : $"{monster.health} / {monster.maxHealth}");
 
@@ -1770,12 +1784,13 @@ public class UIManager
         hpRatio = (int)Math.Round(((float)player.health / (player.maxHealth)) * 10);
         mpRatio = (int)Math.Round(((float)player.mana / (player.maxMana)) * 10);
 
+        int posY = UIManager.mainStartPos_y + UIManager.mainSpace_y - UIAscii.PlayerBehind.Split('\n').Length - 2;
 
         //귀찮다
         //int x = playerStartPos_X + (sectorWidth - lineLength) / 2;
 
 
-        Console.SetCursorPosition(13, 16);
+        Console.SetCursorPosition(13, posY - 1);
         Console.Write("Lv. " + player.level);
 
 
@@ -1823,22 +1838,22 @@ public class UIManager
 
 
 
-        Console.SetCursorPosition(6, 17);
+        Console.SetCursorPosition(6, posY);
         Console.Write("HP  ");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write($"{hpBar.ToString()}");
 
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(6, 18);
+        Console.SetCursorPosition(6, posY + 1);
         Console.Write("MP  ");
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"{mpBar.ToString()}");
 
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(22, 17);
+        Console.SetCursorPosition(22, posY);
         Console.Write($"{player.health} / {player.maxHealth}        ");
 
-        Console.SetCursorPosition(22, 18);
+        Console.SetCursorPosition(22, posY + 1);
         Console.Write($"{player.mana} / {player.maxMana}        ");
 
 

@@ -45,7 +45,11 @@ namespace text_together
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[저장 실패] {ex.Message}");
+                try
+                {
+                    Console.WriteLine($"[저장 실패] {ex.Message}");
+                }
+                catch { }
             }
         }
 
