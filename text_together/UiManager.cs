@@ -1060,8 +1060,9 @@ public class UIManager
             {
                 if (filePath != null)
                 {   //음악관련으로 대기시에 메인 쓰레드와 분리해서 메인 쓰레드가 정지되지 않게함
-                    Thread thread = new Thread(SoundManager.sound);
-                    thread.Start();
+                    ThreadPool.QueueUserWorkItem(_ => SoundManager.sound());
+                    // Thread thread = new Thread(SoundManager.sound);
+                    // thread.Start();
                 }
             }
 
