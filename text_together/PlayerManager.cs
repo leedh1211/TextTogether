@@ -76,29 +76,13 @@ namespace text_together
             UIManager.WriteLine(2,"스파르타 던전에 오신 여러분 환영합니다.");
             UIManager.WriteLine(2,"");
             UIManager.WriteLine(2,"원하시는 직업을 선택해주세요.");
-            List<Option> options = new List<Option>
+            List<Option> options = new List<Option>{};
+            foreach (Job job in Enum.GetValues(typeof(Job)))
             {
-                new Option { text = "전사", value = 1 },
-                new Option { text = "도적", value = 2 },
-            };
+                options.Add(new Option { text = $"{job}", value = (int)job });
+            }
             int selectedValue = UIManager.inputController(options);
             return (Job) selectedValue;
-            // while (true)
-            // {
-            //     Console.WriteLine("원하시는 직업을 선택해주세요.");
-            //     Console.WriteLine();
-            //
-            //     Console.WriteLine("1. 전사");
-            //     Console.WriteLine("2. 도적");
-            //     Console.WriteLine();
-            //     Console.WriteLine("원하시는 행동을 입력해주세요");
-            //     int n = int.Parse(Console.ReadLine());
-            //
-            //     if (n == 1 || n == 2)
-            //         return (Job)n;
-            //     Console.WriteLine("1과 2 중 하나를 입력해주세요.");
-            //     Console.WriteLine();
-            // }
         }
         // 플레이어 상태탭 관리
         public int PlayerInfo(Player player)
