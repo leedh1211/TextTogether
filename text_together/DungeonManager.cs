@@ -81,7 +81,7 @@ namespace text_together
                                 return 0;
                             }
                             // 엔딩 설정
-                            if (dungeon.stage == 6)
+                            if (dungeon.stage == 31)
                             {
                                 UIManager.Change_isDungeon();
                                 EndingCredit(dungeon);
@@ -106,7 +106,7 @@ namespace text_together
                                 UIManager.Change_isDungeon();
                                 return 0;
                             }
-                            if (dungeon.stage == 6)
+                            if (dungeon.stage == 31)
                             {
                                 UIManager.Change_isDungeon();
                                 EndingCredit(dungeon);
@@ -132,7 +132,7 @@ namespace text_together
                                 UIManager.Change_isDungeon();
                                 return 0;
                             }
-                            if (dungeon.stage == 6)
+                            if (dungeon.stage == 31)
                             {
                                 UIManager.Change_isDungeon();
                                 EndingCredit(dungeon);
@@ -237,6 +237,7 @@ namespace text_together
                 List<Option> options = new List<Option>
                 {
                     new Option { text = "공격", value = 1 },
+                    new Option { text = "인벤토리", value = 2 },
                     new Option { text = "도망가기", value = 0 },
                 };
 
@@ -245,6 +246,7 @@ namespace text_together
                 switch (selectedValue)
                 {
                     case 1: SkillManager.Instance.SelectSkill(monster, player, dungeon); break;
+                    case 2: InventoryManager.Instance.GoDungeonInventory(player); break;
                     case 0:
                         {
                             bool success = rand.Next(0, 100) < 50;
